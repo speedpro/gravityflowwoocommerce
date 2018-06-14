@@ -1,0 +1,8 @@
+[main]
+host = https://www.transifex.com
+
+[gravityflowwoocommerce.gravityflowwoocommerce]
+file_filter = languages/gravityflowwoocommerce-<lang>.po
+source_file = languages/gravityflowwoocommerce.pot
+source_lang = en_US
+type = PO
