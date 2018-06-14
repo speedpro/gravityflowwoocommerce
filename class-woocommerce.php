@@ -30,11 +30,12 @@ if ( class_exists( 'GFForms' ) ) {
 		protected $_capabilities = array(
 			'gravityflowwoocommerce_uninstall',
 			'gravityflowwoocommerce_settings',
-			'gravityflowwoocommerce_edit_profiles',
+			'gravityflowwoocommerce_form_settings',
 		);
 
 		protected $_capabilities_app_settings = 'gravityflowwoocommerce_settings';
 		protected $_capabilities_uninstall = 'gravityflowwoocommerce_uninstall';
+		protected $_capabilities_form_settings = 'gravityflowwoocommerce_form_settings';
 
 		public static function get_instance() {
 			if ( self::$_instance == null ) {
@@ -69,9 +70,54 @@ if ( class_exists( 'GFForms' ) ) {
 
 			$caps['gravityflowwoocommerce_settings']      = $prefix . __( 'Manage Settings', 'gravityflowwoocommerce' );
 			$caps['gravityflowwoocommerce_uninstall']     = $prefix . __( 'Uninstall', 'gravityflowwoocommerce' );
-			$caps['gravityflowwoocommerce_edit_profiles'] = $prefix . __( 'Edit Users', 'gravityflowwoocommerce' );
+			$caps['gravityflowwoocommerce_form_settings'] = $prefix . __( 'Manage Form Settings', 'gravityflowwoocommerce' );
 
 			return $caps;
+		}
+
+		public function form_settings_fields( $form ) {
+
+			return array(
+				array(
+					'title'       => esc_html__( 'WooCommerce', 'gravityflowwoocommerce' ),
+					'description' => $this->get_woocommerce_setting_description(),
+					'fields'      => array(
+						array(
+							'name'       => 'woocommerce_' . $form['id'],
+							'label'      => esc_html__( 'Integration Enabled?', 'gravityflowwoocommerce' ),
+							'type'       => 'checkbox',
+							'horizontal' => true,
+							'required'   => 1,
+							'choices'    => array(
+								array(
+									'label' => esc_html__( 'Enable WooCommerce orders integration.', 'gravityflowwoocommerce' ),
+									'value' => 1,
+									'name'  => 'woocommerce_orders_integration_enabled',
+								),
+							),
+						),
+					),
+				),
+			);
+		}
+
+		/**
+		 * Define the markup to be displayed for the WooCommerce description.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @return string HTML formatted webhooks description.
+		 */
+		public function get_woocommerce_setting_description() {
+			ob_start();
+			?>
+			<p><?php esc_html_e( 'When enable WooCommerce integration, it will:', 'gravityflowwoocommerce' ); ?></p>
+			<ul>
+				<li><?php esc_html_e( 'Create a new entry when a WooCommerce Order is created.', 'gravityflowwoocommerce' ); ?></li>
+				<li><?php esc_html_e( 'Update the entry payment and transaction details based on the WooCommerce Order.', 'gravityflowwoocommerce' ); ?></li>
+			</ul>
+			<?php
+			return ob_get_clean();
 		}
 	}
 }
