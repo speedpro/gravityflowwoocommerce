@@ -83,11 +83,10 @@ if ( class_exists( 'GFForms' ) ) {
 					'description' => $this->get_woocommerce_setting_description(),
 					'fields'      => array(
 						array(
-							'name'       => 'woocommerce_' . $form['id'],
+							'name'       => 'woocommerce_orders_integration_enabled',
 							'label'      => esc_html__( 'Integration Enabled?', 'gravityflowwoocommerce' ),
 							'type'       => 'checkbox',
 							'horizontal' => true,
-							'required'   => 1,
 							'choices'    => array(
 								array(
 									'label' => esc_html__( 'Enable WooCommerce orders integration.', 'gravityflowwoocommerce' ),
@@ -118,6 +117,49 @@ if ( class_exists( 'GFForms' ) ) {
 			</ul>
 			<?php
 			return ob_get_clean();
+		}
+
+		/**
+		 * Adds WooCommerce order id to the entry meta.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param array $entry_meta Entry meta.
+		 * @param int   $form_id Form ID.
+		 *
+		 * @return array
+		 */
+		public function get_entry_meta( $entry_meta, $form_id ) {
+			if ( $this->is_woocommerce_orders_integration_enabled( $form_id ) ) {
+				$entry_meta['workflow_woocommerce_order_id'] = array(
+					'label'             => esc_html__( 'WooCommerce Order ID', 'gravityflowwoocommerce' ),
+					'is_numeric'        => true,
+					'is_default_column' => false,
+					'filter'            => array(
+						'operators' => array( 'is', 'isnot', '>', '<', 'contains' ),
+					),
+				);
+			}
+
+			return $entry_meta;
+		}
+
+		/**
+		 * Helper to check if WooCommerce Orders integration is enabled.
+		 *
+		 * @since  1.0.0
+		 *
+		 * @param int $form_id Form ID.
+		 *
+		 * @return int True if integration is enabled. False otherwise.
+		 */
+		public function is_woocommerce_orders_integration_enabled( $form_id ) {
+
+			$form     = GFAPI::get_form( $form_id );
+			$settings = $this->get_form_settings( $form );
+
+			return '1' === $settings['woocommerce_orders_integration_enabled'];
+
 		}
 	}
 }
