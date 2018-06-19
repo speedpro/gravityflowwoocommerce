@@ -154,12 +154,10 @@ if ( class_exists( 'GFForms' ) ) {
 		 * @return int True if integration is enabled. False otherwise.
 		 */
 		public function is_woocommerce_orders_integration_enabled( $form_id ) {
-
 			$form     = GFAPI::get_form( $form_id );
 			$settings = $this->get_form_settings( $form );
 
-			return '1' === $settings['woocommerce_orders_integration_enabled'];
-
+			return ( isset( $settings['woocommerce_orders_integration_enabled'] ) ) && '1' === $settings['woocommerce_orders_integration_enabled'];
 		}
 	}
 }
