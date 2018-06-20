@@ -1,5 +1,14 @@
 <?php
-
+/**
+ * Gravity Flow WooCommerce
+ *
+ *
+ * @package     GravityFlow
+ * @subpackage  Classes/Extension
+ * @copyright   Copyright (c) 2015-2018, Steven Henty S.L.
+ * @license     http://opensource.org/licenses/gpl-3.0.php GNU Public License
+ * @since       1.0.0
+ */
 
 // Make sure Gravity Forms is active and already loaded.
 if ( class_exists( 'GFForms' ) ) {
@@ -77,37 +86,65 @@ if ( class_exists( 'GFForms' ) ) {
 			return $caps;
 		}
 
+		/**
+		 * Set form settings sections.
+		 *
+		 * @param array $form Form object.
+		 *
+		 * @return array
+		 */
 		public function form_settings_fields( $form ) {
+			$fields = array(
+				array(
+					'name'       => 'woocommerce_orders_integration_enabled',
+					'label'      => esc_html__( 'Integration Enabled?', 'gravityflowwoocommerce' ),
+					'type'       => 'checkbox',
+					'horizontal' => true,
+					'onchange'   => "jQuery(this).closest('form').submit();",
+					'choices'    => array(
+						array(
+							'label' => esc_html__( 'Enable WooCommerce orders integration.', 'gravityflowwoocommerce' ),
+							'value' => 1,
+							'name'  => 'woocommerce_orders_integration_enabled',
+						),
+					),
+				),
+			);
+
+			// register the mapping field.
+			$mapping_field = array(
+				'name'                => 'mappings',
+				'label'               => esc_html__( 'Field Mapping', 'gravityflowwoocommerce' ),
+				'type'                => 'generic_map',
+				'enable_custom_key'   => false,
+				'enable_custom_value' => true,
+				'key_field_title'     => esc_html__( 'Field', 'gravityflowwoocommerce' ),
+				'value_field_title'   => esc_html__( 'WooCommerce Order Property', 'gravityflowwoocommerce' ),
+				'key_choices'         => $this->field_mappings( $form['id'] ),
+				'value_choices'       => $this->value_mappings(),
+				'tooltip'             => '<h6>' . esc_html__( 'Mapping', 'gravityflowwoocommerce' ) . '</h6>' . esc_html__( 'Map the fields of this form to the WooCommerce Order properties. Values from an WooCommerce Order will be saved in the entry in this form.', 'gravityflowwoocommerce' ),
+				'dependency'          => array(
+					'field'  => 'woocommerce_orders_integration_enabled',
+					'values' => array( '1' ),
+				),
+			);
+			$fields[]      = $mapping_field;
 
 			return array(
 				array(
 					'title'       => esc_html__( 'WooCommerce', 'gravityflowwoocommerce' ),
 					'description' => $this->get_woocommerce_setting_description(),
-					'fields'      => array(
-						array(
-							'name'       => 'woocommerce_orders_integration_enabled',
-							'label'      => esc_html__( 'Integration Enabled?', 'gravityflowwoocommerce' ),
-							'type'       => 'checkbox',
-							'horizontal' => true,
-							'choices'    => array(
-								array(
-									'label' => esc_html__( 'Enable WooCommerce orders integration.', 'gravityflowwoocommerce' ),
-									'value' => 1,
-									'name'  => 'woocommerce_orders_integration_enabled',
-								),
-							),
-						),
-					),
+					'fields'      => $fields,
 				),
 			);
 		}
 
 		/**
-		 * Define the markup to be displayed for the WooCommerce description.
+		 * Define the markup to be displayed for the WooCommerce setting description.
 		 *
 		 * @since 1.0.0
 		 *
-		 * @return string HTML formatted webhooks description.
+		 * @return string HTML formatted WooCommerce setting description.
 		 */
 		public function get_woocommerce_setting_description() {
 			ob_start();
@@ -132,7 +169,7 @@ if ( class_exists( 'GFForms' ) ) {
 		 * @return array
 		 */
 		public function get_entry_meta( $entry_meta, $form_id ) {
-			if ( $this->is_woocommerce_orders_integration_enabled( $form_id ) ) {
+			if ( $this->is_woocommerce_orders_integration_enabled( $form_id ) || rgpost( 'woocommerce_orders_integration_enabled' ) ) {
 				$entry_meta['workflow_woocommerce_order_id'] = array(
 					'label'             => esc_html__( 'WooCommerce Order ID', 'gravityflowwoocommerce' ),
 					'is_numeric'        => true,
@@ -160,6 +197,39 @@ if ( class_exists( 'GFForms' ) ) {
 			$settings = $this->get_form_settings( $form );
 
 			return ( isset( $settings['woocommerce_orders_integration_enabled'] ) ) && '1' === $settings['woocommerce_orders_integration_enabled'];
+		}
+
+		/**
+		 * Prepare field map.
+		 *
+		 * @param int $form_id Form ID.
+		 *
+		 * @return array
+		 */
+		public function field_mappings( $form_id ) {
+			$fields = $this->get_field_map_choices( $form_id );
+
+			return $fields;
+		}
+
+		/**
+		 * Prepare value map.
+		 *
+		 * @return array
+		 */
+		public function value_mappings() {
+			$fields = array(
+				array(
+					'value' => 'id',
+					'label' => esc_html__( 'Order ID', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'number',
+					'label' => esc_html__( 'Order Number', 'gravityflowwoocommerce' ),
+				),
+			);
+
+			return $fields;
 		}
 
 		/**
