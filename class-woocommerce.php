@@ -50,6 +50,8 @@ if ( class_exists( 'GFForms' ) ) {
 
 		public function init() {
 			parent::init();
+
+			add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'add_entry' ), 10, 2 );
 		}
 
 		public function init_admin() {
@@ -158,6 +160,30 @@ if ( class_exists( 'GFForms' ) ) {
 			$settings = $this->get_form_settings( $form );
 
 			return ( isset( $settings['woocommerce_orders_integration_enabled'] ) ) && '1' === $settings['woocommerce_orders_integration_enabled'];
+		}
+
+		/**
+		 * Add new entry when a WooCommerce order created.
+		 *
+		 * @param int   $order_id WooCommerce Order ID.
+		 * @param array $data WooCommerce Order meta data.
+		 */
+		public function add_entry( $order_id, $data ) {
+			// get forms with WooCommerce integration.
+			$form_ids = RGFormsModel::get_form_ids();
+			foreach ( $form_ids as $form_id ) {
+				if ( ! $this->is_woocommerce_orders_integration_enabled( $form_id ) ) {
+					unset( $form_ids[ $form_id ] );
+				}
+			}
+
+			foreach ( $form_ids as $form_id ) {
+				// create new entry.
+
+				// update entry meta.
+
+				// save entry ID to WC order.
+			}
 		}
 	}
 }
