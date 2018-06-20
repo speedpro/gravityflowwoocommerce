@@ -218,7 +218,11 @@ if ( class_exists( 'GFForms' ) ) {
 		 * @return array
 		 */
 		public function value_mappings() {
-			$fields = array(
+			return array(
+				array(
+					'value' => '',
+					'label' => esc_html__( 'Select a Field', 'gravityflowwoocommerce' ),
+				),
 				array(
 					'value' => 'id',
 					'label' => esc_html__( 'Order ID', 'gravityflowwoocommerce' ),
@@ -227,9 +231,171 @@ if ( class_exists( 'GFForms' ) ) {
 					'value' => 'number',
 					'label' => esc_html__( 'Order Number', 'gravityflowwoocommerce' ),
 				),
+				array(
+					'value' => 'status_previous',
+					'label' => esc_html__( 'Previous Order Status', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'date',
+					'label' => esc_html__( 'Order Date', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'subtotal',
+					'label' => esc_html__( 'Cart Subtotal', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'currency_symbol',
+					'label' => esc_html__( 'Currency Symbol', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'view_url',
+					'label' => esc_html__( 'View Order URL', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'user_id',
+					'label' => esc_html__( 'User ID', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'billing_first_name',
+					'label' => esc_html__( 'Billing First Name', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'billing_last_name',
+					'label' => esc_html__( 'Billing Last Name', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'billing_company',
+					'label' => esc_html__( 'Billing Company', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'billing_address',
+					'label' => esc_html__( 'Billing Address', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'billing_email',
+					'label' => esc_html__( 'Billing Email', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'billing_phone',
+					'label' => esc_html__( 'Billing Phone', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'billing_address_1',
+					'label' => esc_html__( 'Billing Address Line 1', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'billing_address_2',
+					'label' => esc_html__( 'Billing Address Line 2', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'billing_city',
+					'label' => esc_html__( 'Billing City', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'billing_postcode',
+					'label' => esc_html__( 'Billing Postcode', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'billing_country',
+					'label' => esc_html__( 'Billing Country Code', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'billing_country_name',
+					'label' => esc_html__( 'Billing Country', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'billing_state',
+					'label' => esc_html__( 'Billing State Code', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'billing_state_name',
+					'label' => esc_html__( 'Billing State', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'shipping_first_name',
+					'label' => esc_html__( 'Shipping First Name', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'shipping_last_name',
+					'label' => esc_html__( 'Shipping Last Name', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'shipping_company',
+					'label' => esc_html__( 'Shipping Company', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'shipping_address',
+					'label' => esc_html__( 'Shipping Address', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'shipping_address_1',
+					'label' => esc_html__( 'Shipping Address Line 1', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'shipping_address_2',
+					'label' => esc_html__( 'Shipping Address Line 2', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'shipping_city',
+					'label' => esc_html__( 'Shipping City', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'shipping_postcode',
+					'label' => esc_html__( 'Shipping Postcode', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'shipping_country',
+					'label' => esc_html__( 'Shipping Country Code', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'shipping_country_name',
+					'label' => esc_html__( 'Shipping Country', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'shipping_state',
+					'label' => esc_html__( 'Shipping State Code', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'shipping_state_name',
+					'label' => esc_html__( 'Shipping State', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'shipping_method',
+					'label' => esc_html__( 'Shipping Method', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'cart_discount',
+					'label' => esc_html__( 'Cart Discount', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'tax_total',
+					'label' => esc_html__( 'Tax', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'shipping_total',
+					'label' => esc_html__( 'Shipping Total', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'shipping_tax',
+					'label' => esc_html__( 'Shipping Tax', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'prices_include_tax',
+					'label' => esc_html__( 'Are prices inclusive of tax?', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'customer_note',
+					'label' => esc_html__( 'Customer Note', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'coupons',
+					'label' => esc_html__( 'Coupon Codes Used', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'item_count',
+					'label' => esc_html__( 'Total Number of Items', 'gravityflowwoocommerce' ),
+				),
 			);
-
-			return $fields;
 		}
 
 		/**
