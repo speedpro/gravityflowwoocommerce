@@ -395,6 +395,114 @@ if ( class_exists( 'GFForms' ) ) {
 		}
 
 		/**
+		 * Generating new entry from a WooCommerce Order.
+		 *
+		 * @param array $form Form Object.
+		 * @param int   $order_id WooCommerce Order id.
+		 *
+		 * @return array $new_entry
+		 */
+		public function do_mapping( $form, $order_id ) {
+			$new_entry = array();
+			$settings  = $this->get_form_settings( $form );
+			$mappings  = $settings['mappings'];
+			$order     = wc_get_order( $order_id );
+
+			if ( ! is_array( $mappings ) ) {
+				return $new_entry;
+			}
+
+			foreach ( $mappings as $mapping ) {
+				if ( rgblank( $mapping['key'] ) ) {
+					continue;
+				}
+
+				$new_entry = $this->add_mapping_to_entry( $mapping, $order, $new_entry, $form );
+			}
+
+			return apply_filters( 'gravityflowwoocommerce_new_entry', $new_entry, $order, $form );
+		}
+
+		/**
+		 * Add the mapped value to the new entry.
+		 *
+		 * @param array  $mapping The properties for the mapping being processed.
+		 * @param object $order WooCommerce Order.
+		 * @param array  $new_entry The entry to be added or updated.
+		 * @param array  $form The form being processed by this step.
+		 *
+		 * @return array
+		 */
+		public function add_mapping_to_entry( $mapping, $order, $new_entry, $form ) {
+			$target_field_id     = (string) trim( $mapping['key'] );
+			$order_property_name = (string) $mapping['value'];
+
+			if ( 'gf_custom' === $order_property_name ) {
+				$new_entry[ $target_field_id ] = GFCommon::replace_variables( $mapping['custom_value'], $form, $order, false, false, false, 'text' );
+			} else {
+				$new_entry[ $target_field_id ] = $this->get_source_property_value( $order, $order_property_name );
+			}
+
+			return $new_entry;
+		}
+
+		/**
+		 * Get the WooCommerce Order property value.
+		 *
+		 * @param object $order WooCommerce Order.
+		 * @param string $property_name WooCommerce Order property name.
+		 *
+		 * @return string
+		 */
+		public function get_source_property_value( $order, $property_name ) {
+			if ( is_callable( array( $order, "get_{$property_name}" ) ) ) {
+				$property_value = $order->{"get_{$property_name}"}();
+			} else {
+				$property_value = '';
+				// some exceptions.
+				switch ( $property_name ) {
+					case 'currency_symbol':
+						$property_value = get_woocommerce_currency_symbol( $order->currency );
+						break;
+					case 'billing_address':
+						$property_value = $order->get_formatted_billing_address();
+						break;
+					case 'billing_country_name':
+						if ( ! empty( $order->billing_country ) ) {
+							$property_value = WC()->countries->countries[ $order->billing_country ];
+						}
+						break;
+					case 'billing_state_name':
+						if ( ! empty( $order->billing_state ) && isset( WC()->countries->states[ $order->billing_country ][ $order->billing_state ] ) ) {
+							$property_value = WC()->countries->states[ $order->billing_country ][ $order->billing_state ];
+						}
+						break;
+					case 'shipping_address':
+						$property_value = $order->get_formatted_shipping_address();
+						break;
+					case 'shipping_country_name':
+						if ( ! empty( $order->shipping_country ) ) {
+							$property_value = WC()->countries->countries[ $order->shipping_country ];
+						}
+						break;
+					case 'shipping_state_name':
+						if ( ! empty( $order->shipping_state ) && isset( WC()->countries->states[ $order->shipping_country ][ $order->shipping_state ] ) ) {
+							$property_value = WC()->countries->states[ $order->shipping_country ][ $order->shipping_state ];
+						}
+						break;
+					case 'coupons':
+						$coupons = $order->get_used_coupons();
+						if ( count( $coupons ) ) {
+							$property_value = implode( ', ', $coupons );
+						}
+						break;
+				}
+			}
+
+			return $property_value;
+		}
+
+		/**
 		 * Add new entry when a WooCommerce order created.
 		 *
 		 * @param int   $order_id WooCommerce Order ID.
@@ -410,7 +518,9 @@ if ( class_exists( 'GFForms' ) ) {
 			}
 
 			foreach ( $form_ids as $form_id ) {
+				$form = GFAPI::get_form( $form_id );
 				// create new entry.
+				$new_entry = $this->do_mapping( $form, $order_id );
 
 				// update entry meta.
 
