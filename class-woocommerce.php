@@ -228,15 +228,11 @@ if ( class_exists( 'GFForms' ) ) {
 					'label' => esc_html__( 'Order ID', 'gravityflowwoocommerce' ),
 				),
 				array(
-					'value' => 'number',
+					'value' => 'order_number',
 					'label' => esc_html__( 'Order Number', 'gravityflowwoocommerce' ),
 				),
 				array(
-					'value' => 'status_previous',
-					'label' => esc_html__( 'Previous Order Status', 'gravityflowwoocommerce' ),
-				),
-				array(
-					'value' => 'date',
+					'value' => 'date_created',
 					'label' => esc_html__( 'Order Date', 'gravityflowwoocommerce' ),
 				),
 				array(
@@ -248,7 +244,7 @@ if ( class_exists( 'GFForms' ) ) {
 					'label' => esc_html__( 'Currency Symbol', 'gravityflowwoocommerce' ),
 				),
 				array(
-					'value' => 'view_url',
+					'value' => 'view_order_url',
 					'label' => esc_html__( 'View Order URL', 'gravityflowwoocommerce' ),
 				),
 				array(
@@ -364,11 +360,11 @@ if ( class_exists( 'GFForms' ) ) {
 					'label' => esc_html__( 'Shipping Method', 'gravityflowwoocommerce' ),
 				),
 				array(
-					'value' => 'cart_discount',
+					'value' => 'cart_total_discount',
 					'label' => esc_html__( 'Cart Discount', 'gravityflowwoocommerce' ),
 				),
 				array(
-					'value' => 'tax_total',
+					'value' => 'cart_tax',
 					'label' => esc_html__( 'Tax', 'gravityflowwoocommerce' ),
 				),
 				array(
