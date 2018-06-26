@@ -408,16 +408,29 @@ if ( class_exists( 'GFForms' ) ) {
 			$mappings  = $settings['mappings'];
 			$order     = wc_get_order( $order_id );
 
-			if ( ! is_array( $mappings ) ) {
-				return $new_entry;
+			// Set mandatory fields.
+			$new_entry['currency']       = $order->get_currency();
+			$new_entry['payment_status'] = $order->get_status();
+			$new_entry['payment_amount'] = $order->get_total();
+			$new_entry['payment_method'] = $order->get_payment_method();
+			// A WooCommerce order can contain both products and subscriptions. Set to payments for now.
+			$new_entry['transaction_type'] = 1;
+			if ( $order->is_paid() ) {
+				$new_entry['transaction_id'] = $order->get_transaction_id();
+				$new_entry['payment_date']   = $order->get_date_paid();
+			}
+			if ( 'completed' === $new_entry['payment_status'] ) {
+				$new_entry['is_fulfilled'] = 1;
 			}
 
-			foreach ( $mappings as $mapping ) {
-				if ( rgblank( $mapping['key'] ) ) {
-					continue;
-				}
+			if ( is_array( $mappings ) ) {
+				foreach ( $mappings as $mapping ) {
+					if ( rgblank( $mapping['key'] ) ) {
+						continue;
+					}
 
-				$new_entry = $this->add_mapping_to_entry( $mapping, $order, $new_entry, $form );
+					$new_entry = $this->add_mapping_to_entry( $mapping, $order, $new_entry, $form );
+				}
 			}
 
 			return apply_filters( 'gravityflowwoocommerce_new_entry', $new_entry, $order, $form );
