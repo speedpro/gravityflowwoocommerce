@@ -209,6 +209,13 @@ if ( class_exists( 'GFForms' ) ) {
 		public function field_mappings( $form_id ) {
 			$fields = $this->get_field_map_choices( $form_id );
 
+			// unset workflow_woocommerce_order_id entry meta since it is set mandatory.
+			foreach ( $fields as $key => $field ) {
+				if ( 'workflow_woocommerce_order_id' === $field['value'] ) {
+					unset( $fields[ $key ] );
+				}
+			}
+
 			return $fields;
 		}
 
