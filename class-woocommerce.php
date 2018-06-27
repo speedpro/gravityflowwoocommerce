@@ -535,9 +535,19 @@ if ( class_exists( 'GFForms' ) ) {
 				// create new entry.
 				$new_entry = $this->do_mapping( $form, $order_id );
 
-				// update entry meta.
+				if ( ! empty( $new_entry ) ) {
+					$new_entry['form_id'] = $form_id;
+					$entry_id             = GFAPI::add_entry( $new_entry );
+					if ( is_wp_error( $entry_id ) ) {
+						$this->log_debug( __METHOD__ . '(): failed to add entry' );
+					} else {
+						// save entry ID to WC order.
+						update_post_meta( $order_id, '_gform-entry-id', $entry_id );
 
-				// save entry ID to WC order.
+						// update entry meta.
+						gform_update_meta( $entry_id, 'workflow_woocommerce_order_id', $order_id, $form_id );
+					}
+				}
 			}
 		}
 	}
