@@ -460,7 +460,20 @@ if ( class_exists( 'GFForms' ) ) {
 			if ( 'gf_custom' === $order_property_name ) {
 				$new_entry[ $target_field_id ] = GFCommon::replace_variables( $mapping['custom_value'], $form, $order, false, false, false, 'text' );
 			} else {
-				$new_entry[ $target_field_id ] = $this->get_source_property_value( $order, $order_property_name );
+				$is_full_target = (string) intval( $target_field_id ) === $target_field_id;
+				$target_field   = GFFormsModel::get_field( $form, $target_field_id );
+				$input_type     = $target_field->get_input_type();
+
+				if ( $is_full_target && 'address' === $input_type && in_array( $order_property_name, array( 'billing_address', 'shipping_address' ), true ) ) {
+					$new_entry[ $target_field_id . '.1' ] = $this->get_source_property_value( $order, str_replace( 'address', 'address_1', $order_property_name ) );
+					$new_entry[ $target_field_id . '.2' ] = $this->get_source_property_value( $order, str_replace( 'address', 'address_2', $order_property_name ) );
+					$new_entry[ $target_field_id . '.3' ] = $this->get_source_property_value( $order, str_replace( 'address', 'city', $order_property_name ) );
+					$new_entry[ $target_field_id . '.4' ] = $this->get_source_property_value( $order, str_replace( 'address', 'state', $order_property_name ) );
+					$new_entry[ $target_field_id . '.5' ] = $this->get_source_property_value( $order, str_replace( 'address', 'postcode', $order_property_name ) );
+					$new_entry[ $target_field_id . '.6' ] = $this->get_source_property_value( $order, str_replace( 'address', 'country', $order_property_name ) );
+				} else {
+					$new_entry[ $target_field_id ] = $this->get_source_property_value( $order, $order_property_name );
+				}
 			}
 
 			return $new_entry;
