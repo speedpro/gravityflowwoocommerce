@@ -61,6 +61,7 @@ if ( class_exists( 'GFForms' ) ) {
 			parent::init();
 
 			add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'add_entry' ), 10, 2 );
+			add_filter( 'woocommerce_payment_gateways', array( $this, 'payment_gateways' ) );
 		}
 
 		public function init_admin() {
@@ -156,6 +157,19 @@ if ( class_exists( 'GFForms' ) ) {
 			</ul>
 			<?php
 			return ob_get_clean();
+		}
+
+		/**
+		 * Add the "Pay Later" gateway.
+		 *
+		 * @param array $methods WooCommerce payment gateways.
+		 *
+		 * @return array Updated payment gateways.
+		 */
+		public function payment_gateways( $methods ) {
+			$methods[] = 'WC_Gateway_Gravity_Flow_Pay_Later';
+
+			return $methods;
 		}
 
 		/**

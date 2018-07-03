@@ -35,6 +35,7 @@ class Gravity_Flow_Woocommerce_Bootstrap {
 	public static function load() {
 
 		require_once( 'class-woocommerce.php' );
+		require_once( 'includes/class-wc-gateway-gravity-flow-pay-later.php' );
 
 		// Registers the class name with GFAddOn.
 		GFAddOn::register( 'Gravity_Flow_Woocommerce' );
