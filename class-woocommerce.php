@@ -62,6 +62,7 @@ if ( class_exists( 'GFForms' ) ) {
 
 			add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'add_entry' ), 10, 2 );
 			add_filter( 'woocommerce_payment_gateways', array( $this, 'payment_gateways' ) );
+			add_action( 'woocommerce_available_payment_gateways', array( $this, 'maybe_disable_gateway' ) );
 		}
 
 		public function init_admin() {
@@ -170,6 +171,23 @@ if ( class_exists( 'GFForms' ) ) {
 			$methods[] = 'WC_Gateway_Gravity_Flow_Pay_Later';
 
 			return $methods;
+		}
+
+		/**
+		 * Show this gateway only if we're on the checkout page (is_checkout), but not on the order-pay page (is_checkout_pay_page).
+		 *
+		 * @param array $gateways Available gateways.
+		 *
+		 * @return array
+		 */
+		public function maybe_disable_gateway( $gateways ) {
+			if ( is_checkout_pay_page() ) {
+				if ( isset( $gateways['gravity_flow_pay_later'] ) ) {
+					unset( $gateways['gravity_flow_pay_later'] );
+				}
+			}
+
+			return $gateways;
 		}
 
 		/**
