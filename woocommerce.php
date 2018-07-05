@@ -33,6 +33,8 @@ add_action( 'gravityflow_loaded', array( 'Gravity_Flow_Woocommerce_Bootstrap', '
 class Gravity_Flow_Woocommerce_Bootstrap {
 
 	public static function load() {
+		require_once( 'includes/class-step-woocommerce-payment.php' );
+		Gravity_Flow_Steps::register( new Gravity_Flow_Step_Woocommerce_Payment() );
 
 		require_once( 'class-woocommerce.php' );
 		require_once( 'includes/class-wc-gateway-gravity-flow-pay-later.php' );
