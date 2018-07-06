@@ -94,5 +94,9 @@ if ( class_exists( 'Gravity_Flow_Step' ) ) {
 			do_action( 'gravityflowwoocommercepayment_step_started', $this->get_entry(), $this->get_form(), $this );
 			$this->assign();
 		}
+
+		public function supports_expiration() {
+			return true;
+		}
 	}
 }
