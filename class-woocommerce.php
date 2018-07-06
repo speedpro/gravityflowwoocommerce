@@ -472,6 +472,8 @@ if ( class_exists( 'GFForms' ) ) {
 				}
 			}
 
+			$new_entry['workflow_woocommerce_order_id'] = $order_id;
+
 			return apply_filters( 'gravityflowwoocommerce_new_entry', $new_entry, $order, $form );
 		}
 
@@ -593,11 +595,10 @@ if ( class_exists( 'GFForms' ) ) {
 					if ( is_wp_error( $entry_id ) ) {
 						$this->log_debug( __METHOD__ . '(): failed to add entry' );
 					} else {
+						$this->log_debug( __METHOD__ . '(): successfully created new entry #' . $entry_id );
+
 						// save entry ID to WC order.
 						update_post_meta( $order_id, '_gform-entry-id', $entry_id );
-
-						// update entry meta.
-						gform_update_meta( $entry_id, 'workflow_woocommerce_order_id', $order_id, $form_id );
 					}
 				}
 			}
