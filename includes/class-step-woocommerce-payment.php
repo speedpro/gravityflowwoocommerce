@@ -95,6 +95,34 @@ if ( class_exists( 'Gravity_Flow_Step' ) ) {
 			$this->assign();
 		}
 
+		/**
+		 * Display the workflow detail box for this step.
+		 *
+		 * @param array $form The current form.
+		 * @param array $args The page arguments.
+		 */
+		public function workflow_detail_box( $form, $args ) {
+			?>
+			<div>
+				<?php
+				$order_id = gform_get_meta( $this->get_entry_id(), 'workflow_woocommerce_order_id' );
+				$order    = wc_get_order( $order_id );
+				$status   = $order->get_status();
+
+				$can_submit = $status === 'pending';
+
+				if ( $can_submit ) {
+					$url  = $order->get_checkout_payment_url();
+					$text = esc_html__( 'Pay for this order', 'gravityflowwoocommerce' );
+					echo '<br /><div class="gravityflow-action-buttons">';
+					echo sprintf( '<a href="%s" target="_blank" class="button button-large button-primary">%s</a><br><br>', $url, $text );
+					echo '</div>';
+				}
+				?>
+			</div>
+			<?php
+		}
+
 		public function supports_expiration() {
 			return true;
 		}
