@@ -150,7 +150,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) ) {
 				}
 			}
 
-			preg_match_all( '/{workflow_form_pay_link(:(.*?))?}/', $text, $matches, PREG_SET_ORDER );
+			preg_match_all( '/{workflow_woocommerce_pay_link(:(.*?))?}/', $text, $matches, PREG_SET_ORDER );
 			if ( is_array( $matches ) ) {
 				foreach ( $matches as $match ) {
 					$full_tag       = $match[0];
