@@ -63,6 +63,7 @@ if ( class_exists( 'GFForms' ) ) {
 			add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'add_entry' ), 10, 2 );
 			add_filter( 'woocommerce_payment_gateways', array( $this, 'payment_gateways' ) );
 			add_action( 'woocommerce_available_payment_gateways', array( $this, 'maybe_disable_gateway' ) );
+			add_action( 'woocommerce_order_status_changed', array( $this, 'update_entry' ), 10, 4 );
 		}
 
 		public function init_admin() {
@@ -601,6 +602,63 @@ if ( class_exists( 'GFForms' ) ) {
 						update_post_meta( $order_id, '_gform-entry-id', $entry_id );
 					}
 				}
+			}
+		}
+
+		/**
+		 * Update the entry when WooCommerce order status changed.
+		 *
+		 * @param int      $order_id WooCommerce Order ID.
+		 * @param string   $from_status WooCommerce old order status.
+		 * @param string   $to_status WooCommerce new order status.
+		 * @param WC_Order $order WooCommerce Order object.
+		 */
+		public function update_entry( $order_id, $from_status, $to_status, $order ) {
+			$entry_id = get_post_meta( $order_id, '_gform-entry-id', true );
+			if ( ! $entry_id ) {
+				return;
+			}
+
+			$entry        = GFAPI::get_entry( $entry_id );
+			$api          = new Gravity_Flow_API( $entry['form_id'] );
+			$current_step = $api->get_current_step( $entry );
+
+			// When order changed from "pending" to "processing" or "complete",
+			// check if we need to release the entry from a WooCommerce Payment status.
+			if ( 'woocommerce_payment' === $current_step->get_type() && 'pending' === $from_status && ( 'processing' === $to_status || 'complete' === $to_status ) ) {
+				/**
+				 * Allows the processing to be overridden entirely.
+				 *
+				 * @param array    $entry Entry object.
+				 * @param int      $order_id WooCommerce Order ID.
+				 * @param string   $from_status WooCommerce old order status.
+				 * @param string   $to_status WooCommerce new order status.
+				 * @param WC_Order $order WooCommerce Order object.
+				 */
+				do_action( 'gravityflowwoocommerce_payment_pre_update_entry', $entry, $order_id, $from_status, $to_status, $order );
+
+				$assignee_key = array(
+					'type' => 'email',
+					'id'   => $order->get_billing_email(),
+				);
+				$assignee     = $current_step->get_assignee( $assignee_key );
+				$assignee->update_status( 'complete' );
+
+				$api->process_workflow( $entry_id );
+
+				// refresh entry.
+				$entry = $current_step->refresh_entry();
+
+				/**
+				 * Allows the entry to be modified after processing.
+				 *
+				 * @param array    $entry Entry object.
+				 * @param int      $order_id WooCommerce Order ID.
+				 * @param string   $from_status WooCommerce old order status.
+				 * @param string   $to_status WooCommerce new order status.
+				 * @param WC_Order $order WooCommerce Order object.
+				 */
+				do_action( 'gravityflowwoocommerce_payment_post_update_entry', $entry, $order_id, $from_status, $to_status, $order );
 			}
 		}
 	}

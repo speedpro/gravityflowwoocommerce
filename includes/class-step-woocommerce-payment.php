@@ -10,7 +10,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) ) {
 		}
 
 		public function get_label() {
-			return esc_html__( 'WooCommerce Payment', 'gravityflowincomingwebhook' );
+			return esc_html__( 'WooCommerce Payment', 'gravityflowwoocommerce' );
 		}
 
 		/**
