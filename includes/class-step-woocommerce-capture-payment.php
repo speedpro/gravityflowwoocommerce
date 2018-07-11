@@ -44,12 +44,15 @@ if ( class_exists( 'Gravity_Flow_Step' ) ) {
 				$note = $this->get_name() . ': ' . esc_html__( 'Processed.', 'gravityflowwoocommerce' );
 				$this->add_note( $note );
 
-				// Change order status, WooCommerce should charge cards.
-				$note = $this->get_name() . ': ' . esc_html__( 'Released the fund.', 'gravityflowwoocommerce' );
-				$order->update_status( 'processing', $note );
+				// Change order status, WooCommerce should charge cards then.
+				$note   = $this->get_name() . ': ' . esc_html__( 'Updated the order status to processing.', 'gravityflowwoocommerce' );
+				$result = $order->update_status( 'processing', $note );
+				if ( ! $result ) {
+					$note = $this->get_name() . ': ' . esc_html__( 'Failed to update the order status. Step completed without capturing payment.', 'gravityflowwoocommerce' );
+				}
 				$this->add_note( $note );
 			} else {
-				$note = $this->get_name() . ': ' . esc_html__( 'Payment is not on hold. Step completed without charging.', 'gravityflowwoocommerce' );
+				$note = $this->get_name() . ': ' . esc_html__( 'Payment is not on hold. Step completed without capturing payment.', 'gravityflowwoocommerce' );
 				$this->add_note( $note );
 			}
 		}
