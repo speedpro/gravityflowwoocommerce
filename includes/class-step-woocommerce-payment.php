@@ -94,7 +94,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) ) {
 			 * @param array $form The current form.
 			 * @param array $step The current step.
 			 */
-			do_action( 'gravityflowwoocommercepayment_step_started', $this->get_entry(), $this->get_form(), $this );
+			do_action( 'gravityflowwoocommerce_payment_step_started', $this->get_entry(), $this->get_form(), $this );
 			$this->assign();
 
 			$note = $this->get_name() . ': ' . esc_html__( 'Processed.', 'gravityflowwoocommerce' );
