@@ -96,6 +96,9 @@ if ( class_exists( 'Gravity_Flow_Step' ) ) {
 			 */
 			do_action( 'gravityflowwoocommercepayment_step_started', $this->get_entry(), $this->get_form(), $this );
 			$this->assign();
+
+			$note = $this->get_name() . ': ' . esc_html__( 'Processed.', 'gravityflowwoocommerce' );
+			$this->add_note( $note );
 		}
 
 		/**

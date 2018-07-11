@@ -649,6 +649,10 @@ if ( class_exists( 'GFForms' ) ) {
 				// refresh entry.
 				$entry = $current_step->refresh_entry();
 
+				// add note.
+				$note = $current_step->get_name() . ': ' . esc_html__( 'Completed.', 'gravityflowwoocommerce' );
+				$current_step->add_note( $note );
+
 				/**
 				 * Allows the entry to be modified after processing.
 				 *
