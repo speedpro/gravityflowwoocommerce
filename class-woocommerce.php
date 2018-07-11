@@ -637,6 +637,16 @@ if ( class_exists( 'GFForms' ) ) {
 				 */
 				do_action( 'gravityflowwoocommerce_payment_pre_update_entry', $entry, $order_id, $from_status, $to_status, $order );
 
+				// update entry properties.
+				$entry['payment_status'] = $to_status;
+				$entry['payment_method'] = $order->get_payment_method();
+				$entry['transaction_id'] = $order->get_transaction_id();
+				$entry['payment_date']   = $order->get_date_paid();
+				if ( 'completed' === $entry['payment_status'] ) {
+					$entry['is_fulfilled'] = 1;
+				}
+				GFAPI::update_entry( $entry );
+
 				$assignee_key = array(
 					'type' => 'email',
 					'id'   => $order->get_billing_email(),
