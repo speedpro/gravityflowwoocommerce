@@ -88,7 +88,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) ) {
 			/**
 			 * Fires when the workflow is first assigned to the billing email.
 			 *
-			 * @since 2.0.2
+			 * @since 1.0.0
 			 *
 			 * @param array $entry The current entry.
 			 * @param array $form The current form.
@@ -125,6 +125,35 @@ if ( class_exists( 'Gravity_Flow_Step' ) ) {
 					echo '</div>';
 				}
 				?>
+			</div>
+			<?php
+		}
+
+		/**
+		 * Displays content inside the Workflow metabox on the Gravity Forms Entry Detail page.
+		 *
+		 * @param array $form The current form.
+		 */
+		public function entry_detail_status_box( $form ) {
+			$status = $this->evaluate_status();
+			?>
+			<h4 style="padding:10px;"><?php echo $this->get_name() . ': ' . $status ?></h4>
+
+			<div style="padding:10px;">
+				<ul>
+					<?php
+
+					$assignees = $this->get_assignees();
+
+					foreach ( $assignees as $assignee ) {
+						$assignee_status_label = $assignee->get_status_label();
+						$assignee_status_li    = sprintf( '<li>%s</li>', $assignee_status_label );
+
+						echo $assignee_status_li;
+					}
+
+					?>
+				</ul>
 			</div>
 			<?php
 		}
