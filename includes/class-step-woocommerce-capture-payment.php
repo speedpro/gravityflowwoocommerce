@@ -36,7 +36,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) ) {
 			 * @param array $form The current form.
 			 * @param array $step The current step.
 			 */
-			do_action( 'gravityflowwoocommerce_charge_payment_step_started', $this->get_entry(), $this->get_form(), $this );
+			do_action( 'gravityflowwoocommerce_capture_payment_step_started', $this->get_entry(), $this->get_form(), $this );
 
 			$order_id = gform_get_meta( $this->get_entry_id(), 'workflow_woocommerce_order_id' );
 			$order    = wc_get_order( $order_id );
@@ -55,6 +55,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) ) {
 				$note = $this->get_name() . ': ' . esc_html__( 'Payment is not on hold. Step completed without capturing payment.', 'gravityflowwoocommerce' );
 				$this->add_note( $note );
 			}
+			
+			return true;
 		}
 
 		public function supports_expiration() {

@@ -623,20 +623,20 @@ if ( class_exists( 'GFForms' ) ) {
 			$api          = new Gravity_Flow_API( $entry['form_id'] );
 			$current_step = $api->get_current_step( $entry );
 
+			/**
+			 * Allows the processing to be overridden entirely.
+			 *
+			 * @param array    $entry Entry object.
+			 * @param int      $order_id WooCommerce Order ID.
+			 * @param string   $from_status WooCommerce old order status.
+			 * @param string   $to_status WooCommerce new order status.
+			 * @param WC_Order $order WooCommerce Order object.
+			 */
+			do_action( 'gravityflowwoocommerce_pre_update_entry', $entry, $order_id, $from_status, $to_status, $order );
+
 			// When order changed from "pending" to "processing" or "complete",
 			// check if we need to release the entry from a WooCommerce Payment status.
 			if ( 'woocommerce_payment' === $current_step->get_type() && 'pending' === $from_status && ( 'processing' === $to_status || 'complete' === $to_status ) ) {
-				/**
-				 * Allows the processing to be overridden entirely.
-				 *
-				 * @param array    $entry Entry object.
-				 * @param int      $order_id WooCommerce Order ID.
-				 * @param string   $from_status WooCommerce old order status.
-				 * @param string   $to_status WooCommerce new order status.
-				 * @param WC_Order $order WooCommerce Order object.
-				 */
-				do_action( 'gravityflowwoocommerce_payment_pre_update_entry', $entry, $order_id, $from_status, $to_status, $order );
-
 				// update entry properties.
 				$entry['payment_status'] = $to_status;
 				$entry['payment_method'] = $order->get_payment_method();
@@ -662,18 +662,32 @@ if ( class_exists( 'GFForms' ) ) {
 				// add note.
 				$note = $current_step->get_name() . ': ' . esc_html__( 'Completed.', 'gravityflowwoocommerce' );
 				$current_step->add_note( $note );
+			} elseif ( 'woocommerce_capture_payment' === $current_step->get_type() && 'on-hold' === $from_status && ( 'processing' === $to_status || 'complete' === $to_status ) ) {
+				// update entry properties.
+				$entry['payment_status'] = $to_status;
+				$entry['payment_method'] = $order->get_payment_method();
+				$entry['transaction_id'] = $order->get_transaction_id();
+				$entry['payment_date']   = $order->get_date_paid();
+				if ( 'completed' === $entry['payment_status'] ) {
+					$entry['is_fulfilled'] = 1;
+				}
+				GFAPI::update_entry( $entry );
 
-				/**
-				 * Allows the entry to be modified after processing.
-				 *
-				 * @param array    $entry Entry object.
-				 * @param int      $order_id WooCommerce Order ID.
-				 * @param string   $from_status WooCommerce old order status.
-				 * @param string   $to_status WooCommerce new order status.
-				 * @param WC_Order $order WooCommerce Order object.
-				 */
-				do_action( 'gravityflowwoocommerce_payment_post_update_entry', $entry, $order_id, $from_status, $to_status, $order );
+				// add note.
+				$note = $current_step->get_name() . ': ' . esc_html__( 'Completed.', 'gravityflowwoocommerce' );
+				$current_step->add_note( $note );
 			}
+
+			/**
+			 * Allows the entry to be modified after processing.
+			 *
+			 * @param array    $entry Entry object.
+			 * @param int      $order_id WooCommerce Order ID.
+			 * @param string   $from_status WooCommerce old order status.
+			 * @param string   $to_status WooCommerce new order status.
+			 * @param WC_Order $order WooCommerce Order object.
+			 */
+			do_action( 'gravityflowwoocommerce_post_update_entry', $entry, $order_id, $from_status, $to_status, $order );
 		}
 	}
 }
