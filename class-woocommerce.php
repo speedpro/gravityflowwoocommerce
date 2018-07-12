@@ -634,9 +634,7 @@ if ( class_exists( 'GFForms' ) ) {
 			 */
 			do_action( 'gravityflowwoocommerce_pre_update_entry', $entry, $order_id, $from_status, $to_status, $order );
 
-			// When order changed from "pending" to "processing" or "complete",
-			// check if we need to release the entry from a WooCommerce Payment status.
-			if ( 'woocommerce_payment' === $current_step->get_type() && 'pending' === $from_status && ( 'processing' === $to_status || 'complete' === $to_status ) ) {
+			if ( 'woocommerce_payment' === $current_step->get_type() && 'pending' === $from_status ) {
 				// update entry properties.
 				$entry['payment_status'] = $to_status;
 				$entry['payment_method'] = $order->get_payment_method();
@@ -660,9 +658,9 @@ if ( class_exists( 'GFForms' ) ) {
 				$entry = $current_step->refresh_entry();
 
 				// add note.
-				$note = $current_step->get_name() . ': ' . esc_html__( 'Completed.', 'gravityflowwoocommerce' );
+				$note = $current_step->get_name() . ': ' . esc_html__( 'Completed. Current payment status: ', 'gravityflowwoocommerce' ) . $entry['payment_status'];
 				$current_step->add_note( $note );
-			} elseif ( 'woocommerce_capture_payment' === $current_step->get_type() && 'on-hold' === $from_status && ( 'processing' === $to_status || 'complete' === $to_status ) ) {
+			} elseif ( 'woocommerce_capture_payment' === $current_step->get_type() && 'on-hold' === $from_status ) {
 				// update entry properties.
 				$entry['payment_status'] = $to_status;
 				$entry['payment_method'] = $order->get_payment_method();
@@ -674,8 +672,13 @@ if ( class_exists( 'GFForms' ) ) {
 				GFAPI::update_entry( $entry );
 
 				// add note.
-				$note = $current_step->get_name() . ': ' . esc_html__( 'Completed.', 'gravityflowwoocommerce' );
+				$note = $current_step->get_name() . ': ' . esc_html__( 'Completed. Current payment status: ', 'gravityflowwoocommerce' ) . $entry['payment_status'];
 				$current_step->add_note( $note );
+			} elseif ( 'on-hold' === $from_status && 'pending' === $to_status ) {
+				// Use the pay later gateway.
+				$entry['payment_status'] = $to_status;
+				$entry['payment_method'] = $order->get_payment_method();
+				GFAPI::update_entry( $entry );
 			}
 
 			/**
