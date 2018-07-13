@@ -657,7 +657,7 @@ if ( class_exists( 'GFForms' ) ) {
 					$entry = $current_step->refresh_entry();
 
 					// add note.
-					$note = $current_step->get_name() . ': ' . esc_html__( 'Completed. Current payment status: ', 'gravityflowwoocommerce' ) . $entry['payment_status'];
+					$note = $current_step->get_name() . ': ' . esc_html__( 'Completed. Current payment status: ', 'gravityflowwoocommerce' ) . $to_status;
 					$current_step->add_note( $note );
 				} else {
 					$note = $current_step->get_name() . ': ' . esc_html__( 'Failed to update entry. Error(s): ', 'gravityflowwoocommerce' ) . print_r( $result, true );
@@ -668,7 +668,7 @@ if ( class_exists( 'GFForms' ) ) {
 
 				if ( true === $result ) {
 					// add note.
-					$note = $current_step->get_name() . ': ' . esc_html__( 'Completed. Current payment status: ', 'gravityflowwoocommerce' ) . $entry['payment_status'];
+					$note = $current_step->get_name() . ': ' . esc_html__( 'Completed. Current payment status: ', 'gravityflowwoocommerce' ) . $to_status;
 					$current_step->add_note( $note );
 				} else {
 					$note = $current_step->get_name() . ': ' . esc_html__( 'Failed to update entry. Error(s): ', 'gravityflowwoocommerce' ) . print_r( $result, true );
