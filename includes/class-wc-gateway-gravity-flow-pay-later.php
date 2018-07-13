@@ -12,6 +12,13 @@
 class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 
 	/**
+	 * The time in days an order can be held as pending.
+	 *
+	 * @var int
+	 */
+	public $pending_duration;
+
+	/**
 	 * Constructor for the gateway.
 	 */
 	public function __construct() {
@@ -23,13 +30,15 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 		$this->init_form_fields();
 		$this->init_settings();
 
-		$this->title       = $this->settings['title'];
-		$this->description = $this->settings['description'];
-		$this->enabled     = $this->settings['enabled'];
+		$this->title            = $this->settings['title'];
+		$this->description      = $this->settings['description'];
+		$this->enabled          = $this->settings['enabled'];
+		$this->pending_duration = $this->get_option( 'pending_duration' );
 
 		add_filter( 'woocommerce_default_order_status', array( $this, 'default_order_status' ) );
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
 		add_filter( 'woocommerce_valid_order_statuses_for_payment', array( $this, 'valid_order_statuses_for_payment' ), 10, 2 );
+		add_filter( 'woocommerce_cancel_unpaid_order', array( $this, 'cancel_unpaid_order' ), 10, 2 );
 	}
 
 	/**
@@ -69,25 +78,47 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 	public function init_form_fields() {
 
 		$this->form_fields = array(
-			'enabled'     => array(
+			'enabled'          => array(
 				'title'   => __( '<b>Enable/Disable:</b>', 'gravityflowwoocommerce' ),
 				'type'    => 'checkbox',
 				'label'   => __( 'Enable Gravity Flow Pay Later Payment Gateway.', 'gravityflowwoocommerce' ),
 				'default' => 'no',
 			),
-			'title'       => array(
+			'title'            => array(
 				'title'       => __( '<b>Title:</b>', 'gravityflowwoocommerce' ),
 				'type'        => 'text',
 				'description' => __( 'The title which the user sees during checkout.', 'gravityflowwoocommerce' ),
 				'default'     => __( 'Gravity Flow Pay Later', 'gravityflowwoocommerce' ),
 			),
-			'description' => array(
+			'description'      => array(
 				'title'       => __( '<b>Description:</b>', 'gravityflowwoocommerce' ),
 				'type'        => 'textarea',
 				'description' => __( 'This controls the description which the user sees during checkout.', 'gravityflowwoocommerce' ),
 				'default'     => __( 'Place your order now, and make a payment later.', 'gravityflowwoocommerce' ),
 			),
+			'pending_duration' => array(
+				'title'       => __( '<b>Pending Duration:</b>', 'gravityflowwoocommerce' ),
+				'type'        => 'text',
+				'description' => __( 'Hold an order as pending for x days. If after the duration it still hasn\'t been paid, the order will be cancelled.', 'gravityflowwoocommerce' ),
+				'default'     => __( '7', 'gravityflowwoocommerce' ),
+			),
 		);
+	}
+
+	/**
+	 * Cancel an unpaid order if it expired.
+	 *
+	 * @param bool     $result True or false.
+	 * @param WC_Order $order WooCommerce Order object.
+	 *
+	 * @return bool True if order has expired, false otherwise.
+	 */
+	public function cancel_unpaid_order( $result, $order ) {
+		if ( ( 'gravity_flow_pay_later' === $order->get_payment_method() ) && ( time() > ( strtotime( $order->get_date_created() ) + $this->pending_duration * 86400 ) ) ) {
+			$result = true;
+		}
+
+		return $result;
 	}
 
 	/**
