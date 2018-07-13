@@ -95,10 +95,22 @@ if ( class_exists( 'Gravity_Flow_Step' ) ) {
 			 * @param array $step The current step.
 			 */
 			do_action( 'gravityflowwoocommerce_payment_step_started', $this->get_entry(), $this->get_form(), $this );
-			$this->assign();
 
-			$note = $this->get_name() . ': ' . esc_html__( 'Processed.', 'gravityflowwoocommerce' );
-			$this->add_note( $note );
+			// do this only when the order is still pending.
+			$order_id = gform_get_meta( $this->get_entry_id(), 'workflow_woocommerce_order_id' );
+			$order    = wc_get_order( $order_id );
+
+			if ( 'pending' === $order->get_status() ) {
+				$this->assign();
+
+				$note = $this->get_name() . ': ' . esc_html__( 'Processed.', 'gravityflowwoocommerce' );
+				$this->add_note( $note );
+			} else {
+				$note = $this->get_name() . ': ' . esc_html__( 'Payment is not pending. Step completed without sending notification.', 'gravityflowwoocommerce' );
+				$this->add_note( $note );
+
+				return true;
+			}
 		}
 
 		/**
