@@ -55,11 +55,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) ) {
 				$note = $this->get_name() . ': ' . esc_html__( 'Payment is not on hold. Step completed without capturing payment.', 'gravityflowwoocommerce' );
 				$this->add_note( $note );
 			}
-			
-			return true;
-		}
 
-		public function supports_expiration() {
 			return true;
 		}
 	}

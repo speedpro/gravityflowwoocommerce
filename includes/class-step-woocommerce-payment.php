@@ -158,10 +158,6 @@ if ( class_exists( 'Gravity_Flow_Step' ) ) {
 			<?php
 		}
 
-		public function supports_expiration() {
-			return true;
-		}
-
 		/**
 		 * @param $text
 		 * @param Gravity_Flow_Assignee $assignee
