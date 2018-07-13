@@ -76,33 +76,38 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 	 * Initialise Gateway Settings Form Fields
 	 */
 	public function init_form_fields() {
-
-		$this->form_fields = array(
-			'enabled'          => array(
+		$form_fields = array(
+			'enabled'     => array(
 				'title'   => __( '<b>Enable/Disable:</b>', 'gravityflowwoocommerce' ),
 				'type'    => 'checkbox',
 				'label'   => __( 'Enable Gravity Flow Pay Later Payment Gateway.', 'gravityflowwoocommerce' ),
 				'default' => 'no',
 			),
-			'title'            => array(
+			'title'       => array(
 				'title'       => __( '<b>Title:</b>', 'gravityflowwoocommerce' ),
 				'type'        => 'text',
 				'description' => __( 'The title which the user sees during checkout.', 'gravityflowwoocommerce' ),
 				'default'     => __( 'Gravity Flow Pay Later', 'gravityflowwoocommerce' ),
 			),
-			'description'      => array(
+			'description' => array(
 				'title'       => __( '<b>Description:</b>', 'gravityflowwoocommerce' ),
 				'type'        => 'textarea',
 				'description' => __( 'This controls the description which the user sees during checkout.', 'gravityflowwoocommerce' ),
 				'default'     => __( 'Place your order now, and make a payment later.', 'gravityflowwoocommerce' ),
 			),
-			'pending_duration' => array(
+		);
+
+		$held_duration = get_option( 'woocommerce_hold_stock_minutes' );
+		if ( $held_duration > 1 && 'no' !== get_option( 'woocommerce_manage_stock' ) ) {
+			$form_fields['pending_duration'] = array(
 				'title'       => __( '<b>Pending Duration:</b>', 'gravityflowwoocommerce' ),
 				'type'        => 'text',
 				'description' => __( 'Hold an order as pending for x days. If after the duration it still hasn\'t been paid, the order will be cancelled.', 'gravityflowwoocommerce' ),
 				'default'     => __( '7', 'gravityflowwoocommerce' ),
-			),
-		);
+			);
+		}
+
+		$this->form_fields = $form_fields;
 	}
 
 	/**
