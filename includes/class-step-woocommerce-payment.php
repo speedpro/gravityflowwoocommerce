@@ -1,20 +1,52 @@
 <?php
 
+/**
+ * Gravity Flow WooCommerce Payment Step
+ *
+ * @package     GravityFlow
+ * @subpackage  Classes/Step
+ * @copyright   Copyright (c) 2015-2018, Steven Henty S.L.
+ * @license     http://opensource.org/licenses/gpl-3.0.php GNU Public License
+ * @since       1.0.0-dev
+ */
+
 if ( class_exists( 'Gravity_Flow_Step' ) ) {
 
 	class Gravity_Flow_Step_Woocommerce_Payment extends Gravity_Flow_Step {
+		/**
+		 * A unique key for this step type.
+		 *
+		 * @var string
+		 */
 		public $_step_type = 'woocommerce_payment';
 
+		/**
+		 * Set a custom icon in the step settings.
+		 * 32px x 32px
+		 *
+		 * @since 1.0.0-dev
+		 *
+		 * @return string
+		 */
 		public function get_icon_url() {
 			return '<i class="fa fa-credit-card" aria-hidden="true"></i>';
 		}
 
+		/**
+		 * Returns the label for the step.
+		 *
+		 * @since 1.0.0-dev
+		 *
+		 * @return string
+		 */
 		public function get_label() {
 			return esc_html__( 'WooCommerce Payment', 'gravityflowwoocommerce' );
 		}
 
 		/**
 		 * Is this step supported on this server? Override to hide this step in the list of step types if the requirements are not met.
+		 *
+		 * @since 1.0.0-dev
 		 *
 		 * @return bool
 		 */
@@ -26,6 +58,13 @@ if ( class_exists( 'Gravity_Flow_Step' ) ) {
 			return ( isset( $settings['woocommerce_orders_integration_enabled'] ) ) && '1' === $settings['woocommerce_orders_integration_enabled'];
 		}
 
+		/**
+		 * Add settings to the step.
+		 *
+		 * @since 1.0.0-dev
+		 *
+		 * @return array
+		 */
 		public function get_settings() {
 			$settings_api = $this->get_common_settings_api();
 
@@ -49,6 +88,13 @@ if ( class_exists( 'Gravity_Flow_Step' ) ) {
 			return $settings;
 		}
 
+		/**
+		 * Evaluates the status for the step.
+		 *
+		 * @since 1.0.0-dev
+		 *
+		 * @return string
+		 */
 		public function evaluate_status() {
 			if ( $this->is_queued() ) {
 				return 'queued';
@@ -69,6 +115,13 @@ if ( class_exists( 'Gravity_Flow_Step' ) ) {
 			return $step_status;
 		}
 
+		/**
+		 * Returns an array of assignees for this step.
+		 *
+		 * @since 1.0.0-dev
+		 *
+		 * @return Gravity_Flow_Assignee[]
+		 */
 		public function get_assignees() {
 			$assignees = array();
 
@@ -84,6 +137,13 @@ if ( class_exists( 'Gravity_Flow_Step' ) ) {
 			return $assignees;
 		}
 
+		/**
+		 * Process the step.
+		 *
+		 * @since 1.0.0-dev
+		 *
+		 * @return bool
+		 */
 		public function process() {
 			/**
 			 * Fires when the workflow is first assigned to the billing email.
@@ -116,6 +176,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) ) {
 		/**
 		 * Display the workflow detail box for this step.
 		 *
+		 * @since 1.0.0-dev
+		 *
 		 * @param array $form The current form.
 		 * @param array $args The page arguments.
 		 */
@@ -144,6 +206,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) ) {
 		/**
 		 * Displays content inside the Workflow metabox on the Gravity Forms Entry Detail page.
 		 *
+		 * @since 1.0.0-dev
+		 *
 		 * @param array $form The current form.
 		 */
 		public function entry_detail_status_box( $form ) {
@@ -171,12 +235,18 @@ if ( class_exists( 'Gravity_Flow_Step' ) ) {
 		}
 
 		/**
-		 * @param $text
-		 * @param Gravity_Flow_Assignee $assignee
+		 * Replace merge tags.
+		 *
+		 * @since 1.0.0-dev
+		 *
+		 * @param string                $text The text containing merge tags to be processed.
+		 * @param Gravity_Flow_Assignee $assignee Assignee array.
 		 *
 		 * @return mixed
 		 */
 		public function replace_variables( $text, $assignee ) {
+			$text = parent::replace_variables( $text, $assignee );
+
 			$order_id = gform_get_meta( $this->get_entry_id(), 'workflow_woocommerce_order_id' );
 			$order    = wc_get_order( $order_id );
 			$pay_url  = $order->get_checkout_payment_url();

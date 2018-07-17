@@ -2,12 +2,11 @@
 /**
  * Gravity Flow WooCommerce
  *
- *
  * @package     GravityFlow
  * @subpackage  Classes/Extension
  * @copyright   Copyright (c) 2015-2018, Steven Henty S.L.
  * @license     http://opensource.org/licenses/gpl-3.0.php GNU Public License
- * @since       1.0.0
+ * @since       1.0.0-dev
  */
 
 // Make sure Gravity Forms is active and already loaded.
@@ -73,7 +72,7 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Add the extension capabilities to the Gravity Flow group in Members.
 		 *
-		 * @since 1.1-dev
+		 * @since 1.0.0-dev
 		 *
 		 * @param array $caps The capabilities and their human readable labels.
 		 *
@@ -91,6 +90,8 @@ if ( class_exists( 'GFForms' ) ) {
 
 		/**
 		 * Set form settings sections.
+		 *
+		 * @since 1.0.0-dev
 		 *
 		 * @param array $form Form object.
 		 *
@@ -164,6 +165,8 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Add the "Pay Later" gateway.
 		 *
+		 * @since 1.0.0-dev
+		 *
 		 * @param array $methods WooCommerce payment gateways.
 		 *
 		 * @return array Updated payment gateways.
@@ -176,6 +179,8 @@ if ( class_exists( 'GFForms' ) ) {
 
 		/**
 		 * Show this gateway only if we're on the checkout page (is_checkout), but not on the order-pay page (is_checkout_pay_page).
+		 *
+		 * @since 1.0.0-dev
 		 *
 		 * @param array $gateways Available gateways.
 		 *
@@ -235,6 +240,8 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Prepare field map.
 		 *
+		 * @since 1.0.0-dev
+		 *
 		 * @param int $form_id Form ID.
 		 *
 		 * @return array
@@ -254,6 +261,8 @@ if ( class_exists( 'GFForms' ) ) {
 
 		/**
 		 * Prepare value map.
+		 *
+		 * @since 1.0.0-dev
 		 *
 		 * @return array
 		 */
@@ -481,6 +490,8 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Add the mapped value to the new entry.
 		 *
+		 * @since 1.0.0-dev
+		 *
 		 * @param array  $mapping The properties for the mapping being processed.
 		 * @param object $order WooCommerce Order.
 		 * @param array  $new_entry The entry to be added or updated.
@@ -516,6 +527,8 @@ if ( class_exists( 'GFForms' ) ) {
 
 		/**
 		 * Get the WooCommerce Order property value.
+		 *
+		 * @since 1.0.0-dev
 		 *
 		 * @param object $order WooCommerce Order.
 		 * @param string $property_name WooCommerce Order property name.
@@ -573,6 +586,8 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Add new entry when a WooCommerce order created.
 		 *
+		 * @since 1.0.0-dev
+		 *
 		 * @param int   $order_id WooCommerce Order ID.
 		 * @param array $data WooCommerce Order meta data.
 		 */
@@ -612,6 +627,8 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Update the entry when WooCommerce order status changed.
 		 *
+		 * @since 1.0.0-dev
+		 *
 		 * @param int      $order_id WooCommerce Order ID.
 		 * @param string   $from_status WooCommerce old order status.
 		 * @param string   $to_status WooCommerce new order status.
@@ -631,6 +648,8 @@ if ( class_exists( 'GFForms' ) ) {
 
 			/**
 			 * Allows the processing to be overridden entirely.
+			 *
+			 * @since 1.0.0-dev
 			 *
 			 * @param array    $entry Entry object.
 			 * @param int      $order_id WooCommerce Order ID.
@@ -686,6 +705,8 @@ if ( class_exists( 'GFForms' ) ) {
 			/**
 			 * Allows the entry to be modified after processing.
 			 *
+			 * @since 1.0.0-dev
+			 *
 			 * @param array    $entry Entry object.
 			 * @param int      $order_id WooCommerce Order ID.
 			 * @param string   $from_status WooCommerce old order status.
@@ -697,6 +718,8 @@ if ( class_exists( 'GFForms' ) ) {
 
 		/**
 		 * Update entry payment data.
+		 *
+		 * @since 1.0.0-dev
 		 *
 		 * @param array    $entry Entry object.
 		 * @param WC_Order $order WooCommerce Order object.

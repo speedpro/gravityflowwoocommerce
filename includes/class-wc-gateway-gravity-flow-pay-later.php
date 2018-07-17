@@ -7,12 +7,14 @@
  * @subpackage  Classes/Payment_Gateway
  * @copyright   Copyright (c) 2015-2018, Steven Henty S.L.
  * @license     http://opensource.org/licenses/gpl-3.0.php GNU Public License
- * @since       1.0.0
+ * @since       1.0.0-dev
  */
 class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 
 	/**
 	 * The time in days an order can be held as pending.
+	 *
+	 * @since 1.0.0-dev
 	 *
 	 * @var int
 	 */
@@ -20,6 +22,8 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 
 	/**
 	 * Constructor for the gateway.
+	 *
+	 * @since 1.0.0-dev
 	 */
 	public function __construct() {
 		$this->id                 = 'gravity_flow_pay_later';
@@ -44,6 +48,8 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 	/**
 	 * Change the default order status to on-hold so that pending order emails can be triggered.
 	 *
+	 * @since 1.0.0-dev
+	 *
 	 * @param string $default Default order status.
 	 *
 	 * @return string Default order status.
@@ -58,6 +64,8 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 
 	/**
 	 * Set valid order statuses for payment.
+	 *
+	 * @since 1.0.0-dev
 	 *
 	 * @param array  $statuses Payment statuses.
 	 * @param object $order WooCommerce Order.
@@ -74,6 +82,8 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 
 	/**
 	 * Initialise Gateway Settings Form Fields
+	 *
+	 * @since 1.0.0-dev
 	 */
 	public function init_form_fields() {
 		$form_fields = array(
@@ -113,6 +123,8 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 	/**
 	 * Cancel an unpaid order if it expired.
 	 *
+	 * @since 1.0.0-dev
+	 *
 	 * @param bool     $result True or false.
 	 * @param WC_Order $order WooCommerce Order object.
 	 *
@@ -127,7 +139,9 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Process the payment, set the Order to pending and return the result
+	 * Process the payment, set the Order to pending and return the result.
+	 *
+	 * @since 1.0.0-dev
 	 *
 	 * @param int $order_id Order ID.
 	 *
