@@ -162,6 +162,22 @@ if ( class_exists( 'GFForms' ) ) {
 			return ob_get_clean();
 		}
 
+		public function styles() {
+			$min    = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG || isset( $_GET['gform_debug'] ) ? '' : '.min';
+			$styles = array();
+
+			$styles[] = array(
+				'handle'  => 'gravityflow_woocommerce_css',
+				'src'     => $this->get_base_url() . "/css/woocommerce{$min}.css",
+				'version' => $this->_version,
+				'enqueue' => array(
+					array( 'query' => 'page=gf_edit_forms&view=settings&subview=gravityflow&id=_notempty_' ),
+				),
+			);
+
+			return array_merge( parent::styles(), $styles );
+		}
+
 		/**
 		 * Add the "Pay Later" gateway.
 		 *

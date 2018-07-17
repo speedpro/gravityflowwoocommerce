@@ -29,7 +29,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) ) {
 		 * @return string
 		 */
 		public function get_icon_url() {
-			return '<i class="fa fa-money" aria-hidden="true"></i>';
+			return '<i class="woocommerce" aria-hidden="true"></i>';
 		}
 
 		/**
@@ -40,7 +40,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) ) {
 		 * @return string
 		 */
 		public function get_label() {
-			return esc_html__( 'WooCommerce Capture Payment', 'gravityflowwoocommerce' );
+			return esc_html__( 'Capture Payment', 'gravityflowwoocommerce' );
 		}
 
 		/**

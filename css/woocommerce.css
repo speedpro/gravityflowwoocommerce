@@ -1,0 +1,5 @@
+tr#gaddon-setting-row-step_type label > span > i.woocommerce:before {
+	font-family: WooCommerce!important;
+	content: '\e03d';
+	font-style: normal;
+}
