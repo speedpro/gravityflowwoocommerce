@@ -172,6 +172,7 @@ if ( class_exists( 'GFForms' ) ) {
 				'version' => $this->_version,
 				'enqueue' => array(
 					array( 'query' => 'page=gf_edit_forms&view=settings&subview=gravityflow&id=_notempty_' ),
+					array( 'query' => 'page=gravityflow-inbox&view=entry&id=_notempty_' ),
 				),
 			);
 
