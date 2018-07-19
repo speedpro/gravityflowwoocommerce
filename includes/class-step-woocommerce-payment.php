@@ -185,6 +185,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) ) {
 			?>
 			<div>
 				<?php
+				$this->maybe_display_assignee_status_list( $args, $form );
+
 				$order_id = gform_get_meta( $this->get_entry_id(), 'workflow_woocommerce_order_id' );
 				$order    = wc_get_order( $order_id );
 				$status   = $order->get_status();
@@ -201,6 +203,76 @@ if ( class_exists( 'Gravity_Flow_Step' ) ) {
 				?>
 			</div>
 			<?php
+		}
+
+		/**
+		 * If applicable display the assignee status list.
+		 *
+		 * @since 1.0.0-dev
+		 *
+		 * @param array $args The page arguments.
+		 * @param array $form The current form.
+		 */
+		public function maybe_display_assignee_status_list( $args, $form ) {
+			$display_step_status = (bool) $args['step_status'];
+
+			/**
+			 * Allows the assignee status list to be hidden.
+			 *
+			 * @since 1.0.0-dev
+			 *
+			 * @param array $form
+			 * @param array $entry
+			 * @param Gravity_Flow_Step $current_step
+			 */
+			$display_assignee_status_list = apply_filters( 'gravityflow_assignee_status_list_woocommerce', $display_step_status, $form, $this );
+			if ( ! $display_assignee_status_list ) {
+				return;
+			}
+
+			echo sprintf( '<h4 style="margin-bottom:10px;">%s (%s)</h4>', $this->get_name(), $this->get_status_string() );
+
+			echo '<ul>';
+
+			$assignees = $this->get_assignees();
+
+			$this->log_debug( __METHOD__ . '(): assignee details: ' . print_r( $assignees, true ) );
+
+			foreach ( $assignees as $assignee ) {
+				$assignee_status = $assignee->get_status();
+
+				$this->log_debug( __METHOD__ . '(): showing status for: ' . $assignee->get_key() );
+				$this->log_debug( __METHOD__ . '(): assignee status: ' . $assignee_status );
+
+				if ( ! empty( $assignee_status ) ) {
+					$assignee_id = $assignee->get_id();
+
+					$email        = $assignee_id;
+					$status_label = $this->get_status_label( $assignee_status );
+					echo sprintf( '<li>%s: %s (%s)</li>', esc_html__( 'Email', 'gravityflowwoocommerce' ), $email, $status_label );
+				}
+			}
+
+			echo '</ul>';
+		}
+
+		/**
+		 * Get the status string, including icon (if complete).
+		 *
+		 * @return string
+		 */
+		public function get_status_string() {
+			$input_step_status = $this->get_status();
+			$status_str        = __( 'Pending', 'gravityflowwoocommerce' );
+
+			if ( $input_step_status == 'complete' ) {
+				$approve_icon = '<i class="fa fa-check" style="color:green"></i>';
+				$status_str   = $approve_icon . __( 'Complete', 'gravityflowwoocommerce' );
+			} elseif ( $input_step_status == 'queued' ) {
+				$status_str = __( 'Queued', 'gravityflowwoocommerce' );
+			}
+
+			return $status_str;
 		}
 
 		/**
