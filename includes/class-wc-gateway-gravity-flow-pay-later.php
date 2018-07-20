@@ -111,9 +111,9 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 		if ( $held_duration > 1 && 'no' !== get_option( 'woocommerce_manage_stock' ) ) {
 			$form_fields['pending_duration'] = array(
 				'title'       => __( '<b>Pending Duration:</b>', 'gravityflowwoocommerce' ),
-				'type'        => 'text',
+				'type'        => 'number',
 				'description' => __( 'Hold an order as pending for x days. If after the duration it still hasn\'t been paid, the order will be cancelled.', 'gravityflowwoocommerce' ),
-				'default'     => __( '7', 'gravityflowwoocommerce' ),
+				'default'     => 7,
 			);
 		}
 
@@ -131,8 +131,8 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 	 * @return bool True if order has expired, false otherwise.
 	 */
 	public function cancel_unpaid_order( $result, $order ) {
-		if ( ( 'gravity_flow_pay_later' === $order->get_payment_method() ) && ( time() > ( strtotime( $order->get_date_created() ) + $this->pending_duration * 86400 ) ) ) {
-			$result = true;
+		if ( ( 'gravity_flow_pay_later' === $order->get_payment_method() ) && ( time() <= ( strtotime( $order->get_date_created() ) + $this->pending_duration * 86400 ) ) ) {
+			$result = false;
 		}
 
 		return $result;
