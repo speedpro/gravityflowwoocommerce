@@ -63,6 +63,7 @@ if ( class_exists( 'GFForms' ) ) {
 			add_filter( 'woocommerce_payment_gateways', array( $this, 'payment_gateways' ) );
 			add_action( 'woocommerce_available_payment_gateways', array( $this, 'maybe_disable_gateway' ) );
 			add_action( 'woocommerce_order_status_changed', array( $this, 'update_entry' ), 10, 4 );
+			add_filter( 'woocommerce_cancel_unpaid_order', array( $this, 'cancel_unpaid_order' ), 10, 2 );
 		}
 
 		public function init_admin() {
@@ -755,6 +756,26 @@ if ( class_exists( 'GFForms' ) ) {
 			}
 			$result = GFAPI::update_entry( $entry );
 			$this->log_debug( __METHOD__ . '(): update entry result - ' . print_r( $result, true ) );
+
+			return $result;
+		}
+
+		/**
+		 * Cancel an unpaid order if it expired.
+		 *
+		 * @since 1.0.0-dev
+		 *
+		 * @param bool     $result True or false.
+		 * @param WC_Order $order WooCommerce Order object.
+		 *
+		 * @return bool True if order has expired, false otherwise.
+		 */
+		public function cancel_unpaid_order( $result, $order ) {
+			$gateway_settings = get_option( 'woocommerce_gravity_flow_pay_later_settings' );
+
+			if ( ( 'gravity_flow_pay_later' === $order->get_payment_method() ) && ( time() <= ( strtotime( $order->get_date_created() ) + $gateway_settings['pending_duration'] * 86400 ) ) ) {
+				$result = false;
+			}
 
 			return $result;
 		}

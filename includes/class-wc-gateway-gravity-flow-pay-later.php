@@ -42,7 +42,6 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 		add_filter( 'woocommerce_default_order_status', array( $this, 'default_order_status' ) );
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
 		add_filter( 'woocommerce_valid_order_statuses_for_payment', array( $this, 'valid_order_statuses_for_payment' ), 10, 2 );
-		add_filter( 'woocommerce_cancel_unpaid_order', array( $this, 'cancel_unpaid_order' ), 10, 2 );
 	}
 
 	/**
@@ -118,24 +117,6 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 		}
 
 		$this->form_fields = $form_fields;
-	}
-
-	/**
-	 * Cancel an unpaid order if it expired.
-	 *
-	 * @since 1.0.0-dev
-	 *
-	 * @param bool     $result True or false.
-	 * @param WC_Order $order WooCommerce Order object.
-	 *
-	 * @return bool True if order has expired, false otherwise.
-	 */
-	public function cancel_unpaid_order( $result, $order ) {
-		if ( ( 'gravity_flow_pay_later' === $order->get_payment_method() ) && ( time() <= ( strtotime( $order->get_date_created() ) + $this->pending_duration * 86400 ) ) ) {
-			$result = false;
-		}
-
-		return $result;
 	}
 
 	/**
