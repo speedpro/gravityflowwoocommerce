@@ -12,25 +12,13 @@
 
 if ( class_exists( 'Gravity_Flow_Step' ) ) {
 
-	class Gravity_Flow_Step_Woocommerce_Payment extends Gravity_Flow_Step {
+	class Gravity_Flow_Step_Woocommerce_Payment extends Gravity_Flow_Step_Woocommerce_Capture_Payment {
 		/**
 		 * A unique key for this step type.
 		 *
 		 * @var string
 		 */
 		public $_step_type = 'woocommerce_payment';
-
-		/**
-		 * Set a custom icon in the step settings.
-		 * 32px x 32px
-		 *
-		 * @since 1.0.0-dev
-		 *
-		 * @return string
-		 */
-		public function get_icon_url() {
-			return '<i class="woocommerce" aria-hidden="true"></i>';
-		}
 
 		/**
 		 * Returns the label for the step.
@@ -41,21 +29,6 @@ if ( class_exists( 'Gravity_Flow_Step' ) ) {
 		 */
 		public function get_label() {
 			return esc_html__( 'Payment', 'gravityflowwoocommerce' );
-		}
-
-		/**
-		 * Is this step supported on this server? Override to hide this step in the list of step types if the requirements are not met.
-		 *
-		 * @since 1.0.0-dev
-		 *
-		 * @return bool
-		 */
-		public function is_supported() {
-			$form_id  = $this->get_form_id();
-			$form     = GFAPI::get_form( $form_id );
-			$settings = rgar( $form, 'gravityflowwoocommerce' );
-
-			return ( isset( $settings['woocommerce_orders_integration_enabled'] ) ) && '1' === $settings['woocommerce_orders_integration_enabled'];
 		}
 
 		/**
@@ -354,3 +327,5 @@ if ( class_exists( 'Gravity_Flow_Step' ) ) {
 		}
 	}
 }
+
+Gravity_Flow_Steps::register( new Gravity_Flow_Step_Woocommerce_Payment() );
