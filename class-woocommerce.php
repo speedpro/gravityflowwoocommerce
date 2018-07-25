@@ -771,7 +771,7 @@ if ( class_exists( 'GFForms' ) ) {
 		 * @return bool True if order has expired, false otherwise.
 		 */
 		public function cancel_unpaid_order( $result, $order ) {
-			$gateway_settings = get_option( 'woocommerce_gravity_flow_pay_later_settings' );
+			$gateway_settings = get_option( 'woocommerce_gravity_flow_pay_later_settings', 7 );
 
 			if ( ( 'gravity_flow_pay_later' === $order->get_payment_method() ) && ( time() <= ( strtotime( $order->get_date_created() ) + $gateway_settings['pending_duration'] * 86400 ) ) ) {
 				$result = false;
