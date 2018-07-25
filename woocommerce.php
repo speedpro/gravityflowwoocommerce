@@ -37,8 +37,7 @@ class Gravity_Flow_Woocommerce_Bootstrap {
 		Gravity_Flow_Steps::register( new Gravity_Flow_Step_Woocommerce_Payment() );
 		require_once( 'includes/class-step-woocommerce-capture-payment.php' );
 		Gravity_Flow_Steps::register( new Gravity_Flow_Step_Woocommerce_Capture_Payment() );
-		require_once( 'includes/class-step-woocommerce-void-payment.php' );
-		Gravity_Flow_Steps::register( new Gravity_Flow_Step_Woocommerce_Void_Payment() );
+		require_once( 'includes/class-step-woocommerce-cancel-payment.php' );
 
 		require_once( 'class-woocommerce.php' );
 		require_once( 'includes/class-wc-gateway-gravity-flow-pay-later.php' );
