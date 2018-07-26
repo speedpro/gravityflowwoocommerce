@@ -718,6 +718,11 @@ if ( class_exists( 'GFForms' ) ) {
 
 				$result = GFAPI::update_entry( $entry );
 				$this->log_debug( __METHOD__ . '(): update entry result - ' . print_r( $result, true ) );
+			} elseif ( ( 'processing' === $from_status || 'completed' === $from_status ) && 'refunded' === $to_status ) {
+				$entry['payment_status'] = $to_status;
+
+				$result = GFAPI::update_entry( $entry );
+				$this->log_debug( __METHOD__ . '(): update entry result - ' . print_r( $result, true ) );
 			}
 
 			/**
