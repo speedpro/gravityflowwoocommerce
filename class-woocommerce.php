@@ -299,12 +299,32 @@ if ( class_exists( 'GFForms' ) ) {
 					'label' => esc_html__( 'Order Number', 'gravityflowwoocommerce' ),
 				),
 				array(
+					'value' => 'status',
+					'label' => esc_html__( 'Order Status', 'gravityflowwoocommerce' ),
+				),
+				array(
 					'value' => 'date_created',
 					'label' => esc_html__( 'Order Date', 'gravityflowwoocommerce' ),
 				),
 				array(
+					'value' => 'total',
+					'label' => esc_html__( 'Cart Total', 'gravityflowwoocommerce' ),
+				),
+				array(
 					'value' => 'subtotal',
 					'label' => esc_html__( 'Cart Subtotal', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'payment_method',
+					'label' => esc_html__( 'Payment Method', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'transaction_id',
+					'label' => esc_html__( 'Transaction ID', 'gravityflowwoocommerce' ),
+				),
+				array(
+					'value' => 'currency',
+					'label' => esc_html__( 'Currency Currency', 'gravityflowwoocommerce' ),
 				),
 				array(
 					'value' => 'currency_symbol',
