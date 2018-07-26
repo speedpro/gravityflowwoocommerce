@@ -265,7 +265,20 @@ if ( class_exists( 'GFForms' ) ) {
 		 * @return array
 		 */
 		public function field_mappings( $form_id ) {
-			$fields = $this->get_field_map_choices( $form_id );
+			$allowed_field_type = array(
+				'text',
+				'email',
+				'name',
+				'address',
+				'calculation',
+				'hiddenproduct',
+				'singleproduct',
+				'singleshipping',
+				'number',
+				'price',
+				'total',
+			);
+			$fields             = $this->get_field_map_choices( $form_id, $allowed_field_type );
 
 			// unset workflow_woocommerce_order_id entry meta since it is set mandatory.
 			foreach ( $fields as $key => $field ) {
