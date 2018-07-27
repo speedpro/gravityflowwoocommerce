@@ -1,5 +1,9 @@
 <?php
 
+if ( ! function_exists( 'WC' ) ) {
+	return;
+}
+
 /**
  * Payment Gateway
  *

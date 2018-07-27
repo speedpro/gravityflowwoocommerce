@@ -71,6 +71,26 @@ if ( class_exists( 'GFForms' ) ) {
 		}
 
 		/**
+		 * The minimum Gravity Flow and Stripe Add-On versions required to use this extension.
+		 *
+		 * @since 1.0
+		 *
+		 * @return array
+		 */
+		public function minimum_requirements() {
+			return array(
+				'add-ons' => array(
+					'gravityflow' => array(
+						'version' => '1.7',
+					),
+				),
+				'plugins' => array(
+					'woocommerce/woocommerce.php' => 'WooCommerce',
+				),
+			);
+		}
+
+		/**
 		 * Add the extension capabilities to the Gravity Flow group in Members.
 		 *
 		 * @since 1.0.0-dev

@@ -10,7 +10,7 @@
  * @since       1.0.0-dev
  */
 
-if ( class_exists( 'Gravity_Flow_Step' ) ) {
+if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 
 	class Gravity_Flow_Step_Woocommerce_Capture_Payment extends Gravity_Flow_Step {
 		/**
@@ -98,6 +98,6 @@ if ( class_exists( 'Gravity_Flow_Step' ) ) {
 			return true;
 		}
 	}
-}
 
-Gravity_Flow_Steps::register( new Gravity_Flow_Step_Woocommerce_Capture_Payment() );
+	Gravity_Flow_Steps::register( new Gravity_Flow_Step_Woocommerce_Capture_Payment() );
+}
