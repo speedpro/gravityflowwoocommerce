@@ -294,53 +294,6 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 			</div>
 			<?php
 		}
-
-		/**
-		 * Replace merge tags.
-		 *
-		 * @since 1.0.0-dev
-		 *
-		 * @param string                $text The text containing merge tags to be processed.
-		 * @param Gravity_Flow_Assignee $assignee Assignee array.
-		 *
-		 * @return mixed
-		 */
-		public function replace_variables( $text, $assignee ) {
-			$text = parent::replace_variables( $text, $assignee );
-
-			$order_id = gform_get_meta( $this->get_entry_id(), 'workflow_woocommerce_order_id' );
-			$order    = wc_get_order( $order_id );
-			$pay_url  = $order->get_checkout_payment_url();
-
-			preg_match_all( '/{workflow_woocommerce_pay_url(:(.*?))?}/', $text, $matches, PREG_SET_ORDER );
-			if ( is_array( $matches ) ) {
-				foreach ( $matches as $match ) {
-					$full_tag = $match[0];
-
-					$text = str_replace( $full_tag, $pay_url, $text );
-				}
-			}
-
-			preg_match_all( '/{workflow_woocommerce_pay_link(:(.*?))?}/', $text, $matches, PREG_SET_ORDER );
-			if ( is_array( $matches ) ) {
-				foreach ( $matches as $match ) {
-					$full_tag       = $match[0];
-					$options_string = isset( $match[2] ) ? $match[2] : '';
-					$options        = shortcode_parse_atts( $options_string );
-
-					$args = shortcode_atts(
-						array(
-							'text' => esc_html__( 'Pay for this order', 'gravityflowwoocommerce' ),
-						), $options
-					);
-
-					$pay_link = sprintf( '<a href="%s">%s</a>', $pay_url, esc_html( $args['text'] ) );
-					$text     = str_replace( $full_tag, $pay_link, $text );
-				}
-			}
-
-			return $text;
-		}
 	}
 
 	Gravity_Flow_Steps::register( new Gravity_Flow_Step_Woocommerce_Payment() );
