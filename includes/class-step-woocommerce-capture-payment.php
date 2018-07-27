@@ -163,35 +163,6 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		}
 
 		/**
-		 * Determines if the entry has an active product and service type Stripe feed associated with it.
-		 *
-		 * @param array|false $feed The feed to be checked.
-		 *
-		 * @return bool
-		 */
-		public function is_valid_feed( $feed ) {
-			if ( ! $feed ) {
-				$this->log_debug( __METHOD__ . '(): Aborting; no payment feed.' );
-
-				return false;
-			}
-
-			if ( ! rgar( $feed, 'is_active' ) ) {
-				$this->log_debug( __METHOD__ . '(): Aborting; feed not active.' );
-
-				return false;
-			}
-
-			if ( rgars( $feed, 'meta/transactionType' ) !== 'product' ) {
-				$this->log_debug( __METHOD__ . '(): Aborting; wrong transaction type.' );
-
-				return false;
-			}
-
-			return true;
-		}
-
-		/**
 		 * Processes the action for the current step.
 		 *
 		 * @param WC_Order $order The WooCommerce order.
