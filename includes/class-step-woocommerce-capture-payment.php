@@ -194,7 +194,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 			} else {
 				$this->log_debug( __METHOD__ . '(): Unable to update WooCommerce order status to processing.' );
 				$this->log_debug( __METHOD__ . '(): Unable to capture charge.' );
-				$note = $this->get_name() . ': ' . esc_html__( 'Failed to update WooCommerce order status. Step completed without capturing payment.', 'gravityflowwoocommerce' );
+				$note = $this->get_name() . ': ' . esc_html__( 'Failed to update WooCommerce order status.', 'gravityflowwoocommerce' );
 			}
 
 			$this->add_note( $note );

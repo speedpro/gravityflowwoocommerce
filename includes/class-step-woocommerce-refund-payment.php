@@ -32,40 +32,68 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		}
 
 		/**
-		 * Process the step.
+		 * Adds an alert to the step settings area.
 		 *
-		 * @since 1.0.0-dev
+		 * @return array
+		 */
+		public function get_settings() {
+			return array();
+		}
+
+		/**
+		 * Returns an array of statuses and their properties.
+		 *
+		 * @return array
+		 */
+		public function get_status_config() {
+			return array(
+				array(
+					'status'                    => 'refunded',
+					'status_label'              => __( 'Refunded', 'gravityflowwoocommerce' ),
+					'destination_setting_label' => __( 'Next Step if Refunded', 'gravityflowwoocommerce' ),
+					'default_destination'       => 'next',
+				),
+				array(
+					'status'                    => 'failed',
+					'status_label'              => __( 'Failed', 'gravityflowwoocommerce' ),
+					'destination_setting_label' => __( 'Next step if Failed', 'gravityflowwoocommerce' ),
+					'default_destination'       => 'complete',
+				),
+			);
+		}
+
+		/**
+		 * Determines if the entry payment status is valid for the current action.
+		 *
+		 * @param string $payment_status The WooCommerce order payment status.
 		 *
 		 * @return bool
 		 */
-		public function process() {
-			/**
-			 * Fires when the workflow is first assigned to the billing email.
-			 *
-			 * @since 1.0.0
-			 *
-			 * @param array $entry The current entry.
-			 * @param array $form The current form.
-			 * @param array $step The current step.
-			 */
-			do_action( 'gravityflowwoocommerce_refund_payment_step_started', $this->get_entry(), $this->get_form(), $this );
+		public function is_valid_payment_status( $payment_status ) {
+			return $payment_status === 'processing' || 'completed';
+		}
 
-			$order_id = gform_get_meta( $this->get_entry_id(), 'workflow_woocommerce_order_id' );
-			$order    = wc_get_order( $order_id );
-			if ( 'processing' === $order->get_status() || 'completed' === $order->get_status() ) {
-				$note = $this->get_name() . ': ' . esc_html__( 'Processed.', 'gravityflowwoocommerce' );
-				$this->add_note( $note );
+		/**
+		 * Cancels the WooCommerce order.
+		 *
+		 * @param WC_Order $order The WooCommerce order.
+		 *
+		 * @return string
+		 */
+		public function process_action( $order ) {
+			$result = 'failed';
 
-				// remove the default WooCommerce refund behavior, because we want to refund the payment and restock items.
-				remove_action( 'woocommerce_order_status_refunded', 'wc_order_fully_refunded' );
-				$note   = $this->get_name() . ': ' . esc_html__( 'Refunded the order.', 'gravityflowwoocommerce' );
-				$result = $order->update_status( 'refunded', $note );
-				if ( ! $result ) {
-					$note = $this->get_name() . ': ' . esc_html__( 'Failed to refund the order. Step completed without refunding payment.', 'gravityflowwoocommerce' );
-				} else {
-					$max_refund = wc_format_decimal( $order->get_total() - $order->get_total_refunded() );
+			// remove the default WooCommerce refund behavior, because we want to refund the payment and restock items.
+			remove_action( 'woocommerce_order_status_refunded', 'wc_order_fully_refunded' );
+			$note   = $this->get_name() . ': ' . esc_html__( 'Refunded the order.', 'gravityflowwoocommerce' );
+			$update = $order->update_status( 'refunded', $note );
 
-					if ( $max_refund ) {
+			if ( $update ) {
+				$this->log_debug( __METHOD__ . '(): Updated WooCommerce order status to refunded.' );
+
+				$max_refund = wc_format_decimal( $order->get_total() - $order->get_total_refunded() );
+				if ( $max_refund ) {
+					try {
 						wc_create_refund(
 							array(
 								'amount'         => $max_refund,
@@ -76,16 +104,24 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 								'restock_items'  => true,
 							)
 						);
+
+						$result = 'refunded';
+						$this->log_debug( __METHOD__ . '(): Charge refunded.' );
+					} catch ( Exception $e ) {
+						$result = 'failed';
+						$this->log_debug( __METHOD__ . '(): Refund failed.' );
+						$note = $this->get_name() . ': ' . esc_html__( 'WooCommerce order has been marked as refund but failed to refund the payment.', 'gravityflowwoocommerce' );
 					}
 				}
-
-				$this->add_note( $note );
 			} else {
-				$note = $this->get_name() . ': ' . esc_html__( 'Payment is not made. Step completed without refunding payment.', 'gravityflowwoocommerce' );
-				$this->add_note( $note );
+				$this->log_debug( __METHOD__ . '(): Unable to update WooCommerce order status to refunded.' );
+				$this->log_debug( __METHOD__ . '(): Unable to refund charge.' );
+				$note = $this->get_name() . ': ' . esc_html__( 'Failed to refund the order.', 'gravityflowwoocommerce' );
 			}
 
-			return true;
+			$this->add_note( $note );
+
+			return $result;
 		}
 	}
 
