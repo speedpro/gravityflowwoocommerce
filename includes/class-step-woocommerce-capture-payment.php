@@ -159,7 +159,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		 * @return bool
 		 */
 		public function is_valid_payment_status( $payment_status ) {
-			return $payment_status === 'oh-hold';
+			return $payment_status === 'on-hold';
 		}
 
 		/**
@@ -225,12 +225,12 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		}
 
 		/**
-		 * Prevents the step status becoming the workflow status.
+		 * Uses the Gravity Forms Add-On Framework to write a message to the log file for the Gravity Flow Stripe extension.
 		 *
-		 * @return bool
+		 * @param string $message The message to be logged.
 		 */
-		public function can_set_workflow_status() {
-			return false;
+		public function log_debug( $message ) {
+			gravity_flow_woocommerce()->log_debug( $message );
 		}
 	}
 

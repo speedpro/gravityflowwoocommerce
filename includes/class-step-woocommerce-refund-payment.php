@@ -98,7 +98,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 							array(
 								'amount'         => $max_refund,
 								'reason'         => $note,
-								'order_id'       => $order_id,
+								'order_id'       => $order->get_id(),
 								'line_items'     => $order->get_items( array( 'line_item', 'fee', 'shipping' ) ),
 								'refund_payment' => true,
 								'restock_items'  => true,

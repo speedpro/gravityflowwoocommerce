@@ -719,6 +719,10 @@ if ( class_exists( 'GFForms' ) ) {
 			$api          = new Gravity_Flow_API( $entry['form_id'] );
 			$current_step = $api->get_current_step( $entry );
 
+			if ( ! $current_step ) {
+				return;
+			}
+
 			/**
 			 * Allows the processing to be overridden entirely.
 			 *

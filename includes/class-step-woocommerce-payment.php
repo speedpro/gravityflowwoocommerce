@@ -115,13 +115,15 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 			$assignees = array();
 
 			$order_id     = gform_get_meta( $this->get_entry_id(), 'workflow_woocommerce_order_id' );
-			$order        = wc_get_order( $order_id );
-			$assignee_key = array(
-				'type' => 'email',
-				'id'   => $order->get_billing_email(),
-			);
+			if ( $order_id ) {
+				$order        = wc_get_order( $order_id );
+				$assignee_key = array(
+					'type' => 'email',
+					'id'   => $order->get_billing_email(),
+				);
 
-			$assignees[] = new Gravity_Flow_Assignee( $assignee_key, $this );
+				$assignees[] = new Gravity_Flow_Assignee( $assignee_key, $this );
+			}
 
 			return $assignees;
 		}
