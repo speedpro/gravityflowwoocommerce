@@ -555,7 +555,7 @@ if ( class_exists( 'GFForms' ) ) {
 			$order_property_name = (string) $mapping['value'];
 
 			if ( 'gf_custom' === $order_property_name ) {
-				$new_entry[ $target_field_id ] = GFCommon::replace_variables( $mapping['custom_value'], $form, $order, false, false, false, 'text' );
+				$new_entry[ $target_field_id ] = GFCommon::replace_variables( $mapping['custom_value'], $form, $new_entry, false, false, false, 'text' );
 			} else {
 				$is_full_target = (string) intval( $target_field_id ) === $target_field_id;
 				$target_field   = GFFormsModel::get_field( $form, $target_field_id );
