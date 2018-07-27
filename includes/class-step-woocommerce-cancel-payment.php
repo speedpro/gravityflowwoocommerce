@@ -32,43 +32,54 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		}
 
 		/**
-		 * Process the step.
+		 * Returns an array of statuses and their properties.
 		 *
-		 * @since 1.0.0-dev
-		 *
-		 * @return bool
+		 * @return array
 		 */
-		public function process() {
-			/**
-			 * Fires when the workflow is first assigned to the billing email.
-			 *
-			 * @since 1.0.0
-			 *
-			 * @param array $entry The current entry.
-			 * @param array $form The current form.
-			 * @param array $step The current step.
-			 */
-			do_action( 'gravityflowwoocommerce_cancel_payment_step_started', $this->get_entry(), $this->get_form(), $this );
+		public function get_status_config() {
+			return array(
+				array(
+					'status'                    => 'cancelled',
+					'status_label'              => __( 'Cancelled', 'gravityflowwoocommerce' ),
+					'destination_setting_label' => __( 'Next Step if Cancelled', 'gravityflowwoocommerce' ),
+					'default_destination'       => 'next',
+				),
+				array(
+					'status'                    => 'failed',
+					'status_label'              => __( 'Failed', 'gravityflowwoocommerce' ),
+					'destination_setting_label' => __( 'Next step if Failed', 'gravityflowwoocommerce' ),
+					'default_destination'       => 'complete',
+				),
+			);
+		}
 
-			$order_id = gform_get_meta( $this->get_entry_id(), 'workflow_woocommerce_order_id' );
-			$order    = wc_get_order( $order_id );
-			if ( 'on-hold' === $order->get_status() ) {
-				$note = $this->get_name() . ': ' . esc_html__( 'Processed.', 'gravityflowwoocommerce' );
-				$this->add_note( $note );
+		/**
+		 * Cancels the WooCommerce order.
+		 *
+		 * @param WC_Order $order The WooCommerce order.
+		 *
+		 * @return string
+		 */
+		public function process_action( $order ) {
+			$result = 'failed';
 
-				// Cancel the order, so no charge will be made.
-				$note   = $this->get_name() . ': ' . esc_html__( 'Cancelled the order.', 'gravityflowwoocommerce' );
-				$result = $order->update_status( 'cancelled', $note );
-				if ( ! $result ) {
-					$note = $this->get_name() . ': ' . esc_html__( 'Failed to cancel the order. Step completed without cancelling payment.', 'gravityflowwoocommerce' );
-				}
-				$this->add_note( $note );
+			// Cancel the order, so no charge will be made.
+			$note   = $this->get_name() . ': ' . esc_html__( 'Cancelled the order.', 'gravityflowwoocommerce' );
+			$update = $order->update_status( 'cancelled', $note );
+
+			if ( $update ) {
+				$result = 'cancelled';
+				$this->log_debug( __METHOD__ . '(): Updated WooCommerce order status to cancelled.' );
+				$this->log_debug( __METHOD__ . '(): Charge authorization cancelled.' );
 			} else {
-				$note = $this->get_name() . ': ' . esc_html__( 'Payment is not on hold. Step completed without cancelling payment.', 'gravityflowwoocommerce' );
-				$this->add_note( $note );
+				$this->log_debug( __METHOD__ . '(): Unable to update WooCommerce order status to cancelled.' );
+				$this->log_debug( __METHOD__ . '(): Unable to cancel charge authorization.' );
+				$note = $this->get_name() . ': ' . esc_html__( 'Failed to update WooCommerce order status. Step completed without cancelling payment.', 'gravityflowwoocommerce' );
 			}
 
-			return true;
+			$this->add_note( $note );
+
+			return $result;
 		}
 	}
 
