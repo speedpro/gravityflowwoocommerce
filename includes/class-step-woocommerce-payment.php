@@ -62,6 +62,22 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		}
 
 		/**
+		 * Returns an array of statuses and their properties.
+		 *
+		 * @return array
+		 */
+		public function get_status_config() {
+			return array(
+				array(
+					'status'                    => 'complete',
+					'status_label'              => __( 'Complete', 'gravityflowwoocommerce' ),
+					'destination_setting_label' => __( 'Next Step', 'gravityflowwoocommerce' ),
+					'default_destination'       => 'next',
+				),
+			);
+		}
+
+		/**
 		 * Evaluates the status for the step.
 		 *
 		 * @since 1.0.0-dev
