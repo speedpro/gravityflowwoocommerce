@@ -511,8 +511,10 @@ if ( class_exists( 'GFForms' ) ) {
 			// Set mandatory fields.
 			$new_entry['currency']       = $order->get_currency();
 			$new_entry['payment_status'] = $order->get_status();
-			$new_entry['payment_amount'] = $order->get_total();
 			$new_entry['payment_method'] = $order->get_payment_method();
+			if ( ! self::has_price_field( $form ) ) {
+				$new_entry['payment_amount'] = $order->get_total();
+			}
 			// A WooCommerce order can contain both products and subscriptions. Set to payments for now.
 			$new_entry['transaction_type'] = 1;
 			if ( $order->is_paid() ) {
@@ -816,6 +818,25 @@ if ( class_exists( 'GFForms' ) ) {
 			}
 
 			return $result;
+		}
+
+		/**
+		 * Helper function to check if the form has pricing fields.
+		 *
+		 * @param array $form Form object.
+		 *
+		 * @return bool
+		 */
+		private static function has_price_field( $form ) {
+			if ( is_array( $form['fields'] ) ) {
+				foreach ( $form['fields'] as $field ) {
+					if ( GFCommon::is_product_field( $field->type ) ) {
+						return true;
+					}
+				}
+			}
+
+			return false;
 		}
 	}
 }
