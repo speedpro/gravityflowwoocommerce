@@ -285,20 +285,19 @@ if ( class_exists( 'GFForms' ) ) {
 		 * @return array
 		 */
 		public function field_mappings( $form_id ) {
-			$allowed_field_type = array(
-				'text',
-				'email',
-				'name',
-				'address',
-				'calculation',
-				'hiddenproduct',
-				'singleproduct',
-				'singleshipping',
-				'number',
-				'price',
-				'total',
-			);
-			$fields             = $this->get_field_map_choices( $form_id, $allowed_field_type );
+			$form    = GFAPI::get_form( $form_id );
+			$exclude = array( 'list' );
+
+			// exclude list and most array fields.
+			foreach ( $form['fields'] as $field ) {
+				$inputs     = $field->get_entry_inputs();
+				$input_type = $field->get_input_type();
+
+				if ( is_array( $inputs ) && ( $input_type !== 'address' && $input_type !== 'name' ) ) {
+					$exclude[] = $field->type;
+				}
+			}
+			$fields = $this->get_field_map_choices( $form_id, null, $exclude );
 
 			// unset workflow_woocommerce_order_id entry meta since it is set mandatory.
 			foreach ( $fields as $key => $field ) {
