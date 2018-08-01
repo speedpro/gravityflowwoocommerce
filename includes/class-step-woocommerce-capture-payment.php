@@ -61,6 +61,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Ensure the step is not processed if the WooCommerce is not supported.
 		 *
+		 * @since 1.0.0-dev
+		 *
 		 * @return bool
 		 */
 		public function is_active() {
@@ -76,6 +78,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Adds an alert to the step settings area.
 		 *
+		 * @since 1.0.0-dev
+		 *
 		 * @return array
 		 */
 		public function get_settings() {
@@ -86,6 +90,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 
 		/**
 		 * Returns an array of statuses and their properties.
+		 *
+		 * @since 1.0.0-dev
 		 *
 		 * @return array
 		 */
@@ -108,6 +114,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 
 		/**
 		 * Processes this step.
+		 *
+		 * @since 1.0.0-dev
 		 *
 		 * @return bool Is the step complete?
 		 */
@@ -134,6 +142,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Determines if the payment status is valid for the action to be performed by this step.
 		 *
+		 * @since 1.0.0-dev
+		 *
 		 * @param WC_Order $order WooCommerce Order.
 		 *
 		 * @return bool
@@ -154,6 +164,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Determines if the entry payment status is valid for the current action.
 		 *
+		 * @since 1.0.0-dev
+		 *
 		 * @param string $payment_status The WooCommerce order payment status.
 		 *
 		 * @return bool
@@ -165,6 +177,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Processes the action for the current step.
 		 *
+		 * @since 1.0.0-dev
+		 *
 		 * @param WC_Order $order The WooCommerce order.
 		 *
 		 * @return string
@@ -175,6 +189,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 
 		/**
 		 * Captures the authorized charge.
+		 *
+		 * @since 1.0.0-dev
 		 *
 		 * @param WC_Order $order The WooCommerce order.
 		 *
@@ -205,6 +221,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Determines the current status of the step.
 		 *
+		 * @since 1.0.0-dev
+		 *
 		 * @return string
 		 */
 		public function status_evaluation() {
@@ -216,6 +234,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Determines if the current step has been completed.
 		 *
+		 * @since 1.0.0-dev
+		 *
 		 * @return bool
 		 */
 		public function is_complete() {
@@ -226,6 +246,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 
 		/**
 		 * Uses the Gravity Forms Add-On Framework to write a message to the log file for the Gravity Flow Stripe extension.
+		 *
+		 * @since 1.0.0-dev
 		 *
 		 * @param string $message The message to be logged.
 		 */

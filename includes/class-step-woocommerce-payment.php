@@ -64,6 +64,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Returns an array of statuses and their properties.
 		 *
+		 * @since 1.0.0-dev
+		 *
 		 * @return array
 		 */
 		public function get_status_config() {
@@ -249,6 +251,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 
 		/**
 		 * Get the status string, including icon (if complete).
+		 *
+		 * @since 1.0.0-dev
 		 *
 		 * @return string
 		 */

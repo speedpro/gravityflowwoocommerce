@@ -34,6 +34,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Adds an alert to the step settings area.
 		 *
+		 * @since 1.0.0-dev
+		 *
 		 * @return array
 		 */
 		public function get_settings() {
@@ -42,6 +44,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 
 		/**
 		 * Returns an array of statuses and their properties.
+		 *
+		 * @since 1.0.0-dev
 		 *
 		 * @return array
 		 */
@@ -65,6 +69,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Determines if the entry payment status is valid for the current action.
 		 *
+		 * @since 1.0.0-dev
+		 *
 		 * @param string $payment_status The WooCommerce order payment status.
 		 *
 		 * @return bool
@@ -75,6 +81,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 
 		/**
 		 * Cancels the WooCommerce order.
+		 *
+		 * @since 1.0.0-dev
 		 *
 		 * @param WC_Order $order The WooCommerce order.
 		 *

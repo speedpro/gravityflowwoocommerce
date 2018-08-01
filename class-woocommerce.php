@@ -73,7 +73,7 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * The minimum Gravity Flow and Stripe Add-On versions required to use this extension.
 		 *
-		 * @since 1.0
+		 * @since 1.0.0-dev
 		 *
 		 * @return array
 		 */
@@ -167,7 +167,7 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Define the markup to be displayed for the WooCommerce setting description.
 		 *
-		 * @since 1.0.0
+		 * @since 1.0.0-dev
 		 *
 		 * @return string HTML formatted WooCommerce setting description.
 		 */
@@ -237,7 +237,7 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Adds WooCommerce order id to the entry meta.
 		 *
-		 * @since 1.0.0
+		 * @since 1.0.0-dev
 		 *
 		 * @param array $entry_meta Entry meta.
 		 * @param int   $form_id Form ID.
@@ -262,7 +262,7 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Helper to check if WooCommerce Orders integration is enabled.
 		 *
-		 * @since  1.0.0
+		 * @since 1.0.0-dev
 		 *
 		 * @param int $form_id Form ID.
 		 *
@@ -516,6 +516,8 @@ if ( class_exists( 'GFForms' ) ) {
 
 		/**
 		 * Generating new entry from a WooCommerce Order.
+		 *
+		 * @since 1.0.0-dev
 		 *
 		 * @param array $form Form Object.
 		 * @param int   $order_id WooCommerce Order id.
@@ -846,6 +848,8 @@ if ( class_exists( 'GFForms' ) ) {
 
 		/**
 		 * Helper function to check if the form has pricing fields.
+		 *
+		 * @since 1.0.0-dev
 		 *
 		 * @param array $form Form object.
 		 *

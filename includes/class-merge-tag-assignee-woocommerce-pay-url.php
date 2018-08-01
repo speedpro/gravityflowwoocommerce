@@ -30,7 +30,7 @@ class Gravity_Flow_Merge_Tag_Assignee_WooCommerce_Pay_Url extends Gravity_Flow_M
 	/**
 	 * The regular expression to use for the matching.
 	 *
-	 * @since 1.7.1-dev
+	 * @since 1.0.0-dev
 	 *
 	 * @var string
 	 */
