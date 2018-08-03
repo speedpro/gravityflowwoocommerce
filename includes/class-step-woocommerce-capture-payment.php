@@ -254,6 +254,17 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		public function log_debug( $message ) {
 			gravity_flow_woocommerce()->log_debug( $message );
 		}
+
+		/**
+		 * Prevents the step status becoming the workflow status.
+		 *
+		 * @since 1.0.0-dev
+		 *
+		 * @return bool
+		 */
+		public function can_set_workflow_status() {
+			return false;
+		}
 	}
 
 	Gravity_Flow_Steps::register( new Gravity_Flow_Step_Woocommerce_Capture_Payment() );
