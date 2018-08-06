@@ -45,6 +45,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 				'title'  => esc_html__( 'WooCommerce Payment', 'gravityflowwoocommerce' ),
 				'fields' => array(
 					$settings_api->get_setting_instructions(),
+					$settings_api->get_setting_display_fields(),
 					$settings_api->get_setting_notification_tabs( array(
 						array(
 							'label'  => __( 'Assignee email', 'gravityflowwoocommerce' ),
