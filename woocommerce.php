@@ -33,11 +33,11 @@ add_action( 'gravityflow_loaded', array( 'Gravity_Flow_Woocommerce_Bootstrap', '
 class Gravity_Flow_Woocommerce_Bootstrap {
 
 	public static function load() {
-		require_once( 'includes/class-step-woocommerce-capture-payment.php' );
-		require_once( 'includes/class-step-woocommerce-payment.php' );
-		require_once( 'includes/class-step-woocommerce-cancel-payment.php' );
-		require_once( 'includes/class-step-woocommerce-refund-payment.php' );
-		require_once( 'includes/class-merge-tag-assignee-woocommerce-pay-url.php' );
+		require_once( 'includes/steps/class-step-woocommerce-capture-payment.php' );
+		require_once( 'includes/steps/class-step-woocommerce-payment.php' );
+		require_once( 'includes/steps/class-step-woocommerce-cancel-payment.php' );
+		require_once( 'includes/steps/class-step-woocommerce-refund-payment.php' );
+		require_once( 'includes/merge-tags/class-merge-tag-assignee-woocommerce-pay-url.php' );
 
 		require_once( 'class-woocommerce.php' );
 		require_once( 'includes/class-wc-gateway-gravity-flow-pay-later.php' );
