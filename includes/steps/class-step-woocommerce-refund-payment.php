@@ -32,6 +32,20 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		}
 
 		/**
+		 * Is this step supported on this server? Override to hide this step in the list of step types if the requirements are not met.
+		 *
+		 * @since 1.0.0-dev
+		 *
+		 * @return bool
+		 */
+		public function is_supported() {
+			$form_id = $this->get_form_id();
+			$form    = GFAPI::get_form( $form_id );
+
+			return function_exists( 'WC' ) && ! empty( GFFormsModel::get_fields_by_type( $form, 'workflow_woocommerce_order_id' ) );
+		}
+
+		/**
 		 * Adds an alert to the step settings area.
 		 *
 		 * @since 1.0.0-dev
