@@ -121,10 +121,10 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		public function process() {
 			$this->log_debug( __METHOD__ . '() Starting action: ' . str_replace( 'woocommerce_', '', $this->get_type() ) );
 
-			$order_id = gform_get_meta( $this->get_entry_id(), 'workflow_woocommerce_order_id' );
+			$order_id = $this->get_order_id();
 			$order    = wc_get_order( $order_id );
 
-			if ( ! $this->is_valid_entry( $order ) ) {
+			if ( ! $this->is_valid_order( $order ) ) {
 				$this->update_step_status( 'failed' );
 
 				return true;
@@ -139,6 +139,17 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		}
 
 		/**
+		 * Get WooCommerce order id.
+		 *
+		 * @return bool|mixed
+		 */
+		public function get_order_id() {
+			$order_id = gform_get_meta( $this->get_entry_id(), 'workflow_woocommerce_order_id' );
+
+			return $order_id;
+		}
+
+		/**
 		 * Determines if the payment status is valid for the action to be performed by this step.
 		 *
 		 * @since 1.0.0-dev
@@ -147,7 +158,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		 *
 		 * @return bool
 		 */
-		public function is_valid_entry( $order ) {
+		public function is_valid_order( $order ) {
 
 			$payment_status = $order->get_status();
 

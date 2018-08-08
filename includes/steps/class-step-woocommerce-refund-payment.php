@@ -76,7 +76,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 						'type'          => 'field_select',
 						'tooltip'       => __( 'Select the field which will contain the ID of the WooCommerce ID to be refunded.', 'gravityflowwoocommerce' ),
 						'required'      => true,
-						'default_value' => 'woocommerce_order_id',
+						'default_value' => 'workflow_woocommerce_order_id',
 						'args'          => $args,
 					),
 				),
@@ -118,6 +118,24 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		 */
 		public function is_valid_payment_status( $payment_status ) {
 			return $payment_status === 'processing' || 'completed';
+		}
+
+		/**
+		 * Get WooCommerce order id.
+		 *
+		 * @return bool|mixed
+		 */
+		public function get_order_id() {
+			$setting = $this->get_setting( 'woocommerce_order_id' );
+
+			if ( 'workflow_woocommerce_order_id' === $setting ) {
+				$order_id = parent::get_order_id();
+			} else {
+				$entry    = $this->get_entry();
+				$order_id = $entry[ $setting ];
+			}
+
+			return $order_id;
 		}
 
 		/**
