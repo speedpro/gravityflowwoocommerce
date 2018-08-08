@@ -39,10 +39,10 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		 * @return bool
 		 */
 		public function is_supported() {
-			$form_id = $this->get_form_id();
-			$form    = GFAPI::get_form( $form_id );
+			$form     = $this->get_form();
+			$settings = rgar( $form, 'gravityflowwoocommerce' );
 
-			return function_exists( 'WC' ) && ! empty( GFFormsModel::get_fields_by_type( $form, 'workflow_woocommerce_order_id' ) );
+			return function_exists( 'WC' ) && ( ! empty( GFFormsModel::get_fields_by_type( $form, 'workflow_woocommerce_order_id' ) ) || ( isset( $settings['woocommerce_orders_integration_enabled'] ) && '1' === $settings['woocommerce_orders_integration_enabled'] ) );
 		}
 
 		/**
@@ -53,7 +53,34 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		 * @return array
 		 */
 		public function get_settings() {
-			return array();
+			$form     = $this->get_form();
+			$settings = rgar( $form, 'gravityflowwoocommerce' );
+			$args     = array(
+				'input_types' => array( 'workflow_woocommerce_order_id', 'hidden', 'text' ),
+			);
+
+			if ( isset( $settings['woocommerce_orders_integration_enabled'] ) && '1' === $settings['woocommerce_orders_integration_enabled'] ) {
+				$args['append_choices'] = array(
+					array(
+						'label' => esc_html__( 'Entry Meta: WooCommerce Order ID', 'gravityflowwoocommerce' ),
+						'value' => 'workflow_woocommerce_order_id',
+					),
+				);
+			}
+
+			return array(
+				'fields' => array(
+					array(
+						'name'          => 'woocommerce_order_id',
+						'label'         => esc_html__( 'WooCommerce Order ID Field', 'gravityflowwoocommerce' ),
+						'type'          => 'field_select',
+						'tooltip'       => __( 'Select the field which will contain the ID of the WooCommerce ID to be refunded.', 'gravityflowwoocommerce' ),
+						'required'      => true,
+						'default_value' => 'woocommerce_order_id',
+						'args'          => $args,
+					),
+				),
+			);
 		}
 
 		/**
