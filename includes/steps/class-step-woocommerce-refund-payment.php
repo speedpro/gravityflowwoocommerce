@@ -129,7 +129,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		public function get_order_id() {
 			$setting = $this->get_setting( 'woocommerce_order_id' );
 
-			if ( 'workflow_woocommerce_order_id' === $setting ) {
+			if ( 'workflow_woocommerce_order_id' === $setting || ! $setting ) {
 				$order_id = parent::get_order_id();
 			} else {
 				$entry    = $this->get_entry();

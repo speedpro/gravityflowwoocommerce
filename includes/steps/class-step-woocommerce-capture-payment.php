@@ -125,7 +125,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 			$order_id = $this->get_order_id();
 			$order    = wc_get_order( $order_id );
 
-			if ( ! $this->is_valid_order( $order ) ) {
+			if ( ! $order || ! $this->is_valid_order( $order ) ) {
 				$this->update_step_status( 'failed' );
 
 				return true;
