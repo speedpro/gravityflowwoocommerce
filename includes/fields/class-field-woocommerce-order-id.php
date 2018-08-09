@@ -184,8 +184,12 @@ if ( ! class_exists( 'Gravity_Flow_Field_WooCommerce_Order_ID' ) ) {
 			if ( ! empty( $order ) ) {
 				$is_html = $format === 'html';
 
-				if ( $is_html && $order->get_user_id() ) {
-					$order_id = sprintf( '<a href="%s">%s</a>', $order->get_view_order_url(), $order_id );
+				if ( $is_html && current_user_can( 'edit_shop_orders' ) ) {
+					$query_args = array(
+						'post'   => $order_id,
+						'action' => 'edit',
+					);
+					$order_id   = sprintf( '<a href="%s" target="_blank">%s</a>', add_query_arg( $query_args, admin_url( 'post.php' ) ), $order_id );
 				}
 
 				$details = sprintf(
