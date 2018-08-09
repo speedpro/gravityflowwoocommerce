@@ -667,14 +667,11 @@ if ( class_exists( 'GFForms' ) ) {
 		 */
 		public function add_entry( $order_id, $data ) {
 			$this->log_debug( __METHOD__ . '() starting' );
-
-			$order = wc_get_order( $order_id );
-
 			// get forms with WooCommerce integration.
 			$form_ids = RGFormsModel::get_form_ids();
-			foreach ( $form_ids as $form_id ) {
+			foreach ( $form_ids as $key => $form_id ) {
 				if ( ! $this->is_woocommerce_orders_integration_enabled( $form_id ) ) {
-					unset( $form_ids[ $form_id ] );
+					unset( $form_ids[ $key ] );
 				}
 			}
 
