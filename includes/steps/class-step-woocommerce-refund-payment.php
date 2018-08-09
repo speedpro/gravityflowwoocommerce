@@ -39,7 +39,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		 * @return bool
 		 */
 		public function is_supported() {
-			$form     = $this->get_form();
+			$form_id  = $this->get_form_id();
+			$form     = GFAPI::get_form( $form_id );
 			$settings = rgar( $form, 'gravityflowwoocommerce' );
 
 			return function_exists( 'WC' ) && ( ! empty( GFFormsModel::get_fields_by_type( $form, 'workflow_woocommerce_order_id' ) ) || ( isset( $settings['woocommerce_orders_integration_enabled'] ) && '1' === $settings['woocommerce_orders_integration_enabled'] ) );
