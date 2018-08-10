@@ -730,16 +730,14 @@ if ( class_exists( 'GFForms' ) ) {
 			 */
 			do_action( 'gravityflowwoocommerce_pre_update_entry', $entry, $order_id, $from_status, $to_status, $order );
 
-			if ( ! $current_step ) {
-				if ( 'on-hold' === $from_status && 'pending' === $to_status ) {
+			if ( 'on-hold' === $from_status && 'pending' === $to_status ) {
 					// Use the pay later gateway.
 					$entry['payment_status'] = $to_status;
 					$entry['payment_method'] = $order->get_payment_method();
 
 					$result = GFAPI::update_entry( $entry );
 					$this->log_debug( __METHOD__ . '(): update entry result - ' . print_r( $result, true ) );
-				}
-			} else {
+			} elseif ( $current_step ) {
 				if ( 'woocommerce_payment' === $current_step->get_type() && 'pending' === $from_status ) {
 					$result = $this->update_entry_payment_data( $entry, $order, $to_status );
 
