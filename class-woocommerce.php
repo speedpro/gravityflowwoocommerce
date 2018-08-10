@@ -740,30 +740,21 @@ if ( class_exists( 'GFForms' ) ) {
 
 				$result = $this->update_entry_payment_data( $entry, $order, $from_status, $to_status );
 
-				if ( $current_step ) {
-					if ( 'woocommerce_payment' === $current_step->get_type() && 'pending' === $from_status ) {
-						if ( true === $result ) {
-							$assignee_key = array(
-								'type' => 'email',
-								'id'   => $order->get_billing_email(),
-							);
-							$assignee     = $current_step->get_assignee( $assignee_key );
-							$assignee->update_status( 'complete' );
-
-							$api->process_workflow( $entry_id );
-
-							// refresh entry.
-							$entry = $current_step->refresh_entry();
-						}
-					}
-
+				// A new payment release the entry from the WooCommerce Payment step.
+				// Update assignee status programmatically.
+				if ( $current_step && 'woocommerce_payment' === $current_step->get_type() && 'pending' === $from_status ) {
 					if ( true === $result ) {
-						// add note.
-						$note = $current_step->get_name() . ': ' . esc_html__( 'Completed. Current payment status: ', 'gravityflowwoocommerce' ) . $to_status;
-						$current_step->add_note( $note );
-					} else {
-						$note = $current_step->get_name() . ': ' . esc_html__( 'Failed to update entry. Error(s): ', 'gravityflowwoocommerce' ) . print_r( $result, true );
-						$current_step->add_note( $note );
+						$assignee_key = array(
+							'type' => 'email',
+							'id'   => $order->get_billing_email(),
+						);
+						$assignee     = $current_step->get_assignee( $assignee_key );
+						$assignee->update_status( 'complete' );
+
+						$api->process_workflow( $entry_id );
+
+						// refresh entry.
+						$entry = $current_step->refresh_entry();
 					}
 				}
 
@@ -814,6 +805,12 @@ if ( class_exists( 'GFForms' ) ) {
 
 			$result = GFAPI::update_entry( $entry );
 			$this->log_debug( __METHOD__ . '(): update entry result - ' . print_r( $result, true ) );
+			if ( true === $result ) {
+				$note = sprintf( esc_html__( 'WooCommerce payment status updated from %s to %s.', 'gravityflowwoocommerce' ), $from_status, $to_status );
+			} else {
+				$note = esc_html__( 'Failed to update entry.', 'gravityflowwoocommerce' );
+			}
+			gravity_flow()->add_note( $entry['id'], $note, 'gravityflow' );
 
 			return $result;
 		}
