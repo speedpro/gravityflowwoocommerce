@@ -708,7 +708,7 @@ if ( class_exists( 'GFForms' ) ) {
 		public function update_entry( $order_id, $from_status, $to_status, $order ) {
 			$this->log_debug( __METHOD__ . '() starting' );
 
-			$entry_ids = get_post_meta( $order_id, '_gform-entry-id', true );
+			$entry_ids = get_post_meta( $order_id, '_gform-entry-id' );
 			if ( ! $entry_ids ) {
 				return;
 			}
@@ -738,17 +738,10 @@ if ( class_exists( 'GFForms' ) ) {
 				 */
 				do_action( 'gravityflowwoocommerce_pre_update_entry', $entry, $order_id, $from_status, $to_status, $order );
 
-				if ( 'on-hold' === $from_status && 'pending' === $to_status ) {
-					// Use the pay later gateway.
-					$entry['payment_status'] = $to_status;
-					$entry['payment_method'] = $order->get_payment_method();
+				$result = $this->update_entry_payment_data( $entry, $order, $from_status, $to_status );
 
-					$result = GFAPI::update_entry( $entry );
-					$this->log_debug( __METHOD__ . '(): update entry result - ' . print_r( $result, true ) );
-				} elseif ( $current_step ) {
+				if ( $current_step ) {
 					if ( 'woocommerce_payment' === $current_step->get_type() && 'pending' === $from_status ) {
-						$result = $this->update_entry_payment_data( $entry, $order, $to_status );
-
 						if ( true === $result ) {
 							$assignee_key = array(
 								'type' => 'email',
@@ -761,30 +754,16 @@ if ( class_exists( 'GFForms' ) ) {
 
 							// refresh entry.
 							$entry = $current_step->refresh_entry();
-
-							// add note.
-							$note = $current_step->get_name() . ': ' . esc_html__( 'Completed. Current payment status: ', 'gravityflowwoocommerce' ) . $to_status;
-							$current_step->add_note( $note );
-						} else {
-							$note = $current_step->get_name() . ': ' . esc_html__( 'Failed to update entry. Error(s): ', 'gravityflowwoocommerce' ) . print_r( $result, true );
-							$current_step->add_note( $note );
 						}
-					} elseif ( ( 'woocommerce_capture_payment' === $current_step->get_type() || 'woocommerce_cancel_payment' === $current_step->get_type() ) && 'on-hold' === $from_status ) {
-						$result = $this->update_entry_payment_data( $entry, $order, $to_status );
+					}
 
-						if ( true === $result ) {
-							// add note.
-							$note = $current_step->get_name() . ': ' . esc_html__( 'Completed. Current payment status: ', 'gravityflowwoocommerce' ) . $to_status;
-							$current_step->add_note( $note );
-						} else {
-							$note = $current_step->get_name() . ': ' . esc_html__( 'Failed to update entry. Error(s): ', 'gravityflowwoocommerce' ) . print_r( $result, true );
-							$current_step->add_note( $note );
-						}
-					} elseif ( 'woocommerce_refund_payment' === $current_step->get_type() && 'refunded' === $to_status ) {
-						$entry['payment_status'] = $to_status;
-
-						$result = GFAPI::update_entry( $entry );
-						$this->log_debug( __METHOD__ . '(): update entry result - ' . print_r( $result, true ) );
+					if ( true === $result ) {
+						// add note.
+						$note = $current_step->get_name() . ': ' . esc_html__( 'Completed. Current payment status: ', 'gravityflowwoocommerce' ) . $to_status;
+						$current_step->add_note( $note );
+					} else {
+						$note = $current_step->get_name() . ': ' . esc_html__( 'Failed to update entry. Error(s): ', 'gravityflowwoocommerce' ) . print_r( $result, true );
+						$current_step->add_note( $note );
 					}
 				}
 
@@ -810,19 +789,29 @@ if ( class_exists( 'GFForms' ) ) {
 		 *
 		 * @param array    $entry Entry object.
 		 * @param WC_Order $order WooCommerce Order object.
-		 * @param string   $payment_status Final payment status.
+		 * @param string   $from_status Previous payment status.
+		 * @param string   $to_status Final payment status.
 		 *
 		 * @return true|WP_Error
 		 */
-		public function update_entry_payment_data( $entry, $order, $payment_status ) {
-			// update entry properties.
-			$entry['payment_status'] = $payment_status;
+		public function update_entry_payment_data( $entry, $order, $from_status, $to_status ) {
+			$entry['payment_status'] = $to_status;
 			$entry['payment_method'] = $order->get_payment_method();
-			$entry['transaction_id'] = $order->get_transaction_id();
-			$entry['payment_date']   = $order->get_date_paid();
+
+			$transaction_id = $order->get_transaction_id();
+			if ( ! empty( $transaction_id ) ) {
+				$entry['transaction_id'] = $transaction_id;
+			}
+
+			$date_paid = $order->get_date_paid();
+			if ( ! empty( $date_paid ) ) {
+				$entry['payment_date'] = $order->get_date_paid();
+			}
+
 			if ( 'completed' === $entry['payment_status'] ) {
 				$entry['is_fulfilled'] = 1;
 			}
+
 			$result = GFAPI::update_entry( $entry );
 			$this->log_debug( __METHOD__ . '(): update entry result - ' . print_r( $result, true ) );
 
