@@ -91,7 +91,7 @@ if ( ! class_exists( 'Gravity_Flow_Field_WooCommerce_Order_ID' ) ) {
 		 * @return string
 		 */
 		public function get_form_editor_field_title() {
-			return __( 'WC Order ID', 'gravityflowwoocommerce' );
+			return __( 'Order ID', 'gravityflowwoocommerce' );
 		}
 
 		/**
