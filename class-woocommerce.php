@@ -722,6 +722,11 @@ if ( class_exists( 'GFForms' ) ) {
 					continue;
 				}
 
+				// Don't update entry if the WooCommerce integration is disabled.
+				if ( ! $this->is_woocommerce_orders_integration_enabled( $entry['form_id'] ) ) {
+					continue;
+				}
+
 				$api          = new Gravity_Flow_API( $entry['form_id'] );
 				$current_step = $api->get_current_step( $entry );
 
