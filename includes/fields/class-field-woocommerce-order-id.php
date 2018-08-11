@@ -116,11 +116,14 @@ if ( ! class_exists( 'Gravity_Flow_Field_WooCommerce_Order_ID' ) ) {
 		 * @param array        $form  The Form Object currently being processed.
 		 */
 		public function validate( $value, $form ) {
-			$order = wc_get_order( $value );
+			// $value may not be order ID (in the case of a custom order number),
+			// allow it to be filtered.
+			$order_id = apply_filters( 'gravityflow_woocommerce_order_id', $value );
+			$order    = wc_get_order( $order_id );
 
 			if ( ! $order ) {
 				$this->failed_validation  = true;
-				$this->validation_message = empty( $this->errorMessage ) ? esc_html__( 'Order not found for this WooCommerce Order ID.', 'gravityflowwoocommerce' ) : $this->errorMessage;
+				$this->validation_message = empty( $this->errorMessage ) ? esc_html__( 'Order not found for this Order ID.', 'gravityflowwoocommerce' ) : $this->errorMessage;
 			}
 		}
 

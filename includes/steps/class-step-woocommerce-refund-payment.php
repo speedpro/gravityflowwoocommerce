@@ -73,7 +73,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 				'fields' => array(
 					array(
 						'name'          => 'woocommerce_order_id',
-						'label'         => esc_html__( 'WooCommerce Order ID Field', 'gravityflowwoocommerce' ),
+						'label'         => esc_html__( 'Order ID Field', 'gravityflowwoocommerce' ),
 						'type'          => 'field_select',
 						'tooltip'       => __( 'Select the field which will contain the ID of the WooCommerce ID to be refunded.', 'gravityflowwoocommerce' ),
 						'required'      => true,
