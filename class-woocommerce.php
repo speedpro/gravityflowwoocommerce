@@ -122,17 +122,18 @@ if ( class_exists( 'GFForms' ) ) {
 			$fields = array(
 				array(
 					'name'       => 'woocommerce_orders_integration_enabled',
-					'label'      => esc_html__( 'Integration Enabled?', 'gravityflowwoocommerce' ),
+					'label'      => esc_html__( 'WooCommerce Integration', 'gravityflowwoocommerce' ),
 					'type'       => 'checkbox',
 					'horizontal' => true,
 					'onchange'   => "jQuery(this).closest('form').submit();",
 					'choices'    => array(
 						array(
-							'label' => esc_html__( 'Enable WooCommerce orders integration.', 'gravityflowwoocommerce' ),
+							'label' => esc_html__( 'Enable', 'gravityflowwoocommerce' ),
 							'value' => 1,
 							'name'  => 'woocommerce_orders_integration_enabled',
 						),
 					),
+					'tooltip'    => '<h6>' . esc_html__( 'WooCommerce Integration', 'gravityflowwoocommerce' ) . '</h6>' . esc_html__( 'When enabled, a new entry will be created in this form when a WooCommerce Order is created. The entry payment and transaction details will also be updated based on the WooCommerce Order. If the order changes, the entry will be updated.', 'gravityflowwoocommerce' ),
 				),
 			);
 
@@ -158,7 +159,6 @@ if ( class_exists( 'GFForms' ) ) {
 			return array(
 				array(
 					'title'       => esc_html__( 'WooCommerce', 'gravityflowwoocommerce' ),
-					'description' => $this->get_woocommerce_setting_description(),
 					'fields'      => $fields,
 				),
 			);
