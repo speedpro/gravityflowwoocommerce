@@ -715,15 +715,8 @@ if ( class_exists( 'GFForms' ) ) {
 
 			foreach ( $entry_ids as $entry_id ) {
 				$entry = GFAPI::get_entry( $entry_id );
-				if ( is_wp_error( $entry ) ) {
-					// entry is missing (maybe deleted), delete post meta.
-					delete_post_meta( $order_id, '_gform-entry-id', $entry_id );
-
-					continue;
-				}
-
 				// Don't update entry if the WooCommerce integration is disabled.
-				if ( ! $this->is_woocommerce_orders_integration_enabled( $entry['form_id'] ) ) {
+				if ( is_wp_error( $entry ) && ! $this->is_woocommerce_orders_integration_enabled( $entry['form_id'] ) ) {
 					continue;
 				}
 

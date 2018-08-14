@@ -46,6 +46,7 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 		add_filter( 'woocommerce_default_order_status', array( $this, 'default_order_status' ) );
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
 		add_filter( 'woocommerce_valid_order_statuses_for_payment', array( $this, 'valid_order_statuses_for_payment' ), 10, 2 );
+		add_filter( 'woocommerce_my_account_my_orders_actions', array( $this, 'orders_actions' ), 10, 2 );
 	}
 
 	/**
@@ -76,7 +77,7 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 	 * @return array Payment statuses.
 	 */
 	public function valid_order_statuses_for_payment( $statuses, $order ) {
-		if ( true === get_post_meta( $order->get_id(), '_is_gravity_flow_pay_later', true ) ) {
+		if ( true == get_post_meta( $order->get_id(), '_is_gravity_flow_pay_later', true ) ) {
 			$statuses[] = 'on-hold';
 		}
 
@@ -150,5 +151,41 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 			'result'   => 'success',
 			'redirect' => apply_filters( 'wc_pay_later_order_received_url', $order->get_checkout_order_received_url(), $order, $this ),
 		);
+	}
+
+	/**
+	 * Filter WooCommerce My Account My Order actions.
+	 *
+	 * @param array    $actions Order actions.
+	 * @param WC_Order $order WooCommerce order.
+	 *
+	 * @return mixed
+	 */
+	public function orders_actions( $actions, $order ) {
+		if ( ! isset( $actions['pay'] ) ) {
+			return $actions;
+		}
+
+		if ( true == get_post_meta( $order->get_id(), '_is_gravity_flow_pay_later', true ) ) {
+			$entry_ids = get_post_meta( $order->get_id(), '_gform-entry-id' );
+			foreach ( $entry_ids as $entry_id ) {
+				$entry = GFAPI::get_entry( $entry_id );
+				if ( is_wp_error( $entry ) && ! gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $entry['form_id'] ) ) {
+					continue;
+				}
+
+				$api          = new Gravity_Flow_API( $entry['form_id'] );
+				$current_step = $api->get_current_step( $entry );
+				if ( $current_step && 'woocommerce_payment' === $current_step->get_type() ) {
+					$can_pay = 1;
+				}
+			}
+
+			if ( ! isset( $can_pay ) ) {
+				unset( $actions['pay'] );
+			}
+		}
+
+		return $actions;
 	}
 }
