@@ -116,10 +116,14 @@ if ( ! class_exists( 'Gravity_Flow_Field_WooCommerce_Order_ID' ) ) {
 		 * @param array        $form  The Form Object currently being processed.
 		 */
 		public function validate( $value, $form ) {
-			// $value may not be order ID (in the case of a custom order number),
-			// allow it to be filtered.
-			$order_id = apply_filters( 'gravityflow_woocommerce_order_id', $value );
-			$order    = wc_get_order( $order_id );
+			if ( function_exists( 'wc_sequential_order_numbers' ) ) {
+				$order_id = wc_sequential_order_numbers()->find_order_by_order_number( $value );
+			} elseif ( function_exists( 'wc_seq_order_number_pro' ) ) {
+				$order_id = wc_seq_order_number_pro()->find_order_by_order_number( $value );
+			} else {
+				$order_id = $value;
+			}
+			$order = wc_get_order( $order_id );
 
 			if ( ! $order ) {
 				$this->failed_validation  = true;
