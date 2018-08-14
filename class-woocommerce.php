@@ -716,7 +716,7 @@ if ( class_exists( 'GFForms' ) ) {
 			foreach ( $entry_ids as $entry_id ) {
 				$entry = GFAPI::get_entry( $entry_id );
 				// Don't update entry if the WooCommerce integration is disabled.
-				if ( is_wp_error( $entry ) && ! $this->is_woocommerce_orders_integration_enabled( $entry['form_id'] ) ) {
+				if ( is_wp_error( $entry ) || ! $this->is_woocommerce_orders_integration_enabled( $entry['form_id'] ) ) {
 					continue;
 				}
 

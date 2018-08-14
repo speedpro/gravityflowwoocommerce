@@ -45,8 +45,11 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 
 		add_filter( 'woocommerce_default_order_status', array( $this, 'default_order_status' ) );
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
-		add_filter( 'woocommerce_valid_order_statuses_for_payment', array( $this, 'valid_order_statuses_for_payment' ), 10, 2 );
 		add_filter( 'woocommerce_my_account_my_orders_actions', array( $this, 'orders_actions' ), 10, 2 );
+		add_filter( 'woocommerce_order_has_status', array( $this, 'has_status' ), 10, 3 );
+		add_filter( 'woocommerce_email_format_string', array( $this, 'email_format_string' ), 10, 2 );
+		add_action( 'woocommerce_after_template_part', array( $this, 'filter_email_content' ), 10, 4 );
+		add_action( 'woocommerce_order_status_pending', array( $this, 'send_pending_order_emails' ), 10, 2 );
 	}
 
 	/**
@@ -64,24 +67,6 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 		}
 
 		return $default;
-	}
-
-	/**
-	 * Set valid order statuses for payment.
-	 *
-	 * @since 1.0.0-dev
-	 *
-	 * @param array  $statuses Payment statuses.
-	 * @param object $order WooCommerce Order.
-	 *
-	 * @return array Payment statuses.
-	 */
-	public function valid_order_statuses_for_payment( $statuses, $order ) {
-		if ( true == get_post_meta( $order->get_id(), '_is_gravity_flow_pay_later', true ) ) {
-			$statuses[] = 'on-hold';
-		}
-
-		return $statuses;
 	}
 
 	/**
@@ -166,11 +151,11 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 			return $actions;
 		}
 
-		if ( true == get_post_meta( $order->get_id(), '_is_gravity_flow_pay_later', true ) ) {
+		if ( $order->get_payment_method() === $this->id ) {
 			$entry_ids = get_post_meta( $order->get_id(), '_gform-entry-id' );
 			foreach ( $entry_ids as $entry_id ) {
 				$entry = GFAPI::get_entry( $entry_id );
-				if ( is_wp_error( $entry ) && ! gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $entry['form_id'] ) ) {
+				if ( is_wp_error( $entry ) || ! gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $entry['form_id'] ) ) {
 					continue;
 				}
 
@@ -187,5 +172,93 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 		}
 
 		return $actions;
+	}
+
+	/**
+	 * Modify has_status() so we could hide the "pay for this order" link in emails.
+	 *
+	 * @param boolean      $result Result.
+	 * @param WC_Order     $order WooCommerce order.
+	 * @param string|array $status Status to check against.
+	 *
+	 * @return boolean $result
+	 */
+	public function has_status( $result, $order, $status ) {
+		if ( $result && 'pending' === $status ) {
+			if ( $order->get_payment_method() === $this->id ) {
+				$result = false;
+
+				$entry_ids = get_post_meta( $order->get_id(), '_gform-entry-id' );
+				foreach ( $entry_ids as $entry_id ) {
+					$entry = GFAPI::get_entry( $entry_id );
+					if ( is_wp_error( $entry ) || ! gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $entry['form_id'] ) ) {
+						continue;
+					}
+
+					$api          = new Gravity_Flow_API( $entry['form_id'] );
+					$current_step = $api->get_current_step( $entry );
+					if ( $current_step && 'woocommerce_payment' === $current_step->get_type() ) {
+						$result = true;
+					}
+				}
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Replace order status in WooCommerce Emails.
+	 *
+	 * @param string   $string Email strings.
+	 * @param WC_Email $email WooCommerce email object.
+	 *
+	 * @return mixed
+	 */
+	public function email_format_string( $string, $email ) {
+		if ( 'customer_on_hold_order' === $email->id && $email->object->get_payment_method() === $this->id ) {
+			$string = str_replace( '{order_status}', wc_get_order_status_name( $email->object->get_status() ), $string );
+		}
+
+		return $string;
+	}
+
+	/**
+	 * Filter WooCommerce on-hold email template.
+	 *
+	 * @param string $template_name Template name.
+	 * @param string $template_path Template path.
+	 * @param string $located  Locate a template and return the path for inclusion.
+	 * @param array  $args     Arguments.
+	 */
+	public function filter_email_content( $template_name, $template_path, $located, $args ) {
+		if ( ! isset( $args['email'] ) || ! $args['order'] ) {
+			return;
+		}
+
+		if ( 'customer_on_hold_order' === $args['email']->id && $args['order']->get_payment_method() === $this->id ) {
+			$email_content = ob_get_contents();
+			$email_content = str_replace( 'on-hold', 'pending', $email_content );
+			ob_end_clean();
+
+			ob_start();
+			echo $email_content;
+		}
+	}
+
+	/**
+	 * Trigger pending order emails and invoice email.
+	 *
+	 * @param int      $order_id Order ID.
+	 * @param WC_Order $order WooCommerce order.
+	 */
+	public function send_pending_order_emails( $order_id, $order ) {
+		if ( $order->get_payment_method() !== $this->id ) {
+			return;
+		}
+
+		$emails = new WC_Emails();
+		$emails->emails['WC_Email_Customer_On_Hold_Order']->trigger( $order_id );
+		$emails->emails['WC_Email_New_Order']->trigger( $order_id );
 	}
 }
