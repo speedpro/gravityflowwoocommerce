@@ -33,7 +33,7 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 		$this->id                 = 'gravity_flow_pay_later';
 		$this->has_fields         = false;
 		$this->method_title       = __( 'Gravity Flow Pay Later', 'gravityflowwoocommerce' );
-		$this->method_description = __( 'Allow customers to make a payment later.', 'gravityflowwoocommerce' );
+		$this->method_description = __( 'Allow customers to make a payment later in the workflow instead of at the checkout.', 'gravityflowwoocommerce' );
 
 		$this->init_form_fields();
 		$this->init_settings();
@@ -79,20 +79,20 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 			'enabled'     => array(
 				'title'   => __( '<b>Enable/Disable:</b>', 'gravityflowwoocommerce' ),
 				'type'    => 'checkbox',
-				'label'   => __( 'Enable Gravity Flow Pay Later Payment Gateway.', 'gravityflowwoocommerce' ),
+				'label'   => __( 'Enable the Gravity Flow Payment Gateway.', 'gravityflowwoocommerce' ),
 				'default' => 'no',
 			),
 			'title'       => array(
 				'title'       => __( '<b>Title:</b>', 'gravityflowwoocommerce' ),
 				'type'        => 'text',
 				'description' => __( 'The title which the user sees during checkout.', 'gravityflowwoocommerce' ),
-				'default'     => __( 'Gravity Flow Pay Later', 'gravityflowwoocommerce' ),
+				'default'     => __( 'Pay Later', 'gravityflowwoocommerce' ),
 			),
 			'description' => array(
 				'title'       => __( '<b>Description:</b>', 'gravityflowwoocommerce' ),
 				'type'        => 'textarea',
 				'description' => __( 'This controls the description which the user sees during checkout.', 'gravityflowwoocommerce' ),
-				'default'     => __( 'Place your order now, and make a payment later.', 'gravityflowwoocommerce' ),
+				'default'     => __( 'Place your order now, and pay later.', 'gravityflowwoocommerce' ),
 			),
 		);
 
@@ -101,7 +101,7 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 			$form_fields['pending_duration'] = array(
 				'title'       => __( '<b>Pending Duration:</b>', 'gravityflowwoocommerce' ),
 				'type'        => 'number',
-				'description' => __( 'Hold an order as pending for x days. If after the duration it still hasn\'t been paid, the order will be cancelled.', 'gravityflowwoocommerce' ),
+				'description' => __( 'How many days should the order be held as pending before it is automatically cancelled?', 'gravityflowwoocommerce' ),
 				'default'     => 7,
 			);
 		}
