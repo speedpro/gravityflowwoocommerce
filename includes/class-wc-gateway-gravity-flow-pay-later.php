@@ -117,9 +117,10 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 		}
 
 		$form_fields['disable_other_gateways_on_checkout'] = array(
-			'title'   => sprintf( esc_html__( '%sDisable Other Gateways:%s', 'gravityflowwoocommerce' ), '<b>', '</b>' ),
+			'title'   => sprintf( '<b>%s</b>', esc_html__( 'Disable Other Gateways:', 'gravityflowwoocommerce' ) ),
 			'type'    => 'checkbox',
-			'label'   => esc_html__( 'Enable this setting to disable all other gateways on the checkout. They will still be available when the customer pays later in the workflow.', 'gravityflowwoocommerce' ),
+			'label'   => esc_html__( 'Disable other gateways at the checkout.', 'gravityflowwoocommerce' ),
+			'description'   => esc_html__( 'Activate this setting to disable all other gateways on the checkout. They will still be available when the customer pays later in the workflow.', 'gravityflowwoocommerce' ),
 			'default' => 'no',
 		);
 
