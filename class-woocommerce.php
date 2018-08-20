@@ -216,7 +216,8 @@ if ( class_exists( 'GFForms' ) ) {
 		}
 
 		/**
-		 * Show this gateway only if we're on the checkout page (is_checkout), but not on the order-pay page (is_checkout_pay_page).
+		 * Show this gateway only if we're on the checkout page (is_checkout), but not on the order-pay page (is_checkout_pay_page),
+		 * also follow the pay later gateway setting to remove other gateways.
 		 *
 		 * @since 1.0.0-dev
 		 *
@@ -225,9 +226,18 @@ if ( class_exists( 'GFForms' ) ) {
 		 * @return array
 		 */
 		public function maybe_disable_gateway( $gateways ) {
-			if ( is_checkout_pay_page() ) {
-				if ( isset( $gateways['gravity_flow_pay_later'] ) ) {
+			if ( isset( $gateways['gravity_flow_pay_later'] ) ) {
+				if ( is_checkout_pay_page() ) {
 					unset( $gateways['gravity_flow_pay_later'] );
+				} elseif ( is_checkout() ) {
+					$gateway_settings = get_option( 'woocommerce_gravity_flow_pay_later_settings' );
+					if ( isset( $gateway_settings['disable_other_gateways_on_checkout'] ) && 'yes' === $gateway_settings['disable_other_gateways_on_checkout'] ) {
+						foreach ( $gateways as $name => $gateway ) {
+							if ( 'gravity_flow_pay_later' !== $name ) {
+								unset( $gateways[ $name ] );
+							}
+						}
+					}
 				}
 			}
 
@@ -824,7 +834,10 @@ if ( class_exists( 'GFForms' ) ) {
 		 * @return bool True if order has expired, false otherwise.
 		 */
 		public function cancel_unpaid_order( $result, $order ) {
-			$gateway_settings = get_option( 'woocommerce_gravity_flow_pay_later_settings', 7 );
+			$gateway_settings = get_option( 'woocommerce_gravity_flow_pay_later_settings' );
+			if ( empty( $gateway_settings ) ) {
+				$gateway_settings['pending_duration'] = 7;
+			}
 
 			if ( ( 'gravity_flow_pay_later' === $order->get_payment_method() ) && ( time() <= ( strtotime( $order->get_date_created() ) + $gateway_settings['pending_duration'] * 86400 ) ) ) {
 				$result = false;

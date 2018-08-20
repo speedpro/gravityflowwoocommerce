@@ -25,6 +25,15 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 	public $pending_duration;
 
 	/**
+	 * Disable other gateways on the checkout page.
+	 *
+	 * @since 1.0.0-dev
+	 *
+	 * @var string
+	 */
+	public $disable_other_gateways_on_checkout;
+
+	/**
 	 * Constructor for the gateway.
 	 *
 	 * @since 1.0.0-dev
@@ -38,10 +47,11 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 		$this->init_form_fields();
 		$this->init_settings();
 
-		$this->title            = $this->settings['title'];
-		$this->description      = $this->settings['description'];
-		$this->enabled          = $this->settings['enabled'];
-		$this->pending_duration = $this->get_option( 'pending_duration' );
+		$this->title                              = $this->settings['title'];
+		$this->description                        = $this->settings['description'];
+		$this->enabled                            = $this->settings['enabled'];
+		$this->pending_duration                   = $this->get_option( 'pending_duration' );
+		$this->disable_other_gateways_on_checkout = $this->get_option( 'disable_other_gateways_on_checkout' );
 
 		add_filter( 'woocommerce_default_order_status', array( $this, 'default_order_status' ) );
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
@@ -105,6 +115,13 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 				'default'     => 7,
 			);
 		}
+
+		$form_fields['disable_other_gateways_on_checkout'] = array(
+			'title'   => sprintf( esc_html__( '%sDisable Other Gateways:%s', 'gravityflowwoocommerce' ), '<b>', '</b>' ),
+			'type'    => 'checkbox',
+			'label'   => esc_html__( 'Do you want to disable all other gateways on the checkout page? They will still appear on the Checkout\'s Pay page.', 'gravityflowwoocommerce' ),
+			'default' => 'no',
+		);
 
 		$this->form_fields = $form_fields;
 	}
