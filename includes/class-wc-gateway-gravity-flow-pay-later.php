@@ -32,8 +32,8 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 	public function __construct() {
 		$this->id                 = 'gravity_flow_pay_later';
 		$this->has_fields         = false;
-		$this->method_title       = __( 'Gravity Flow Pay Later', 'gravityflowwoocommerce' );
-		$this->method_description = __( 'Allow customers to make a payment later in the workflow instead of at the checkout.', 'gravityflowwoocommerce' );
+		$this->method_title       = esc_html__( 'Gravity Flow Gateway', 'gravityflowwoocommerce' );
+		$this->method_description = esc_html__( 'Allow customers to make a payment later in the workflow instead of at the checkout.', 'gravityflowwoocommerce' );
 
 		$this->init_form_fields();
 		$this->init_settings();
@@ -77,31 +77,31 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 	public function init_form_fields() {
 		$form_fields = array(
 			'enabled'     => array(
-				'title'   => __( '<b>Enable/Disable:</b>', 'gravityflowwoocommerce' ),
+				'title'   => sprintf( esc_html__( '%sEnable/Disable:%s', 'gravityflowwoocommerce' ), '<b>', '</b>' ),
 				'type'    => 'checkbox',
-				'label'   => __( 'Enable the Gravity Flow Payment Gateway.', 'gravityflowwoocommerce' ),
+				'label'   => esc_html__( 'Enable the Gravity Flow Gateway.', 'gravityflowwoocommerce' ),
 				'default' => 'no',
 			),
 			'title'       => array(
-				'title'       => __( '<b>Title:</b>', 'gravityflowwoocommerce' ),
+				'title'       => sprintf( esc_html__( '%sTitle:%s', 'gravityflowwoocommerce' ), '<b>', '</b>' ),
 				'type'        => 'text',
-				'description' => __( 'The title which the user sees during checkout.', 'gravityflowwoocommerce' ),
-				'default'     => __( 'Pay Later', 'gravityflowwoocommerce' ),
+				'description' => esc_html__( 'The title which the user sees during checkout.', 'gravityflowwoocommerce' ),
+				'default'     => esc_html__( 'Pay Later', 'gravityflowwoocommerce' ),
 			),
 			'description' => array(
-				'title'       => __( '<b>Description:</b>', 'gravityflowwoocommerce' ),
+				'title'       => sprintf( esc_html__( '%sDescription:%s', 'gravityflowwoocommerce' ), '<b>', '</b>' ),
 				'type'        => 'textarea',
-				'description' => __( 'This controls the description which the user sees during checkout.', 'gravityflowwoocommerce' ),
-				'default'     => __( 'Place your order now, and pay later.', 'gravityflowwoocommerce' ),
+				'description' => esc_html__( 'This controls the description which the user sees during checkout.', 'gravityflowwoocommerce' ),
+				'default'     => esc_html__( 'Place your order now, and pay later.', 'gravityflowwoocommerce' ),
 			),
 		);
 
 		$held_duration = get_option( 'woocommerce_hold_stock_minutes' );
 		if ( $held_duration > 1 && 'no' !== get_option( 'woocommerce_manage_stock' ) ) {
 			$form_fields['pending_duration'] = array(
-				'title'       => __( '<b>Pending Duration:</b>', 'gravityflowwoocommerce' ),
+				'title'       => sprintf( esc_html__( '%sPending Duration:%s', 'gravityflowwoocommerce' ), '<b>', '</b>' ),
 				'type'        => 'number',
-				'description' => __( 'How many days should the order be held as pending before it is automatically cancelled?', 'gravityflowwoocommerce' ),
+				'description' => esc_html__( 'How many days should the order be held as pending before it is automatically cancelled?', 'gravityflowwoocommerce' ),
 				'default'     => 7,
 			);
 		}
