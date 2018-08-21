@@ -699,7 +699,7 @@ if ( class_exists( 'GFForms' ) ) {
 						$this->log_debug( __METHOD__ . '(): successfully created new entry #' . $entry_id );
 
 						// save entry ID to WC order.
-						add_post_meta( $order_id, '_gform-entry-id', $entry_id );
+						add_post_meta( $order_id, '_gravityflow-entry-id', $entry_id );
 					}
 				}
 			}
@@ -718,7 +718,7 @@ if ( class_exists( 'GFForms' ) ) {
 		public function update_entry( $order_id, $from_status, $to_status, $order ) {
 			$this->log_debug( __METHOD__ . '() starting' );
 
-			$entry_ids = get_post_meta( $order_id, '_gform-entry-id' );
+			$entry_ids = get_post_meta( $order_id, '_gravityflow-entry-id' );
 			if ( ! $entry_ids ) {
 				return;
 			}

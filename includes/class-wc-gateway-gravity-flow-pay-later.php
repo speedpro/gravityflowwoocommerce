@@ -170,7 +170,7 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 		}
 
 		if ( $order->get_payment_method() === $this->id ) {
-			$entry_ids = get_post_meta( $order->get_id(), '_gform-entry-id' );
+			$entry_ids = get_post_meta( $order->get_id(), '_gravityflow-entry-id' );
 			foreach ( $entry_ids as $entry_id ) {
 				$entry = GFAPI::get_entry( $entry_id );
 				if ( is_wp_error( $entry ) || ! gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $entry['form_id'] ) ) {
@@ -206,7 +206,7 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 			if ( $order->get_payment_method() === $this->id ) {
 				$result = false;
 
-				$entry_ids = get_post_meta( $order->get_id(), '_gform-entry-id' );
+				$entry_ids = get_post_meta( $order->get_id(), '_gravityflow-entry-id' );
 				foreach ( $entry_ids as $entry_id ) {
 					$entry = GFAPI::get_entry( $entry_id );
 					if ( is_wp_error( $entry ) || ! gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $entry['form_id'] ) ) {
