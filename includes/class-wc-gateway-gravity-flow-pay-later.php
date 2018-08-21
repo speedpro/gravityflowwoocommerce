@@ -90,7 +90,7 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 				'title'   => sprintf('<b>%s</b>', esc_html__( 'Enable/Disable', 'gravityflowwoocommerce' ) ),
 				'type'    => 'checkbox',
 				'label'   => esc_html__( 'Enable the Gravity Flow Gateway.', 'gravityflowwoocommerce' ),
-				'description' => esc_html__( 'Activate this setting to allow customers to place and order and then pay later in the workflow with a payment step.', 'gravityflowwoocommerce' ),
+				'description' => esc_html__( 'Activate this setting to allow customers to place an order and then pay later in the workflow at a payment step.', 'gravityflowwoocommerce' ),
 				'default' => 'no',
 			),
 			'title'       => array(
