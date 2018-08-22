@@ -540,7 +540,6 @@ if ( class_exists( 'GFForms' ) ) {
 			$order     = wc_get_order( $order_id );
 
 			// Set mandatory fields.
-			$new_entry['form_id']        = $form['id'];
 			$new_entry['currency']       = $order->get_currency();
 			$new_entry['payment_status'] = $order->get_status();
 			$new_entry['payment_method'] = $order->get_payment_method();
@@ -692,7 +691,8 @@ if ( class_exists( 'GFForms' ) ) {
 				$new_entry = $this->do_mapping( $form, $order_id );
 
 				if ( ! empty( $new_entry ) ) {
-					$entry_id = GFAPI::add_entry( $new_entry );
+					$new_entry['form_id'] = $form_id;
+					$entry_id             = GFAPI::add_entry( $new_entry );
 					if ( is_wp_error( $entry_id ) ) {
 						$this->log_debug( __METHOD__ . '(): failed to add entry' );
 					} else {
@@ -746,20 +746,7 @@ if ( class_exists( 'GFForms' ) ) {
 				 */
 				do_action( 'gravityflowwoocommerce_pre_update_entry', $entry, $order_id, $from_status, $to_status, $order );
 
-				$form          = GFAPI::get_form( $entry['form_id'] );
-				$updated_entry = $this->do_mapping( $form, $order_id );
-				if ( ! empty( $updated_entry ) ) {
-					$result = GFAPI::update_entry( $updated_entry, $entry_id );
-					if ( $result === true ) {
-						$this->log_debug( __METHOD__ . '(): successfully updated entry #' . $entry_id );
-						$note = sprintf( esc_html__( 'WooCommerce payment status updated from %s to %s.', 'gravityflowwoocommerce' ), $from_status, $to_status );
-					} else {
-						$this->log_debug( __METHOD__ . '(): failed to update entry' );
-						$note = esc_html__( 'Failed to update entry.', 'gravityflowwoocommerce' );
-					}
-
-					gravity_flow()->add_note( $entry_id, $note, 'gravityflow' );
-				}
+				$result = $this->update_entry_payment_data( $entry, $order, $from_status, $to_status );
 
 				// A new payment release the entry from the WooCommerce Payment step.
 				// Update assignee status programmatically.
@@ -792,6 +779,48 @@ if ( class_exists( 'GFForms' ) ) {
 				 */
 				do_action( 'gravityflowwoocommerce_post_update_entry', $entry, $order_id, $from_status, $to_status, $order );
 			}
+		}
+
+		/**
+		 * Update entry payment data.
+		 *
+		 * @since 1.0.0-dev
+		 *
+		 * @param array    $entry Entry object.
+		 * @param WC_Order $order WooCommerce Order object.
+		 * @param string   $from_status Previous payment status.
+		 * @param string   $to_status Final payment status.
+		 *
+		 * @return true|WP_Error
+		 */
+		public function update_entry_payment_data( $entry, $order, $from_status, $to_status ) {
+			$entry['payment_status'] = $to_status;
+			$entry['payment_method'] = $order->get_payment_method();
+
+			$transaction_id = $order->get_transaction_id();
+			if ( ! empty( $transaction_id ) ) {
+				$entry['transaction_id'] = $transaction_id;
+			}
+
+			$date_paid = $order->get_date_paid();
+			if ( ! empty( $date_paid ) ) {
+				$entry['payment_date'] = $order->get_date_paid();
+			}
+
+			if ( 'completed' === $entry['payment_status'] ) {
+				$entry['is_fulfilled'] = 1;
+			}
+
+			$result = GFAPI::update_entry( $entry );
+			$this->log_debug( __METHOD__ . '(): update entry result - ' . print_r( $result, true ) );
+			if ( true === $result ) {
+				$note = sprintf( esc_html__( 'WooCommerce payment status updated from %s to %s.', 'gravityflowwoocommerce' ), $from_status, $to_status );
+			} else {
+				$note = esc_html__( 'Failed to update entry.', 'gravityflowwoocommerce' );
+			}
+			gravity_flow()->add_note( $entry['id'], $note, 'gravityflow' );
+
+			return $result;
 		}
 
 		/**
