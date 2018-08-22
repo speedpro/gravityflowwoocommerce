@@ -41,7 +41,7 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 	public function __construct() {
 		$this->id                 = 'gravity_flow_pay_later';
 		$this->has_fields         = false;
-		$this->method_title       = esc_html__( 'Gravity Flow Gateway', 'gravityflowwoocommerce' );
+		$this->method_title       = esc_html__( 'Gravity Flow', 'gravityflowwoocommerce' );
 		$this->method_description = esc_html__( 'Allow customers to make a payment later in the workflow instead of at the checkout.', 'gravityflowwoocommerce' );
 
 		$this->init_form_fields();
@@ -87,11 +87,11 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 	public function init_form_fields() {
 		$form_fields = array(
 			'enabled'     => array(
-				'title'   => sprintf('<b>%s</b>', esc_html__( 'Enable/Disable', 'gravityflowwoocommerce' ) ),
-				'type'    => 'checkbox',
-				'label'   => esc_html__( 'Enable the Gravity Flow Gateway.', 'gravityflowwoocommerce' ),
+				'title'       => sprintf( '<b>%s</b>', esc_html__( 'Enable/Disable', 'gravityflowwoocommerce' ) ),
+				'type'        => 'checkbox',
+				'label'       => esc_html__( 'Enable the Gravity Flow.', 'gravityflowwoocommerce' ),
 				'description' => esc_html__( 'Activate this setting to allow customers to place an order and then pay later in the workflow at a payment step.', 'gravityflowwoocommerce' ),
-				'default' => 'no',
+				'default'     => 'no',
 			),
 			'title'       => array(
 				'title'       => sprintf( '<b>%s</b>', esc_html__( 'Title', 'gravityflowwoocommerce' ) ),
