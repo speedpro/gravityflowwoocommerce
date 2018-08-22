@@ -797,6 +797,11 @@ if ( class_exists( 'GFForms' ) ) {
 			$entry['payment_status'] = $to_status;
 			$entry['payment_method'] = $order->get_payment_method();
 
+			$form = GFAPI::get_form( $entry['form_id'] );
+			if ( ! self::has_price_field( $form ) ) {
+				$entry['payment_amount'] = $order->get_total();
+			}
+
 			$transaction_id = $order->get_transaction_id();
 			if ( ! empty( $transaction_id ) ) {
 				$entry['transaction_id'] = $transaction_id;
