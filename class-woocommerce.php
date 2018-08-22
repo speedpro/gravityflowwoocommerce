@@ -59,7 +59,8 @@ if ( class_exists( 'GFForms' ) ) {
 		public function init() {
 			parent::init();
 
-			add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'add_entry' ), 10, 2 );
+			add_action( 'woocommerce_new_order', array( $this, 'add_entry' ) );
+			add_action( 'woocommerce_process_shop_order_meta', array( $this, 'add_entry' ) );
 			add_filter( 'woocommerce_payment_gateways', array( $this, 'payment_gateways' ) );
 			add_action( 'woocommerce_available_payment_gateways', array( $this, 'maybe_disable_gateway' ) );
 			add_action( 'woocommerce_order_status_changed', array( $this, 'update_entry' ), 10, 4 );
@@ -673,9 +674,8 @@ if ( class_exists( 'GFForms' ) ) {
 		 * @since 1.0.0-dev
 		 *
 		 * @param int   $order_id WooCommerce Order ID.
-		 * @param array $data WooCommerce Order meta data.
 		 */
-		public function add_entry( $order_id, $data ) {
+		public function add_entry( $order_id ) {
 			$this->log_debug( __METHOD__ . '() starting' );
 			// get forms with WooCommerce integration.
 			$form_ids = RGFormsModel::get_form_ids();
