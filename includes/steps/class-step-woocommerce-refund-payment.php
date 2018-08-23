@@ -177,7 +177,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 						$this->log_debug( __METHOD__ . '(): Charge refunded.' );
 					} catch ( Exception $e ) {
 						$result = 'failed';
-						$this->log_debug( __METHOD__ . '(): Refund failed.' );
+						$this->log_debug( __METHOD__ . '(): Unable to refund charge; ' . $e->getMessage() );
 						$note = $this->get_name() . ': ' . esc_html__( 'WooCommerce order has been marked as refund but failed to refund the payment.', 'gravityflowwoocommerce' );
 					}
 				}
