@@ -167,7 +167,7 @@ if ( ! class_exists( 'Gravity_Flow_Field_WooCommerce_Order_ID' ) ) {
 		 * @return string
 		 */
 		public function get_value_merge_tag( $value, $input_id, $entry, $form, $modifier, $raw_value, $url_encode, $esc_html, $format, $nl2br ) {
-			return $this->get_order_details( $value, $format );
+			return $this->get_order_details( $value, $format, $nl2br );
 		}
 
 		/**
@@ -177,11 +177,12 @@ if ( ! class_exists( 'Gravity_Flow_Field_WooCommerce_Order_ID' ) ) {
 		 *
 		 * @param string $value  The field value, the WooCommerce Order id.
 		 * @param string $format The format requested for the location the value is being used. Possible values: html, text or url.
+		 * @param bool   $nl2br  Indicates if the nl2br function may have been applied to the $value.
 		 *
 		 * @return string
 		 */
-		public function get_order_details( $value, $format ) {
-			if ( empty( $value ) || in_array( 'value', $this->get_modifiers() ) ) {
+		public function get_order_details( $value, $format, $nl2br ) {
+			if ( empty( $value ) || in_array( 'value', $this->get_modifiers(), true ) ) {
 				return $value;
 			}
 
@@ -211,7 +212,7 @@ if ( ! class_exists( 'Gravity_Flow_Field_WooCommerce_Order_ID' ) ) {
 					esc_html( GFCommon::to_money( $order->get_total(), $order->get_currency() ) )
 				);
 
-				if ( $is_html ) {
+				if ( $is_html && $nl2br ) {
 					$value .= '<hr>' . nl2br( $details );
 				} else {
 					$value .= "\n" . str_repeat( '-', 70 ) . "\n" . $details;
