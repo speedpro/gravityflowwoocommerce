@@ -145,7 +145,7 @@ if ( ! class_exists( 'Gravity_Flow_Field_WooCommerce_Order_ID' ) ) {
 		 * @return string
 		 */
 		public function get_value_entry_detail( $value, $currency = '', $use_text = false, $format = 'html', $media = 'screen' ) {
-			return $this->get_order_details( $value, $format, true );
+			return $this->get_order_details( $value, $format );
 		}
 
 		/**
@@ -181,7 +181,7 @@ if ( ! class_exists( 'Gravity_Flow_Field_WooCommerce_Order_ID' ) ) {
 		 *
 		 * @return string
 		 */
-		public function get_order_details( $value, $format, $nl2br ) {
+		public function get_order_details( $value, $format, $nl2br = true ) {
 			if ( empty( $value ) || in_array( 'value', $this->get_modifiers(), true ) ) {
 				return $value;
 			}
