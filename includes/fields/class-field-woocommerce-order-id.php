@@ -145,7 +145,7 @@ if ( ! class_exists( 'Gravity_Flow_Field_WooCommerce_Order_ID' ) ) {
 		 * @return string
 		 */
 		public function get_value_entry_detail( $value, $currency = '', $use_text = false, $format = 'html', $media = 'screen' ) {
-			return $this->get_order_details( $value, $format );
+			return $this->get_order_details( $value, $format, true );
 		}
 
 		/**
