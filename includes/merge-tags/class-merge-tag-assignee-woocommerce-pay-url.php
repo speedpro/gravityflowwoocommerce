@@ -7,8 +7,12 @@
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
  */
 
-if ( ! class_exists( 'GFForms' ) || ! function_exists( 'WC' ) ) {
+if ( ! class_exists( 'GFForms' ) ) {
 	die();
+}
+
+if ( ! function_exists( 'WC' ) ) {
+	return;
 }
 
 /**
