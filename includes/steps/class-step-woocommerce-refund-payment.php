@@ -16,6 +16,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * A unique key for this step type.
 		 *
+		 * @since 1.0.0
+		 *
 		 * @var string
 		 */
 		public $_step_type = 'woocommerce_refund_payment';
@@ -123,6 +125,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 
 		/**
 		 * Get WooCommerce order id.
+		 *
+		 * @since 1.0.0
 		 *
 		 * @return bool|mixed
 		 */

@@ -160,6 +160,8 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 	/**
 	 * Filter WooCommerce My Account My Order actions.
 	 *
+	 * @since 1.0.0
+	 *
 	 * @param array    $actions Order actions.
 	 * @param WC_Order $order WooCommerce order.
 	 *
@@ -195,6 +197,8 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 
 	/**
 	 * Modify has_status() so we could hide the "pay for this order" link in emails.
+	 *
+	 * @since 1.0.0
 	 *
 	 * @param boolean      $result Result.
 	 * @param WC_Order     $order WooCommerce order.
@@ -245,6 +249,8 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 	/**
 	 * Filter WooCommerce on-hold email template.
 	 *
+	 * @since 1.0.0
+	 *
 	 * @param string $template_name Template name.
 	 * @param string $template_path Template path.
 	 * @param string $located  Locate a template and return the path for inclusion.
@@ -267,6 +273,8 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 
 	/**
 	 * Trigger pending order emails and invoice email.
+	 *
+	 * @since 1.0.0
 	 *
 	 * @param int      $order_id Order ID.
 	 * @param WC_Order $order WooCommerce order.

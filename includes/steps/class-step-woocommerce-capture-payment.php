@@ -142,6 +142,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Get WooCommerce order id.
 		 *
+		 * @since 1.0.0
+		 *
 		 * @return bool|mixed
 		 */
 		public function get_order_id() {
