@@ -7,7 +7,7 @@
  * @subpackage  Classes/Step
  * @copyright   Copyright (c) 2015-2018, Steven Henty S.L.
  * @license     http://opensource.org/licenses/gpl-3.0.php GNU Public License
- * @since       1.0.0-dev
+ * @since       1.0.0
  */
 
 if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
@@ -24,7 +24,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		 * Set a custom icon in the step settings.
 		 * 32px x 32px
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return string
 		 */
@@ -35,7 +35,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Returns the label for the step.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return string
 		 */
@@ -46,7 +46,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Is this step supported on this server? Override to hide this step in the list of step types if the requirements are not met.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return bool
 		 */
@@ -61,7 +61,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Ensure the step is not processed if the WooCommerce is not supported.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return bool
 		 */
@@ -78,7 +78,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Adds an alert to the step settings area.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return array
 		 */
@@ -91,7 +91,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Returns an array of statuses and their properties.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return array
 		 */
@@ -115,7 +115,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Processes this step.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return bool Is the step complete?
 		 */
@@ -153,7 +153,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Determines if the payment status is valid for the action to be performed by this step.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param WC_Order $order WooCommerce Order.
 		 *
@@ -175,7 +175,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Determines if the entry payment status is valid for the current action.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param string $payment_status The WooCommerce order payment status.
 		 *
@@ -188,7 +188,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Processes the action for the current step.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param WC_Order $order The WooCommerce order.
 		 *
@@ -201,7 +201,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Captures the authorized charge.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param WC_Order $order The WooCommerce order.
 		 *
@@ -232,7 +232,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Determines the current status of the step.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return string
 		 */
@@ -245,7 +245,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Determines if the current step has been completed.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return bool
 		 */
@@ -258,7 +258,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Uses the Gravity Forms Add-On Framework to write a message to the log file for the Gravity Flow Stripe extension.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param string $message The message to be logged.
 		 */
@@ -269,7 +269,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Prevents the step status becoming the workflow status.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return bool
 		 */

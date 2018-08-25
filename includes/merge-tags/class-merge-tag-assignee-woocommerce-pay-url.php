@@ -14,14 +14,14 @@ if ( ! class_exists( 'GFForms' ) || ! function_exists( 'WC' ) ) {
 /**
  * Class Gravity_Flow_Merge_Tag_Assignee_WooCommerce
  *
- * @since 1.0.0-dev
+ * @since 1.0.0
  */
 class Gravity_Flow_Merge_Tag_Assignee_WooCommerce_Pay_Url extends Gravity_Flow_Merge_Tag_Assignee_Base {
 
 	/**
 	 * The name of the merge tag.
 	 *
-	 * @since 1.0.0-dev
+	 * @since 1.0.0
 	 *
 	 * @var string
 	 */
@@ -30,7 +30,7 @@ class Gravity_Flow_Merge_Tag_Assignee_WooCommerce_Pay_Url extends Gravity_Flow_M
 	/**
 	 * The regular expression to use for the matching.
 	 *
-	 * @since 1.0.0-dev
+	 * @since 1.0.0
 	 *
 	 * @var string
 	 */
@@ -39,7 +39,7 @@ class Gravity_Flow_Merge_Tag_Assignee_WooCommerce_Pay_Url extends Gravity_Flow_M
 	/**
 	 * Replace the {workflow_woocommerce_pay_url}, and {workflow_woocommerce_pay_link} merge tags.
 	 *
-	 * @since 1.0.0-dev
+	 * @since 1.0.0
 	 *
 	 * @param string $text The text being processed.
 	 *

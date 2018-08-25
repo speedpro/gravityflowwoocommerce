@@ -15,14 +15,14 @@ if ( ! class_exists( 'Gravity_Flow_Field_WooCommerce_Order_ID' ) ) {
 	/**
 	 * Class Gravity_Flow_Field_WooCommerce_Order_ID
 	 *
-	 * @since 1.0.0-dev
+	 * @since 1.0.0
 	 */
 	class Gravity_Flow_Field_WooCommerce_Order_ID extends GF_Field_Text {
 
 		/**
 		 * The field type.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @var string
 		 */
@@ -31,7 +31,7 @@ if ( ! class_exists( 'Gravity_Flow_Field_WooCommerce_Order_ID' ) ) {
 		/**
 		 * Adds the Workflow Fields group to the form editor.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param array $field_groups The properties for the field groups.
 		 *
@@ -46,7 +46,7 @@ if ( ! class_exists( 'Gravity_Flow_Field_WooCommerce_Order_ID' ) ) {
 		/**
 		 * Returns the field button properties for the form editor.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return array
 		 */
@@ -60,7 +60,7 @@ if ( ! class_exists( 'Gravity_Flow_Field_WooCommerce_Order_ID' ) ) {
 		/**
 		 * Returns the class names of the settings which should be available on the field in the form editor.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return array
 		 */
@@ -86,7 +86,7 @@ if ( ! class_exists( 'Gravity_Flow_Field_WooCommerce_Order_ID' ) ) {
 		/**
 		 * Returns the field title.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return string
 		 */
@@ -97,7 +97,7 @@ if ( ! class_exists( 'Gravity_Flow_Field_WooCommerce_Order_ID' ) ) {
 		/**
 		 * Returns the form editor script which will set the field default properties.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return string
 		 */
@@ -110,7 +110,7 @@ if ( ! class_exists( 'Gravity_Flow_Field_WooCommerce_Order_ID' ) ) {
 		/**
 		 * Validate that the entry exists for the specified WooCommerce Order id.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param string|array $value The field value from get_value_submission().
 		 * @param array        $form  The Form Object currently being processed.
@@ -134,7 +134,7 @@ if ( ! class_exists( 'Gravity_Flow_Field_WooCommerce_Order_ID' ) ) {
 		/**
 		 * Formats the entry value for display on the entry detail page and for the {all_fields} merge tag.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param string     $value    The field value.
 		 * @param string     $currency The entry currency code.
@@ -151,7 +151,7 @@ if ( ! class_exists( 'Gravity_Flow_Field_WooCommerce_Order_ID' ) ) {
 		/**
 		 * Format the entry value for when the field merge tag is processed. Not called for the {all_fields} merge tag.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param string|array $value      The field value. Depending on the location the merge tag is being used the following functions may have already been applied to the value: esc_html, nl2br, and urlencode.
 		 * @param string       $input_id   The field or input ID from the merge tag currently being processed.
@@ -173,7 +173,7 @@ if ( ! class_exists( 'Gravity_Flow_Field_WooCommerce_Order_ID' ) ) {
 		/**
 		 * Returns the WooCommerce Order id and, if appropriate, the associated order details.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param string $value  The field value, the WooCommerce Order id.
 		 * @param string $format The format requested for the location the value is being used. Possible values: html, text or url.
