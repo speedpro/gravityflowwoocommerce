@@ -7,7 +7,7 @@
  * @subpackage  Classes/Step
  * @copyright   Copyright (c) 2015-2018, Steven Henty S.L.
  * @license     http://opensource.org/licenses/gpl-3.0.php GNU Public License
- * @since       1.0.0-dev
+ * @since       1.0.0
  */
 
 if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
@@ -23,7 +23,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Returns the label for the step.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return string
 		 */
@@ -34,7 +34,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Returns an array of statuses and their properties.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return array
 		 */
@@ -58,7 +58,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Cancels the WooCommerce order.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param WC_Order $order The WooCommerce order.
 		 *

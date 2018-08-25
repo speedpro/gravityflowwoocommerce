@@ -11,14 +11,14 @@ if ( ! function_exists( 'WC' ) ) {
  * @subpackage  Classes/Payment_Gateway
  * @copyright   Copyright (c) 2015-2018, Steven Henty S.L.
  * @license     http://opensource.org/licenses/gpl-3.0.php GNU Public License
- * @since       1.0.0-dev
+ * @since       1.0.0
  */
 class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 
 	/**
 	 * The time in days an order can be held as pending.
 	 *
-	 * @since 1.0.0-dev
+	 * @since 1.0.0
 	 *
 	 * @var int
 	 */
@@ -27,7 +27,7 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 	/**
 	 * Disable other gateways on the checkout page.
 	 *
-	 * @since 1.0.0-dev
+	 * @since 1.0.0
 	 *
 	 * @var string
 	 */
@@ -36,7 +36,7 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 	/**
 	 * Constructor for the gateway.
 	 *
-	 * @since 1.0.0-dev
+	 * @since 1.0.0
 	 */
 	public function __construct() {
 		$this->id                 = 'gravity_flow_pay_later';
@@ -65,7 +65,7 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 	/**
 	 * Change the default order status to on-hold so that pending order emails can be triggered.
 	 *
-	 * @since 1.0.0-dev
+	 * @since 1.0.0
 	 *
 	 * @param string $default Default order status.
 	 *
@@ -82,7 +82,7 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 	/**
 	 * Initialise Gateway Settings Form Fields
 	 *
-	 * @since 1.0.0-dev
+	 * @since 1.0.0
 	 */
 	public function init_form_fields() {
 		$form_fields = array(
@@ -131,7 +131,7 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 	/**
 	 * Process the payment, set the Order to pending and return the result.
 	 *
-	 * @since 1.0.0-dev
+	 * @since 1.0.0
 	 *
 	 * @param int $order_id Order ID.
 	 *

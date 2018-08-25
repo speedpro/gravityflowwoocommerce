@@ -7,7 +7,7 @@
  * @subpackage  Classes/Step
  * @copyright   Copyright (c) 2015-2018, Steven Henty S.L.
  * @license     http://opensource.org/licenses/gpl-3.0.php GNU Public License
- * @since       1.0.0-dev
+ * @since       1.0.0
  */
 
 if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
@@ -23,7 +23,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Returns the label for the step.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return string
 		 */
@@ -34,7 +34,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Add settings to the step.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return array
 		 */
@@ -65,7 +65,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Returns an array of statuses and their properties.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return array
 		 */
@@ -83,7 +83,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Evaluates the status for the step.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return string
 		 */
@@ -110,7 +110,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Returns an array of assignees for this step.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return Gravity_Flow_Assignee[]
 		 */
@@ -134,7 +134,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Process the step.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return bool
 		 */
@@ -170,7 +170,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Display the workflow detail box for this step.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param array $form The current form.
 		 * @param array $args The page arguments.
@@ -202,7 +202,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * If applicable display the assignee status list.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param array $args The page arguments.
 		 * @param array $form The current form.
@@ -213,7 +213,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 			/**
 			 * Allows the assignee status list to be hidden.
 			 *
-			 * @since 1.0.0-dev
+			 * @since 1.0.0
 			 *
 			 * @param array $form
 			 * @param array $entry
@@ -253,7 +253,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Get the status string, including icon (if complete).
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return string
 		 */
@@ -274,7 +274,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Displays content inside the Workflow metabox on the Gravity Forms Entry Detail page.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param array $form The current form.
 		 */

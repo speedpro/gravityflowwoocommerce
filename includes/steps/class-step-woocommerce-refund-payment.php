@@ -7,7 +7,7 @@
  * @subpackage  Classes/Step
  * @copyright   Copyright (c) 2015-2018, Steven Henty S.L.
  * @license     http://opensource.org/licenses/gpl-3.0.php GNU Public License
- * @since       1.0.0-dev
+ * @since       1.0.0
  */
 
 if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
@@ -23,7 +23,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Returns the label for the step.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return string
 		 */
@@ -34,7 +34,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Is this step supported on this server? Override to hide this step in the list of step types if the requirements are not met.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return bool
 		 */
@@ -49,7 +49,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Adds an alert to the step settings area.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return array
 		 */
@@ -87,7 +87,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Returns an array of statuses and their properties.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return array
 		 */
@@ -111,7 +111,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Determines if the entry payment status is valid for the current action.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param string $payment_status The WooCommerce order payment status.
 		 *
@@ -142,7 +142,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Cancels the WooCommerce order.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param WC_Order $order The WooCommerce order.
 		 *

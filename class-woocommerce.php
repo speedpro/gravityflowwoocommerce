@@ -6,7 +6,7 @@
  * @subpackage  Classes/Extension
  * @copyright   Copyright (c) 2015-2018, Steven Henty S.L.
  * @license     http://opensource.org/licenses/gpl-3.0.php GNU Public License
- * @since       1.0.0-dev
+ * @since       1.0.0
  */
 
 // Make sure Gravity Forms is active and already loaded.
@@ -74,7 +74,7 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * The minimum Gravity Flow and Stripe Add-On versions required to use this extension.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return array
 		 */
@@ -94,7 +94,7 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Add the extension capabilities to the Gravity Flow group in Members.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param array $caps The capabilities and their human readable labels.
 		 *
@@ -113,7 +113,7 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Set form settings sections.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param array $form Form object.
 		 *
@@ -168,7 +168,7 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Define the markup to be displayed for the WooCommerce setting description.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return string HTML formatted WooCommerce setting description.
 		 */
@@ -204,7 +204,7 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Add the "Pay Later" gateway.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param array $methods WooCommerce payment gateways.
 		 *
@@ -220,7 +220,7 @@ if ( class_exists( 'GFForms' ) ) {
 		 * Show this gateway only if we're on the checkout page (is_checkout), but not on the order-pay page (is_checkout_pay_page),
 		 * also follow the pay later gateway setting to remove other gateways.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param array $gateways Available gateways.
 		 *
@@ -248,7 +248,7 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Adds WooCommerce order id to the entry meta.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param array $entry_meta Entry meta.
 		 * @param int   $form_id Form ID.
@@ -273,7 +273,7 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Helper to check if WooCommerce Orders integration is enabled.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param int $form_id Form ID.
 		 *
@@ -289,7 +289,7 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Prepare field map.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param int $form_id Form ID.
 		 *
@@ -323,7 +323,7 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Prepare value map.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @return array
 		 */
@@ -527,7 +527,7 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Generating new entry from a WooCommerce Order.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param array $form Form Object.
 		 * @param int   $order_id WooCommerce Order id.
@@ -575,7 +575,7 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Add the mapped value to the new entry.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param array  $mapping The properties for the mapping being processed.
 		 * @param object $order WooCommerce Order.
@@ -613,7 +613,7 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Get the WooCommerce Order property value.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param object $order WooCommerce Order.
 		 * @param string $property_name WooCommerce Order property name.
@@ -677,7 +677,7 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Add new entry when a WooCommerce order created.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param int   $order_id WooCommerce Order ID.
 		 */
@@ -714,7 +714,7 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Update the entry when WooCommerce order status changed.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param int      $order_id WooCommerce Order ID.
 		 * @param string   $from_status WooCommerce old order status.
@@ -742,7 +742,7 @@ if ( class_exists( 'GFForms' ) ) {
 				/**
 				 * Allows the processing to be overridden entirely.
 				 *
-				 * @since 1.0.0-dev
+				 * @since 1.0.0
 				 *
 				 * @param array    $entry Entry object.
 				 * @param int      $order_id WooCommerce Order ID.
@@ -775,7 +775,7 @@ if ( class_exists( 'GFForms' ) ) {
 				/**
 				 * Allows the entry to be modified after processing.
 				 *
-				 * @since 1.0.0-dev
+				 * @since 1.0.0
 				 *
 				 * @param array    $entry Entry object.
 				 * @param int      $order_id WooCommerce Order ID.
@@ -790,7 +790,7 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Update entry payment data.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param array    $entry Entry object.
 		 * @param WC_Order $order WooCommerce Order object.
@@ -837,7 +837,7 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Cancel an unpaid order if it expired.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param bool     $result True or false.
 		 * @param WC_Order $order WooCommerce Order object.
@@ -860,7 +860,7 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Helper function to check if the form has pricing fields.
 		 *
-		 * @since 1.0.0-dev
+		 * @since 1.0.0
 		 *
 		 * @param array $form Form object.
 		 *
