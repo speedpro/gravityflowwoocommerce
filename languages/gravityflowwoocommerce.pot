@@ -1,0 +1,548 @@
+# Copyright 2015-2018 Steven Henty S.L.
+msgid ""
+msgstr ""
+"Project-Id-Version: gravityflowwoocommerce\n"
+"Report-Msgid-Bugs-To: https://www.gravityflow.io\n"
+"POT-Creation-Date: 2018-08-25 13:36:11+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2018-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Gravity Flow <support@gravityflow.io>\n"
+"Language-Team: Gravity Flow <support@gravityflow.io>\n"
+"Language: en_US\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Basepath: ../\n"
+"X-Poedit-Bookmarks: \n"
+"X-Poedit-Country: United States\n"
+"X-Poedit-KeywordsList: "
+"__;_e;_x:1,2c;_ex:1,2c;_n:1,2;_nx:1,2,4c;_n_noop:1,2;_nx_noop:1,2,3c;esc_"
+"attr__;esc_html__;esc_attr_e;esc_html_e;esc_attr_x:1,2c;esc_html_x:1,2c;\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Textdomain-Support: yes\n"
+"X-Generator: grunt-wp-i18n1.0.2\n"
+
+#: class-woocommerce.php:105
+msgid "Manage Settings"
+msgstr ""
+
+#: class-woocommerce.php:106
+msgid "Uninstall"
+msgstr ""
+
+#: class-woocommerce.php:107
+msgid "Manage Form Settings"
+msgstr ""
+
+#: class-woocommerce.php:125 class-woocommerce.php:136
+msgid "WooCommerce Integration"
+msgstr ""
+
+#: class-woocommerce.php:131
+msgid "Enable"
+msgstr ""
+
+#: class-woocommerce.php:136
+msgid ""
+"When enabled, a new entry will be created in this form when a WooCommerce "
+"Order is created. The entry payment and transaction details will also be "
+"updated based on the WooCommerce Order. If the order changes, the entry "
+"will be updated."
+msgstr ""
+
+#: class-woocommerce.php:143
+msgid "Field Mapping"
+msgstr ""
+
+#: class-woocommerce.php:147
+msgid "Field"
+msgstr ""
+
+#: class-woocommerce.php:148
+msgid "WooCommerce Order Property"
+msgstr ""
+
+#: class-woocommerce.php:151
+msgid "Mapping"
+msgstr ""
+
+#: class-woocommerce.php:151
+msgid ""
+"Map the fields of this form to the WooCommerce Order properties. Values "
+"from an WooCommerce Order will be saved in the entry in this form."
+msgstr ""
+
+#: class-woocommerce.php:161
+msgid "WooCommerce"
+msgstr ""
+
+#: class-woocommerce.php:177
+msgid "When enable WooCommerce integration, it will:"
+msgstr ""
+
+#: class-woocommerce.php:179
+msgid "Create a new entry when a WooCommerce Order is created."
+msgstr ""
+
+#: class-woocommerce.php:180
+msgid ""
+"Update the entry payment and transaction details based on the WooCommerce "
+"Order."
+msgstr ""
+
+#: class-woocommerce.php:260
+msgid "WooCommerce Order ID"
+msgstr ""
+
+#: class-woocommerce.php:333
+msgid "Select a Field"
+msgstr ""
+
+#: class-woocommerce.php:337
+#: includes/fields/class-field-woocommerce-order-id.php:94
+#: includes/fields/class-field-woocommerce-order-id.php:205
+msgid "Order ID"
+msgstr ""
+
+#: class-woocommerce.php:341
+msgid "Order Number"
+msgstr ""
+
+#: class-woocommerce.php:345
+msgid "Order Status"
+msgstr ""
+
+#: class-woocommerce.php:349
+msgid "Order Date"
+msgstr ""
+
+#: class-woocommerce.php:353
+msgid "Cart Total"
+msgstr ""
+
+#: class-woocommerce.php:357
+msgid "Cart Subtotal"
+msgstr ""
+
+#: class-woocommerce.php:361
+msgid "Payment Method"
+msgstr ""
+
+#: class-woocommerce.php:365
+msgid "Transaction ID"
+msgstr ""
+
+#: class-woocommerce.php:369
+msgid "Currency Currency"
+msgstr ""
+
+#: class-woocommerce.php:373
+msgid "Currency Symbol"
+msgstr ""
+
+#: class-woocommerce.php:377
+msgid "View Order URL"
+msgstr ""
+
+#: class-woocommerce.php:381
+msgid "User ID"
+msgstr ""
+
+#: class-woocommerce.php:385
+msgid "Billing First Name"
+msgstr ""
+
+#: class-woocommerce.php:389
+msgid "Billing Last Name"
+msgstr ""
+
+#: class-woocommerce.php:393
+msgid "Billing Company"
+msgstr ""
+
+#: class-woocommerce.php:397
+msgid "Billing Address"
+msgstr ""
+
+#: class-woocommerce.php:401
+msgid "Billing Email"
+msgstr ""
+
+#: class-woocommerce.php:405
+msgid "Billing Phone"
+msgstr ""
+
+#: class-woocommerce.php:409
+msgid "Billing Address Line 1"
+msgstr ""
+
+#: class-woocommerce.php:413
+msgid "Billing Address Line 2"
+msgstr ""
+
+#: class-woocommerce.php:417
+msgid "Billing City"
+msgstr ""
+
+#: class-woocommerce.php:421
+msgid "Billing Postcode"
+msgstr ""
+
+#: class-woocommerce.php:425
+msgid "Billing Country Code"
+msgstr ""
+
+#: class-woocommerce.php:429
+msgid "Billing Country"
+msgstr ""
+
+#: class-woocommerce.php:433
+msgid "Billing State Code"
+msgstr ""
+
+#: class-woocommerce.php:437
+msgid "Billing State"
+msgstr ""
+
+#: class-woocommerce.php:441
+msgid "Shipping First Name"
+msgstr ""
+
+#: class-woocommerce.php:445
+msgid "Shipping Last Name"
+msgstr ""
+
+#: class-woocommerce.php:449
+msgid "Shipping Company"
+msgstr ""
+
+#: class-woocommerce.php:453
+msgid "Shipping Address"
+msgstr ""
+
+#: class-woocommerce.php:457
+msgid "Shipping Address Line 1"
+msgstr ""
+
+#: class-woocommerce.php:461
+msgid "Shipping Address Line 2"
+msgstr ""
+
+#: class-woocommerce.php:465
+msgid "Shipping City"
+msgstr ""
+
+#: class-woocommerce.php:469
+msgid "Shipping Postcode"
+msgstr ""
+
+#: class-woocommerce.php:473
+msgid "Shipping Country Code"
+msgstr ""
+
+#: class-woocommerce.php:477
+msgid "Shipping Country"
+msgstr ""
+
+#: class-woocommerce.php:481
+msgid "Shipping State Code"
+msgstr ""
+
+#: class-woocommerce.php:485
+msgid "Shipping State"
+msgstr ""
+
+#: class-woocommerce.php:489
+msgid "Shipping Method"
+msgstr ""
+
+#: class-woocommerce.php:493
+msgid "Cart Discount"
+msgstr ""
+
+#: class-woocommerce.php:497
+msgid "Tax"
+msgstr ""
+
+#: class-woocommerce.php:501
+msgid "Shipping Total"
+msgstr ""
+
+#: class-woocommerce.php:505
+msgid "Shipping Tax"
+msgstr ""
+
+#: class-woocommerce.php:509
+msgid "Are prices inclusive of tax?"
+msgstr ""
+
+#: class-woocommerce.php:513
+msgid "Customer Note"
+msgstr ""
+
+#: class-woocommerce.php:517
+msgid "Coupon Codes Used"
+msgstr ""
+
+#: class-woocommerce.php:521
+msgid "Total Number of Items"
+msgstr ""
+
+#: class-woocommerce.php:826
+msgid "WooCommerce payment status updated from %s to %s."
+msgstr ""
+
+#: class-woocommerce.php:828
+msgid "Failed to update entry."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Gravity Flow"
+msgstr ""
+
+#: includes/class-wc-gateway-gravity-flow-pay-later.php:45
+msgid ""
+"Allow customers to make a payment later in the workflow instead of at the "
+"checkout."
+msgstr ""
+
+#: includes/class-wc-gateway-gravity-flow-pay-later.php:90
+msgid "Enable/Disable"
+msgstr ""
+
+#: includes/class-wc-gateway-gravity-flow-pay-later.php:92
+msgid "Enable the Gravity Flow."
+msgstr ""
+
+#: includes/class-wc-gateway-gravity-flow-pay-later.php:93
+msgid ""
+"Activate this setting to allow customers to place an order and then pay "
+"later in the workflow at a payment step."
+msgstr ""
+
+#: includes/class-wc-gateway-gravity-flow-pay-later.php:97
+msgid "Title"
+msgstr ""
+
+#: includes/class-wc-gateway-gravity-flow-pay-later.php:99
+msgid "The title which the user sees during checkout."
+msgstr ""
+
+#: includes/class-wc-gateway-gravity-flow-pay-later.php:100
+msgid "Pay Later"
+msgstr ""
+
+#: includes/class-wc-gateway-gravity-flow-pay-later.php:103
+msgid "Description"
+msgstr ""
+
+#: includes/class-wc-gateway-gravity-flow-pay-later.php:105
+msgid "This controls the description which the user sees during checkout."
+msgstr ""
+
+#: includes/class-wc-gateway-gravity-flow-pay-later.php:106
+msgid "Place your order now, and pay later."
+msgstr ""
+
+#: includes/class-wc-gateway-gravity-flow-pay-later.php:113
+msgid "Pending Duration"
+msgstr ""
+
+#: includes/class-wc-gateway-gravity-flow-pay-later.php:115
+msgid ""
+"How many days should the order be held as pending before it is "
+"automatically cancelled?"
+msgstr ""
+
+#: includes/class-wc-gateway-gravity-flow-pay-later.php:121
+msgid "Disable Other Gateways"
+msgstr ""
+
+#: includes/class-wc-gateway-gravity-flow-pay-later.php:123
+msgid "Disable other gateways at the checkout."
+msgstr ""
+
+#: includes/class-wc-gateway-gravity-flow-pay-later.php:124
+msgid ""
+"Activate this setting to disable all other gateways on the checkout. They "
+"will still be available when the customer pays later in the workflow."
+msgstr ""
+
+#: includes/fields/class-field-woocommerce-order-id.php:130
+msgid "Order not found for this Order ID."
+msgstr ""
+
+#: includes/fields/class-field-woocommerce-order-id.php:207
+msgid "Submitted"
+msgstr ""
+
+#: includes/fields/class-field-woocommerce-order-id.php:209
+msgid "Payment Status"
+msgstr ""
+
+#: includes/fields/class-field-woocommerce-order-id.php:211
+msgid "Payment Amount"
+msgstr ""
+
+#: includes/merge-tags/class-merge-tag-assignee-woocommerce-pay-url.php:58
+#: includes/steps/class-step-woocommerce-payment.php:192
+msgid "Pay for this order"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-cancel-payment.php:33
+msgid "Cancel Payment"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-cancel-payment.php:47
+msgid "Cancelled"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-cancel-payment.php:48
+msgid "Next Step if Cancelled"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-cancel-payment.php:53
+#: includes/steps/class-step-woocommerce-capture-payment.php:106
+#: includes/steps/class-step-woocommerce-refund-payment.php:104
+msgid "Failed"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-cancel-payment.php:54
+#: includes/steps/class-step-woocommerce-capture-payment.php:107
+#: includes/steps/class-step-woocommerce-refund-payment.php:105
+msgid "Next step if Failed"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-cancel-payment.php:73
+msgid "Cancelled the order."
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-cancel-payment.php:83
+#: includes/steps/class-step-woocommerce-capture-payment.php:224
+msgid "Failed to update WooCommerce order status."
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-capture-payment.php:43
+msgid "Capture Payment"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-capture-payment.php:85
+msgid ""
+"Payment gateways automatically cancel (expire) authorized charges which are "
+"not captured within certain days. For example, Stripe cancels them after 7 "
+"days and PayPal does the same after 29 days."
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-capture-payment.php:100
+msgid "Captured"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-capture-payment.php:101
+msgid "Next Step if Captured"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-capture-payment.php:214
+msgid "Updated WooCommerce order status to processing."
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-payment.php:33
+msgid "Payment"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-payment.php:47
+msgid "WooCommerce Payment"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-payment.php:53
+msgid "Assignee email"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-payment.php:57
+msgid "Please make a payment here: {workflow_woocommerce_pay_link}"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-payment.php:78
+#: includes/steps/class-step-woocommerce-payment.php:268
+msgid "Complete"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-payment.php:79
+msgid "Next Step"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-payment.php:160
+msgid "Processed."
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-payment.php:163
+msgid "Payment is not pending. Step completed without sending notification."
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-payment.php:245
+msgid "Email"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-payment.php:245
+msgid "User"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-payment.php:264
+msgid "Pending"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-payment.php:270
+msgid "Queued"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-refund-payment.php:33
+msgid "Refund Payment"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-refund-payment.php:66
+msgid "Current Entry: WooCommerce Order ID"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-refund-payment.php:76
+msgid "Order ID Field"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-refund-payment.php:78
+msgid ""
+"Select the field which will contain the ID of the WooCommerce ID to be "
+"refunded."
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-refund-payment.php:98
+msgid "Refunded"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-refund-payment.php:99
+msgid "Next Step if Refunded"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-refund-payment.php:158
+msgid "Refunded the order."
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-refund-payment.php:179
+msgid ""
+"WooCommerce order has been marked as refund but failed to refund the "
+"payment."
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-refund-payment.php:188
+msgid "Failed to refund the order."
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "Gravity Flow WooCommerce Extension"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://gravityflow.io"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "WooCommerce Extension for Gravity Flow."
+msgstr ""
