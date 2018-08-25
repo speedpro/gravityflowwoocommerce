@@ -119,13 +119,11 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		public function get_assignees() {
 			$assignees = array();
 
-			$order_id     = gform_get_meta( $this->get_entry_id(), 'workflow_woocommerce_order_id' );
+			$order_id = gform_get_meta( $this->get_entry_id(), 'workflow_woocommerce_order_id' );
 			if ( $order_id ) {
 				$order        = wc_get_order( $order_id );
-				$assignee_key = array(
-					'type' => 'email',
-					'id'   => $order->get_billing_email(),
-				);
+				$user_id      = $order->get_user_id();
+				$assignee_key = ( ! empty( $user_id ) ) ? 'user_id|' . $user_id : 'email|' . $order->get_billing_email();
 
 				$assignees[] = new Gravity_Flow_Assignee( $assignee_key, $this );
 			}
@@ -243,9 +241,11 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 				if ( ! empty( $assignee_status ) ) {
 					$assignee_id = $assignee->get_id();
 
-					$email        = $assignee_id;
 					$status_label = $this->get_status_label( $assignee_status );
-					echo sprintf( '<li>%s: %s (%s)</li>', esc_html__( 'Email', 'gravityflowwoocommerce' ), $email, $status_label );
+					$type         = is_email( $assignee_id ) ? esc_html__( 'Email', 'gravityflowwoocommerce' ) : esc_html__( 'User', 'gravityflowwoocommerce' );
+					$value        = is_email( $assignee_id ) ? $assignee_id : $assignee->get_display_name();
+
+					echo sprintf( '<li>%s: %s (%s)</li>', $type, $value, $status_label );
 				}
 			}
 

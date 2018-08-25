@@ -758,10 +758,8 @@ if ( class_exists( 'GFForms' ) ) {
 				// Update assignee status programmatically.
 				if ( $current_step && 'woocommerce_payment' === $current_step->get_type() && 'pending' === $from_status ) {
 					if ( true === $result ) {
-						$assignee_key = array(
-							'type' => 'email',
-							'id'   => $order->get_billing_email(),
-						);
+						$user_id      = $order->get_user_id();
+						$assignee_key = ( ! empty( $user_id ) ) ? 'user_id|' . $user_id : 'email|' . $order->get_billing_email();
 						$assignee     = $current_step->get_assignee( $assignee_key );
 						$assignee->update_status( 'complete' );
 
