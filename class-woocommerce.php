@@ -30,7 +30,7 @@ if ( class_exists( 'GFForms' ) ) {
 		protected $_full_path = __FILE__;
 
 		// Title of the plugin to be used on the settings page, form settings and plugins page.
-		protected $_title = 'WooCommerce Extension';
+		protected $_title = 'Gravity Flow WooCommerce Extension';
 
 		// Short version of the plugin title to be used on menus and other places where a less verbose string is useful.
 		protected $_short_title = 'WooCommerce';
