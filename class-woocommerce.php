@@ -59,8 +59,7 @@ if ( class_exists( 'GFForms' ) ) {
 		public function init() {
 			parent::init();
 
-			add_action( 'woocommerce_new_order', array( $this, 'add_entry' ) );
-			add_action( 'woocommerce_process_shop_order_meta', array( $this, 'add_entry' ) );
+			add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'add_entry' ) );
 			add_filter( 'woocommerce_payment_gateways', array( $this, 'payment_gateways' ) );
 			add_action( 'woocommerce_available_payment_gateways', array( $this, 'maybe_disable_gateway' ) );
 			add_action( 'woocommerce_order_status_changed', array( $this, 'update_entry' ), 10, 4 );
@@ -657,9 +656,10 @@ if ( class_exists( 'GFForms' ) ) {
 						}
 						break;
 					case 'cart_total_discount':
-						$discount = $order->get_total_discount();
+						$discount       = $order->get_total_discount();
+						$property_value = 0;
 						if ( $discount ) {
-							$property_value = 0 - $discount;
+							$property_value -= $discount;
 						}
 						break;
 					case 'coupons':
