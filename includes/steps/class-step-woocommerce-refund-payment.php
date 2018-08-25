@@ -161,24 +161,23 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 
 				$max_refund = wc_format_decimal( $order->get_total() - $order->get_total_refunded() );
 				if ( $max_refund ) {
-					try {
-						wc_create_refund(
-							array(
-								'amount'         => $max_refund,
-								'reason'         => $note,
-								'order_id'       => $order->get_id(),
-								'line_items'     => $order->get_items( array( 'line_item', 'fee', 'shipping' ) ),
-								'refund_payment' => true,
-								'restock_items'  => true,
-							)
-						);
+					$refund = wc_create_refund(
+						array(
+							'amount'         => $max_refund,
+							'reason'         => $note,
+							'order_id'       => $order->get_id(),
+							'line_items'     => $order->get_items( array( 'line_item', 'fee', 'shipping' ) ),
+							'refund_payment' => true,
+							'restock_items'  => true,
+						)
+					);
 
+					if ( is_wp_error( $refund ) ) {
+						$this->log_debug( __METHOD__ . '(): Unable to refund charge; ' . $refund->get_error_message() );
+						$note = $this->get_name() . ': ' . esc_html__( 'WooCommerce order has been marked as refund but failed to refund the payment.', 'gravityflowwoocommerce' );
+					} else {
 						$result = 'refunded';
 						$this->log_debug( __METHOD__ . '(): Charge refunded.' );
-					} catch ( Exception $e ) {
-						$result = 'failed';
-						$this->log_debug( __METHOD__ . '(): Unable to refund charge; ' . $e->getMessage() );
-						$note = $this->get_name() . ': ' . esc_html__( 'WooCommerce order has been marked as refund but failed to refund the payment.', 'gravityflowwoocommerce' );
 					}
 				}
 			} else {
