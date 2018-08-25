@@ -656,6 +656,12 @@ if ( class_exists( 'GFForms' ) ) {
 							$property_value = WC()->countries->states[ $order->shipping_country ][ $order->shipping_state ];
 						}
 						break;
+					case 'cart_total_discount':
+						$discount = $order->get_total_discount();
+						if ( $discount ) {
+							$property_value = 0 - $discount;
+						}
+						break;
 					case 'coupons':
 						$coupons = $order->get_used_coupons();
 						if ( count( $coupons ) ) {
