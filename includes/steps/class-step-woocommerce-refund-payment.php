@@ -63,7 +63,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 			if ( isset( $settings['woocommerce_orders_integration_enabled'] ) && '1' === $settings['woocommerce_orders_integration_enabled'] ) {
 				$args['append_choices'] = array(
 					array(
-						'label' => esc_html__( 'Entry Meta: WooCommerce Order ID', 'gravityflowwoocommerce' ),
+						'label' => esc_html__( 'Current Entry: WooCommerce Order ID', 'gravityflowwoocommerce' ),
 						'value' => 'workflow_woocommerce_order_id',
 					),
 				);
