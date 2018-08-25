@@ -41,11 +41,10 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		 * @return bool
 		 */
 		public function is_supported() {
-			$form_id  = $this->get_form_id();
-			$form     = GFAPI::get_form( $form_id );
-			$settings = rgar( $form, 'gravityflowwoocommerce' );
+			$form_id = $this->get_form_id();
+			$form    = GFAPI::get_form( $form_id );
 
-			return function_exists( 'WC' ) && ( ! empty( GFFormsModel::get_fields_by_type( $form, 'workflow_woocommerce_order_id' ) ) || ( isset( $settings['woocommerce_orders_integration_enabled'] ) && '1' === $settings['woocommerce_orders_integration_enabled'] ) );
+			return function_exists( 'WC' ) && ( ! empty( GFFormsModel::get_fields_by_type( $form, 'workflow_woocommerce_order_id' ) ) || gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $form_id ) );
 		}
 
 		/**
@@ -56,13 +55,12 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		 * @return array
 		 */
 		public function get_settings() {
-			$form     = $this->get_form();
-			$settings = rgar( $form, 'gravityflowwoocommerce' );
-			$args     = array(
+			$form = $this->get_form();
+			$args = array(
 				'input_types' => array( 'workflow_woocommerce_order_id', 'hidden', 'text' ),
 			);
 
-			if ( isset( $settings['woocommerce_orders_integration_enabled'] ) && '1' === $settings['woocommerce_orders_integration_enabled'] ) {
+			if ( gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $form['id'] ) ) {
 				$args['append_choices'] = array(
 					array(
 						'label' => esc_html__( 'Current Entry: WooCommerce Order ID', 'gravityflowwoocommerce' ),

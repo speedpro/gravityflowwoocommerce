@@ -231,7 +231,7 @@ if ( class_exists( 'GFForms' ) ) {
 					unset( $gateways['gravity_flow_pay_later'] );
 				} elseif ( is_checkout() ) {
 					$gateway_settings = get_option( 'woocommerce_gravity_flow_pay_later_settings' );
-					if ( isset( $gateway_settings['disable_other_gateways_on_checkout'] ) && 'yes' === $gateway_settings['disable_other_gateways_on_checkout'] ) {
+					if ( rgar( $gateway_settings, 'disable_other_gateways_on_checkout' ) === 'yes' ) {
 						foreach ( $gateways as $name => $gateway ) {
 							if ( 'gravity_flow_pay_later' !== $name ) {
 								unset( $gateways[ $name ] );
@@ -282,7 +282,7 @@ if ( class_exists( 'GFForms' ) ) {
 			$form     = GFAPI::get_form( $form_id );
 			$settings = $this->get_form_settings( $form );
 
-			return ( isset( $settings['woocommerce_orders_integration_enabled'] ) ) && '1' === $settings['woocommerce_orders_integration_enabled'];
+			return rgar( $settings, 'woocommerce_orders_integration_enabled' ) === '1';
 		}
 
 		/**
