@@ -71,7 +71,7 @@ if ( class_exists( 'GFForms' ) ) {
 		}
 
 		/**
-		 * The minimum Gravity Flow and Stripe Add-On versions required to use this extension.
+		 * The minimum requirements required to use this extension.
 		 *
 		 * @since 1.0.0
 		 *
