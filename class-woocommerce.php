@@ -59,6 +59,8 @@ if ( class_exists( 'GFForms' ) ) {
 		public function init() {
 			parent::init();
 
+			add_filter( 'gform_field_filters', array( $this, 'filter_gform_field_filters' ), 10, 2 );
+
 			add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'add_entry' ) );
 			add_filter( 'woocommerce_payment_gateways', array( $this, 'payment_gateways' ) );
 			add_action( 'woocommerce_available_payment_gateways', array( $this, 'maybe_disable_gateway' ) );
@@ -874,6 +876,40 @@ if ( class_exists( 'GFForms' ) ) {
 			}
 
 			return false;
+		}
+
+		/**
+		 * Filter payment status to use WooCommerce order status when the integration is enabled.
+		 *
+		 * @since 1.0.1-dev
+		 *
+		 * @param array $field_filters The form field, entry properties, and entry meta filter settings.
+		 * @param array $form          The form object the filter settings have been prepared for.
+		 *
+		 * @return array $field_filters
+		 */
+		public function filter_gform_field_filters( $field_filters, $form ) {
+			if ( gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $form['id'] ) ) {
+				$woocommerce_order_statuses = wc_get_order_statuses();
+				$wc_order_statuses          = array();
+
+				foreach ( $woocommerce_order_statuses as $value => $text ) {
+					$wc_order_statuses[] = array(
+						'text'  => $text,
+						'value' => str_replace( 'wc-', '', $value ),
+					);
+				}
+
+				foreach ( $field_filters as $k => $field_filter ) {
+					if ( $field_filter['key'] === 'payment_status' ) {
+						$field_filters[ $k ]['values'] = $wc_order_statuses;
+
+						return $field_filters;
+					}
+				}
+			}
+
+			return $field_filters;
 		}
 	}
 }
