@@ -60,8 +60,6 @@ if ( class_exists( 'GFForms' ) ) {
 			parent::init();
 
 			add_filter( 'gform_field_filters', array( $this, 'filter_gform_field_filters' ), 10, 2 );
-			add_filter( 'gform_payment_status', array( $this, 'filter_gform_payment_status' ), 10, 2 );
-			add_filter( 'gform_entries_field_value', array( $this, 'filter_gform_entries_field_value' ), 10, 3 );
 
 			add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'add_entry' ) );
 			add_filter( 'woocommerce_payment_gateways', array( $this, 'payment_gateways' ) );
@@ -545,7 +543,7 @@ if ( class_exists( 'GFForms' ) ) {
 
 			// Set mandatory fields.
 			$new_entry['currency']       = $order->get_currency();
-			$new_entry['payment_status'] = $order->get_status();
+			$new_entry['payment_status'] = ucfirst( $order->get_status() );
 			$new_entry['payment_method'] = $order->get_payment_method();
 			if ( ! self::has_price_field( $form ) ) {
 				$new_entry['payment_amount'] = $order->get_total();
@@ -556,7 +554,7 @@ if ( class_exists( 'GFForms' ) ) {
 				$new_entry['transaction_id'] = $order->get_transaction_id();
 				$new_entry['payment_date']   = $order->get_date_paid();
 			}
-			if ( 'completed' === $new_entry['payment_status'] ) {
+			if ( 'Completed' === $new_entry['payment_status'] ) {
 				$new_entry['is_fulfilled'] = 1;
 			}
 
@@ -802,7 +800,7 @@ if ( class_exists( 'GFForms' ) ) {
 		 * @return true|WP_Error
 		 */
 		public function update_entry_payment_data( $entry, $order, $from_status, $to_status ) {
-			$entry['payment_status'] = $to_status;
+			$entry['payment_status'] = ucfirst( $to_status );
 			$entry['payment_method'] = $order->get_payment_method();
 
 			$form = GFAPI::get_form( $entry['form_id'] );
@@ -820,7 +818,7 @@ if ( class_exists( 'GFForms' ) ) {
 				$entry['payment_date'] = $order->get_date_paid();
 			}
 
-			if ( 'completed' === $entry['payment_status'] ) {
+			if ( 'Completed' === $entry['payment_status'] ) {
 				$entry['is_fulfilled'] = 1;
 			}
 
@@ -895,16 +893,22 @@ if ( class_exists( 'GFForms' ) ) {
 				$woocommerce_order_statuses = wc_get_order_statuses();
 				$wc_order_statuses          = array();
 
-				foreach ( $woocommerce_order_statuses as $value => $text ) {
-					$wc_order_statuses[] = array(
-						'text'  => $text,
-						'value' => str_replace( 'wc-', '', $value ),
-					);
-				}
-
 				foreach ( $field_filters as $k => $field_filter ) {
 					if ( $field_filter['key'] === 'payment_status' ) {
-						$field_filters[ $k ]['values'] = $wc_order_statuses;
+						$values = wp_list_pluck( $field_filter['values'], 'value' );
+
+						foreach ( $woocommerce_order_statuses as $value => $text ) {
+							$value = ucfirst( str_replace( 'wc-', '', $value ) );
+
+							if ( ! in_array( $value, $values, true ) ) {
+								$wc_order_statuses[] = array(
+									'text'  => $text,
+									'value' => $value,
+								);
+							}
+						}
+
+						$field_filters[ $k ]['values'] = array_merge( $field_filter['values'], $wc_order_statuses );
 
 						return $field_filters;
 					}
@@ -912,53 +916,6 @@ if ( class_exists( 'GFForms' ) ) {
 			}
 
 			return $field_filters;
-		}
-
-		/**
-		 * Filter payment status in entry details to use WooCommerce order status when the integration is enabled.
-		 *
-		 * @param string $payment_status The payment status of the entry.
-		 * @param array  $form The form array.
-		 *
-		 * @return string $payment_status
-		 */
-		public function filter_gform_payment_status( $payment_status, $form ) {
-			if ( gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $form['id'] ) ) {
-				$woocommerce_order_statuses = wc_get_order_statuses();
-				$woocommerce_order_status   = rgar( $woocommerce_order_statuses, $payment_status );
-
-				if ( empty( $woocommerce_order_status ) ) {
-					$woocommerce_order_status = rgar( $woocommerce_order_statuses, 'wc-' . $payment_status, $payment_status );
-				}
-
-				$payment_status = $woocommerce_order_status;
-			}
-
-			return $payment_status;
-		}
-
-		/**
-		 * Filter payment status in entry list grid to use WooCommerce order status when the integration is enabled.
-		 *
-		 * @param string $value The payment status of the entry.
-		 * @param int    $form_id The form ID.
-		 * @param string $field_id The field ID.
-		 *
-		 * @return string $value
-		 */
-		public function filter_gform_entries_field_value( $value, $form_id, $field_id ) {
-			if ( $field_id === 'payment_status' && gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $form_id ) ) {
-				$woocommerce_order_statuses = wc_get_order_statuses();
-				$woocommerce_order_status   = rgar( $woocommerce_order_statuses, $value );
-
-				if ( empty( $woocommerce_order_status ) ) {
-					$woocommerce_order_status = rgar( $woocommerce_order_statuses, 'wc-' . $value, $value );
-				}
-
-				$value = $woocommerce_order_status;
-			}
-
-			return $value;
 		}
 	}
 }
