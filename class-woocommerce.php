@@ -156,6 +156,29 @@ if ( class_exists( 'GFForms' ) ) {
 			);
 			$fields[]      = $mapping_field;
 
+			$payment_status_choices = array();
+			$payment_statuses       = wc_get_order_statuses();
+			foreach ( $payment_statuses as $key => $value ) {
+				$key                      = str_replace( 'wc-', '', $key );
+				$payment_status_choices[] = array(
+					'label'         => $value,
+					'name'          => 'payment_status_' . $key,
+					'default_value' => 1,
+				);
+			}
+			$payment_statuses_field = array(
+				'name'       => 'payment_statuses',
+				'label'      => esc_html__( 'Create Entries on Specific Statutes', 'gravityflowwoocommerce' ),
+				'type'       => 'checkbox',
+				'choices'    => $payment_status_choices,
+				'tooltip'    => '<h6>' . esc_html__( 'Create Entries on Specific Statutes', 'gravityflowwoocommerce' ) . '</h6>' . esc_html__( 'New entries will only be created when a WooCommerce order is in one of the selected statuses. Each WooCommerce order can be added to this form once.', 'gravityflowwoocommerce' ),
+				'dependency' => array(
+					'field'  => 'woocommerce_orders_integration_enabled',
+					'values' => array( '1' ),
+				),
+			);
+			$fields[]               = $payment_statuses_field;
+
 			return array(
 				array(
 					'title'       => esc_html__( 'WooCommerce', 'gravityflowwoocommerce' ),
