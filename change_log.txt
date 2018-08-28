@@ -1,0 +1,1 @@
+- Updated the WooCommerce payment status that capitalizing it when saving to entry properties.
