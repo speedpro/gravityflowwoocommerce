@@ -181,8 +181,8 @@ if ( class_exists( 'GFForms' ) ) {
 
 			return array(
 				array(
-					'title'       => esc_html__( 'WooCommerce', 'gravityflowwoocommerce' ),
-					'fields'      => $fields,
+					'title'  => esc_html__( 'WooCommerce', 'gravityflowwoocommerce' ),
+					'fields' => $fields,
 				),
 			);
 		}
@@ -306,6 +306,24 @@ if ( class_exists( 'GFForms' ) ) {
 			$settings = $this->get_form_settings( $form );
 
 			return rgar( $settings, 'woocommerce_orders_integration_enabled' ) === '1';
+		}
+
+		/**
+		 * Helper to check if a payment status is enabled.
+		 *
+		 * @since 1.0.1
+		 *
+		 * @param int $form_id Form ID.
+		 * @param int $order_id WooCommerce order ID.
+		 *
+		 * @return int True if integration is enabled. False otherwise.
+		 */
+		public function is_woocommerce_payment_status_enabled( $form_id, $order_id ) {
+			$form     = GFAPI::get_form( $form_id );
+			$settings = $this->get_form_settings( $form );
+
+			$order = wc_get_order( $order_id );
+			return rgar( $settings, "payment_status_{$order->get_status()}" ) === '1';
 		}
 
 		/**
@@ -703,13 +721,14 @@ if ( class_exists( 'GFForms' ) ) {
 		 * @since 1.0.0
 		 *
 		 * @param int   $order_id WooCommerce Order ID.
+		 * @param array $forms_has_entry Form ids which already have entries created in them.
 		 */
-		public function add_entry( $order_id ) {
+		public function add_entry( $order_id, $forms_has_entry = array() ) {
 			$this->log_debug( __METHOD__ . '() starting' );
 			// get forms with WooCommerce integration.
 			$form_ids = RGFormsModel::get_form_ids();
 			foreach ( $form_ids as $key => $form_id ) {
-				if ( ! $this->is_woocommerce_orders_integration_enabled( $form_id ) ) {
+				if ( ! $this->is_woocommerce_orders_integration_enabled( $form_id ) || ! $this->is_woocommerce_payment_status_enabled( $form_id, $order_id ) || in_array( $form_id, $forms_has_entry, true ) ) {
 					unset( $form_ids[ $key ] );
 				}
 			}
@@ -749,15 +768,21 @@ if ( class_exists( 'GFForms' ) ) {
 
 			$entry_ids = get_post_meta( $order_id, '_gravityflow-entry-id' );
 			if ( ! $entry_ids ) {
+				// Call add_entry() because the order may skip in some forms for the payment status not matched.
+				$this->add_entry( $order_id );
+
 				return;
 			}
 
+			$forms_has_entry = array();
 			foreach ( $entry_ids as $entry_id ) {
 				$entry = GFAPI::get_entry( $entry_id );
 				// Don't update entry if the WooCommerce integration is disabled.
 				if ( is_wp_error( $entry ) || ! $this->is_woocommerce_orders_integration_enabled( $entry['form_id'] ) ) {
 					continue;
 				}
+
+				$forms_has_entry[] = $entry['form_id'];
 
 				$api          = new Gravity_Flow_API( $entry['form_id'] );
 				$current_step = $api->get_current_step( $entry );
@@ -806,6 +831,8 @@ if ( class_exists( 'GFForms' ) ) {
 				 */
 				do_action( 'gravityflowwoocommerce_post_update_entry', $entry, $order_id, $from_status, $to_status, $order );
 			}
+
+			$this->add_entry( $order_id, $forms_has_entry );
 		}
 
 		/**
