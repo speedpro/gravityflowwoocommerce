@@ -541,7 +541,7 @@ if ( class_exists( 'GFForms' ) ) {
 
 			// Set mandatory fields.
 			$new_entry['currency']       = $order->get_currency();
-			$new_entry['payment_status'] = $order->get_status();
+			$new_entry['payment_status'] = ucfirst( $order->get_status() );
 			$new_entry['payment_method'] = $order->get_payment_method();
 			if ( ! self::has_price_field( $form ) ) {
 				$new_entry['payment_amount'] = $order->get_total();
@@ -552,7 +552,7 @@ if ( class_exists( 'GFForms' ) ) {
 				$new_entry['transaction_id'] = $order->get_transaction_id();
 				$new_entry['payment_date']   = $order->get_date_paid();
 			}
-			if ( 'completed' === $new_entry['payment_status'] ) {
+			if ( 'Completed' === $new_entry['payment_status'] ) {
 				$new_entry['is_fulfilled'] = 1;
 			}
 
@@ -798,7 +798,7 @@ if ( class_exists( 'GFForms' ) ) {
 		 * @return true|WP_Error
 		 */
 		public function update_entry_payment_data( $entry, $order, $from_status, $to_status ) {
-			$entry['payment_status'] = $to_status;
+			$entry['payment_status'] = ucfirst( $to_status );
 			$entry['payment_method'] = $order->get_payment_method();
 
 			$form = GFAPI::get_form( $entry['form_id'] );
@@ -816,7 +816,7 @@ if ( class_exists( 'GFForms' ) ) {
 				$entry['payment_date'] = $order->get_date_paid();
 			}
 
-			if ( 'completed' === $entry['payment_status'] ) {
+			if ( 'Completed' === $entry['payment_status'] ) {
 				$entry['is_fulfilled'] = 1;
 			}
 
