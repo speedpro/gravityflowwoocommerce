@@ -323,7 +323,7 @@ if ( class_exists( 'GFForms' ) ) {
 			$settings = $this->get_form_settings( $form );
 
 			$order = wc_get_order( $order_id );
-			return rgar( $settings, "payment_status_{$order->get_status()}" ) === '1';
+			return rgar( $settings, "payment_status_{$order->get_status()}" ) === '1' || ! isset( $settings[ "payment_status_{$order->get_status()}" ] );
 		}
 
 		/**
