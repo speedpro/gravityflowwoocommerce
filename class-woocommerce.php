@@ -81,7 +81,7 @@ if ( class_exists( 'GFForms' ) ) {
 			return array(
 				'add-ons' => array(
 					'gravityflow' => array(
-						'version' => '1.7',
+						'version' => '2.1.2',
 					),
 				),
 				'plugins' => array(
