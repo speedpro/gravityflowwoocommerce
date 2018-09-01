@@ -64,6 +64,7 @@ if ( class_exists( 'GFForms' ) ) {
 			add_action( 'woocommerce_available_payment_gateways', array( $this, 'maybe_disable_gateway' ) );
 			add_action( 'woocommerce_order_status_changed', array( $this, 'update_entry' ), 10, 4 );
 			add_filter( 'woocommerce_cancel_unpaid_order', array( $this, 'cancel_unpaid_order' ), 10, 2 );
+			add_filter( 'gravityflow_feed_condition_entry_properties', array( $this, 'maybe_update_payment_statuses' ), 10, 2 );
 		}
 
 		public function init_admin() {
@@ -874,6 +875,34 @@ if ( class_exists( 'GFForms' ) ) {
 			}
 
 			return false;
+		}
+
+		/**
+		 * Replace payment status values in feed condition if WooCommerce Integration enabled.
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param array $properties Entry properties.
+		 * @param int   $form_id Form ID.
+		 *
+		 * @return array Entry properties.
+		 */
+		public function maybe_update_payment_statuses( $properties, $form_id ) {
+			if ( gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $form_id ) ) {
+				$woocommerce_order_statuses = wc_get_order_statuses();
+				$wc_order_statuses          = array();
+
+				foreach ( $woocommerce_order_statuses as $value => $text ) {
+					$wc_order_statuses[] = array(
+						'text'  => $text,
+						'value' => str_replace( 'wc-', '', $value ),
+					);
+				}
+
+				$properties['payment_status']['filter']['choices'] = $wc_order_statuses;
+			}
+
+			return $properties;
 		}
 	}
 }
