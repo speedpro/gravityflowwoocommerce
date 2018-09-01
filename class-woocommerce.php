@@ -157,10 +157,15 @@ if ( class_exists( 'GFForms' ) ) {
 			$fields[]      = $mapping_field;
 
 			$fields[] = array(
-				'name'    => 'payment_statuses',
-				'label'   => esc_html__( 'Create Entries on Specific Statutes', 'gravityflowwoocommerce' ),
-				'tooltip' => '<h6>' . esc_html__( 'Create Entries on Specific Statutes', 'gravityflowwoocommerce' ) . '</h6>' . esc_html__( 'New entries will only be created when a WooCommerce order is in one of the selected statuses. Each WooCommerce order can be added to this form once.', 'gravityflowwoocommerce' ),
-				'type'    => 'payment_statuses',
+				'name'                => 'payment_statuses_mode',
+				'label'               => esc_html__( 'Create Entries on Specific Statutes', 'gravityflowwoocommerce' ),
+				'tooltip'             => '<h6>' . esc_html__( 'Create Entries on Specific Statutes', 'gravityflowwoocommerce' ) . '</h6>' . esc_html__( 'New entries will only be created when a WooCommerce order is in one of the selected statuses. Each WooCommerce order can be added to this form once.', 'gravityflowwoocommerce' ),
+				'type'                => 'payment_statuses',
+				'dependency'          => array(
+					'field'  => 'woocommerce_orders_integration_enabled',
+					'values' => array( '1' ),
+				),
+				'validation_callback' => array( $this, 'validate_selected_payment_statuses' )
 			);
 
 			return array(
@@ -192,6 +197,9 @@ if ( class_exists( 'GFForms' ) ) {
 
 		/**
 		 * Renders the payment statuses setting.
+		 *
+		 * @since 1.0.1
+		 *
 		 */
 		public function settings_payment_statuses() {
 			$mode_field = array(
@@ -225,15 +233,11 @@ if ( class_exists( 'GFForms' ) ) {
 				);
 			}
 			$payment_statuses_field = array(
-				'name'       => 'payment_statuses_selected',
-				'label'      => esc_html__( 'Create Entries on Specific Statutes', 'gravityflowwoocommerce' ),
-				'type'       => 'checkbox',
-				'choices'    => $payment_status_choices,
-				'tooltip'    => '<h6>' . esc_html__( 'Create Entries on Specific Statutes', 'gravityflowwoocommerce' ) . '</h6>' . esc_html__( 'New entries will only be created when a WooCommerce order is in one of the selected statuses. Each WooCommerce order can be added to this form once.', 'gravityflowwoocommerce' ),
-				'dependency' => array(
-					'field'  => 'woocommerce_orders_integration_enabled',
-					'values' => array( '1' ),
-				),
+				'name'    => 'payment_statuses_selected',
+				'label'   => esc_html__( 'Create Entries on Specific Statutes', 'gravityflowwoocommerce' ),
+				'type'    => 'checkbox',
+				'choices' => $payment_status_choices,
+				'tooltip' => '<h6>' . esc_html__( 'Create Entries on Specific Statutes', 'gravityflowwoocommerce' ) . '</h6>' . esc_html__( 'New entries will only be created when a WooCommerce order is in one of the selected statuses. Each WooCommerce order can be added to this form once.', 'gravityflowwoocommerce' ),
 			);
 
 			$this->settings_select( $mode_field );
@@ -241,6 +245,33 @@ if ( class_exists( 'GFForms' ) ) {
 			echo '<div class="gravityflow_payment_statuses_selected_container" ' . $style . '>';
 			$this->settings_checkbox( $payment_statuses_field );
 			echo '</div>';
+		}
+
+		/**
+		 * Set validation error on empty selected payment statuses.
+		 *
+		 * @since 1.0.1
+		 *
+		 * @param array $field The setting field.
+		 */
+		public function validate_selected_payment_statuses( $field ) {
+			$mode_value = $this->get_setting( 'payment_statuses_mode', 'all_payment_statuses' );
+
+			if ( $mode_value === 'selected_payment_statuses' ) {
+				$payment_statuses = wc_get_order_statuses();
+				$selected         = 0;
+				foreach ( $payment_statuses as $key => $value ) {
+					$key = str_replace( 'wc-', '', $key );
+					if ( $this->get_setting( 'payment_status_' . $key ) === '1' ) {
+						$selected ++;
+					}
+				}
+
+				if ( $selected === 0 ) {
+					$this->set_field_error( $field, esc_html__( 'You need to selected at least one payment status.', 'gravityflowwoocommerce' ) );
+					return;
+				}
+			}
 		}
 
 		public function styles() {
