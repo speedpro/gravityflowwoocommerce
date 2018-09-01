@@ -156,28 +156,12 @@ if ( class_exists( 'GFForms' ) ) {
 			);
 			$fields[]      = $mapping_field;
 
-			$payment_status_choices = array();
-			$payment_statuses       = wc_get_order_statuses();
-			foreach ( $payment_statuses as $key => $value ) {
-				$key                      = str_replace( 'wc-', '', $key );
-				$payment_status_choices[] = array(
-					'label'         => $value,
-					'name'          => 'payment_status_' . $key,
-					'default_value' => 1,
-				);
-			}
-			$payment_statuses_field = array(
-				'name'       => 'payment_statuses',
-				'label'      => esc_html__( 'Create Entries on Specific Statutes', 'gravityflowwoocommerce' ),
-				'type'       => 'checkbox',
-				'choices'    => $payment_status_choices,
-				'tooltip'    => '<h6>' . esc_html__( 'Create Entries on Specific Statutes', 'gravityflowwoocommerce' ) . '</h6>' . esc_html__( 'New entries will only be created when a WooCommerce order is in one of the selected statuses. Each WooCommerce order can be added to this form once.', 'gravityflowwoocommerce' ),
-				'dependency' => array(
-					'field'  => 'woocommerce_orders_integration_enabled',
-					'values' => array( '1' ),
-				),
+			$fields[] = array(
+				'name'    => 'payment_statuses',
+				'label'   => esc_html__( 'Create Entries on Specific Statutes', 'gravityflowwoocommerce' ),
+				'tooltip' => '<h6>' . esc_html__( 'Create Entries on Specific Statutes', 'gravityflowwoocommerce' ) . '</h6>' . esc_html__( 'New entries will only be created when a WooCommerce order is in one of the selected statuses. Each WooCommerce order can be added to this form once.', 'gravityflowwoocommerce' ),
+				'type'    => 'payment_statuses',
 			);
-			$fields[]               = $payment_statuses_field;
 
 			return array(
 				array(
@@ -206,6 +190,59 @@ if ( class_exists( 'GFForms' ) ) {
 			return ob_get_clean();
 		}
 
+		/**
+		 * Renders the payment statuses setting.
+		 */
+		public function settings_payment_statuses() {
+			$mode_field = array(
+				'name'          => 'payment_statuses_mode',
+				'label'         => '',
+				'type'          => 'select',
+				'default_value' => 'all_fields',
+				'onchange'      => 'jQuery(this).siblings(".gravityflow_payment_statuses_selected_container").toggle(this.value != "all_payment_statuses");',
+				'choices'       => array(
+					array(
+						'label' => __( 'All payment statuses', 'gravityflow' ),
+						'value' => 'all_payment_statuses',
+					),
+					array(
+						'label' => __( 'Selected payment statuses', 'gravityflow' ),
+						'value' => 'selected_payment_statuses',
+					),
+				),
+			);
+
+			$mode_value = $this->get_setting( 'payment_statuses_mode', 'all_payment_statuses' );
+
+			$payment_status_choices = array();
+			$payment_statuses       = wc_get_order_statuses();
+			foreach ( $payment_statuses as $key => $value ) {
+				$key                      = str_replace( 'wc-', '', $key );
+				$payment_status_choices[] = array(
+					'label'         => $value,
+					'name'          => 'payment_status_' . $key,
+					'default_value' => 1,
+				);
+			}
+			$payment_statuses_field = array(
+				'name'       => 'payment_statuses_selected',
+				'label'      => esc_html__( 'Create Entries on Specific Statutes', 'gravityflowwoocommerce' ),
+				'type'       => 'checkbox',
+				'choices'    => $payment_status_choices,
+				'tooltip'    => '<h6>' . esc_html__( 'Create Entries on Specific Statutes', 'gravityflowwoocommerce' ) . '</h6>' . esc_html__( 'New entries will only be created when a WooCommerce order is in one of the selected statuses. Each WooCommerce order can be added to this form once.', 'gravityflowwoocommerce' ),
+				'dependency' => array(
+					'field'  => 'woocommerce_orders_integration_enabled',
+					'values' => array( '1' ),
+				),
+			);
+
+			$this->settings_select( $mode_field );
+			$style = $mode_value === 'all_payment_statuses' ? 'style="display:none;"' : '';
+			echo '<div class="gravityflow_payment_statuses_selected_container" ' . $style . '>';
+			$this->settings_checkbox( $payment_statuses_field );
+			echo '</div>';
+		}
+
 		public function styles() {
 			$min    = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG || isset( $_GET['gform_debug'] ) ? '' : '.min';
 			$styles = array();
@@ -216,6 +253,7 @@ if ( class_exists( 'GFForms' ) ) {
 				'version' => $this->_version,
 				'enqueue' => array(
 					array( 'query' => 'page=gf_edit_forms&view=settings&subview=gravityflow&id=_notempty_' ),
+					array( 'query' => 'page=gf_edit_forms&view=settings&subview=gravityflowwoocommerce&id=_notempty_' ),
 					array( 'query' => 'page=gravityflow-inbox&view=entry&id=_notempty_' ),
 				),
 			);
