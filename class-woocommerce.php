@@ -391,7 +391,7 @@ if ( class_exists( 'GFForms' ) ) {
 			$form     = GFAPI::get_form( $form_id );
 			$settings = $this->get_form_settings( $form );
 
-			$mode_value = rgar( $settings, 'payment_statuses_mode' );
+			$mode_value = rgar( $settings, 'payment_statuses_mode', 'all_payment_statuses' );
 			if ( $mode_value === 'all_payment_statuses' ) {
 				return true;
 			} else {
