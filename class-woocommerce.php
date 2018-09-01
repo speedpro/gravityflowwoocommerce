@@ -360,8 +360,13 @@ if ( class_exists( 'GFForms' ) ) {
 			$form     = GFAPI::get_form( $form_id );
 			$settings = $this->get_form_settings( $form );
 
-			$order = wc_get_order( $order_id );
-			return rgar( $settings, "payment_status_{$order->get_status()}" ) === '1' || ! isset( $settings[ "payment_status_{$order->get_status()}" ] );
+			$mode_value = rgar( $settings, 'payment_statuses_mode' );
+			if ( $mode_value === 'all_payment_statuses' ) {
+				return true;
+			} else {
+				$order = wc_get_order( $order_id );
+				return rgar( $settings, "payment_status_{$order->get_status()}" ) === '1' || ! isset( $settings[ "payment_status_{$order->get_status()}" ] );
+			}
 		}
 
 		/**
