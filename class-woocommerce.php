@@ -65,6 +65,7 @@ if ( class_exists( 'GFForms' ) ) {
 			add_action( 'woocommerce_order_status_changed', array( $this, 'update_entry' ), 10, 4 );
 			add_filter( 'woocommerce_cancel_unpaid_order', array( $this, 'cancel_unpaid_order' ), 10, 2 );
 			add_filter( 'gravityflow_feed_condition_entry_properties', array( $this, 'maybe_update_payment_statuses' ), 10, 2 );
+			add_filter( 'gform_field_filters', array( $this, 'filter_gform_field_filters' ), 10, 2 );
 		}
 
 		public function init_admin() {
@@ -880,7 +881,7 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Replace payment status values in feed condition if WooCommerce Integration enabled.
 		 *
-		 * @since 1.1.0
+		 * @since 1.1-dev
 		 *
 		 * @param array $properties Entry properties.
 		 * @param int   $form_id Form ID.
@@ -889,20 +890,56 @@ if ( class_exists( 'GFForms' ) ) {
 		 */
 		public function maybe_update_payment_statuses( $properties, $form_id ) {
 			if ( gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $form_id ) ) {
-				$woocommerce_order_statuses = wc_get_order_statuses();
-				$wc_order_statuses          = array();
-
-				foreach ( $woocommerce_order_statuses as $value => $text ) {
-					$wc_order_statuses[] = array(
-						'text'  => $text,
-						'value' => str_replace( 'wc-', '', $value ),
-					);
-				}
+				$wc_order_statuses = $this->wc_order_statuses();
 
 				$properties['payment_status']['filter']['choices'] = $wc_order_statuses;
 			}
 
 			return $properties;
+		}
+
+		/**
+		 * Filter payment status to use WooCommerce order status when the integration is enabled.
+		 *
+		 * @since 1.1-dev
+		 *
+		 * @param array $field_filters The form field, entry properties, and entry meta filter settings.
+		 * @param array $form          The form object the filter settings have been prepared for.
+		 *
+		 * @return array $field_filters
+		 */
+		public function filter_gform_field_filters( $field_filters, $form ) {
+			if ( gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $form['id'] ) ) {
+				$wc_order_statuses = $this->wc_order_statuses();
+
+				foreach ( $field_filters as $k => $field_filter ) {
+					if ( $field_filter['key'] === 'payment_status' ) {
+						$field_filters[ $k ]['values'] = $wc_order_statuses;
+						return $field_filters;
+					}
+				}
+			}
+			return $field_filters;
+		}
+
+		/**
+		 * Get WooCommerce order statuses as an array.
+		 *
+		 * @since 1.1-dev
+		 *
+		 * @return array
+		 */
+		public function wc_order_statuses() {
+			$woocommerce_order_statuses = wc_get_order_statuses();
+			$wc_order_statuses          = array();
+			foreach ( $woocommerce_order_statuses as $value => $text ) {
+				$wc_order_statuses[] = array(
+					'text'  => $text,
+					'value' => str_replace( 'wc-', '', $value ),
+				);
+			}
+
+			return $wc_order_statuses;
 		}
 	}
 }
