@@ -156,10 +156,22 @@ if ( class_exists( 'GFForms' ) ) {
 			);
 			$fields[]      = $mapping_field;
 
+			$fields[] = array(
+				'name'                => 'payment_statuses_mode',
+				'label'               => esc_html__( 'Create Entries on Specific Statutes', 'gravityflowwoocommerce' ),
+				'tooltip'             => '<h6>' . esc_html__( 'Create Entries on Specific Statutes', 'gravityflowwoocommerce' ) . '</h6>' . esc_html__( 'New entries will only be created when a WooCommerce order is in one of the selected statuses. Each WooCommerce order can be added to this form once.', 'gravityflowwoocommerce' ),
+				'type'                => 'payment_statuses',
+				'dependency'          => array(
+					'field'  => 'woocommerce_orders_integration_enabled',
+					'values' => array( '1' ),
+				),
+				'validation_callback' => array( $this, 'validate_selected_payment_statuses' )
+			);
+
 			return array(
 				array(
-					'title'       => esc_html__( 'WooCommerce', 'gravityflowwoocommerce' ),
-					'fields'      => $fields,
+					'title'  => esc_html__( 'WooCommerce', 'gravityflowwoocommerce' ),
+					'fields' => $fields,
 				),
 			);
 		}
@@ -183,6 +195,85 @@ if ( class_exists( 'GFForms' ) ) {
 			return ob_get_clean();
 		}
 
+		/**
+		 * Renders the payment statuses setting.
+		 *
+		 * @since 1.0.1
+		 *
+		 */
+		public function settings_payment_statuses() {
+			$mode_field = array(
+				'name'          => 'payment_statuses_mode',
+				'label'         => '',
+				'type'          => 'select',
+				'default_value' => 'all_fields',
+				'onchange'      => 'jQuery(this).siblings(".gravityflow_payment_statuses_selected_container").toggle(this.value != "all_payment_statuses");',
+				'choices'       => array(
+					array(
+						'label' => __( 'All payment statuses', 'gravityflow' ),
+						'value' => 'all_payment_statuses',
+					),
+					array(
+						'label' => __( 'Selected payment statuses', 'gravityflow' ),
+						'value' => 'selected_payment_statuses',
+					),
+				),
+			);
+
+			$mode_value = $this->get_setting( 'payment_statuses_mode', 'all_payment_statuses' );
+
+			$payment_status_choices = array();
+			$payment_statuses       = wc_get_order_statuses();
+			foreach ( $payment_statuses as $key => $value ) {
+				$key                      = str_replace( 'wc-', '', $key );
+				$payment_status_choices[] = array(
+					'label'         => $value,
+					'name'          => 'payment_status_' . $key,
+					'default_value' => 1,
+				);
+			}
+			$payment_statuses_field = array(
+				'name'    => 'payment_statuses_selected',
+				'label'   => esc_html__( 'Create Entries on Specific Statutes', 'gravityflowwoocommerce' ),
+				'type'    => 'checkbox',
+				'choices' => $payment_status_choices,
+				'tooltip' => '<h6>' . esc_html__( 'Create Entries on Specific Statutes', 'gravityflowwoocommerce' ) . '</h6>' . esc_html__( 'New entries will only be created when a WooCommerce order is in one of the selected statuses. Each WooCommerce order can be added to this form once.', 'gravityflowwoocommerce' ),
+			);
+
+			$this->settings_select( $mode_field );
+			$style = $mode_value === 'all_payment_statuses' ? 'style="display:none;"' : '';
+			echo '<div class="gravityflow_payment_statuses_selected_container" ' . $style . '>';
+			$this->settings_checkbox( $payment_statuses_field );
+			echo '</div>';
+		}
+
+		/**
+		 * Set validation error on empty selected payment statuses.
+		 *
+		 * @since 1.0.1
+		 *
+		 * @param array $field The setting field.
+		 */
+		public function validate_selected_payment_statuses( $field ) {
+			$mode_value = $this->get_setting( 'payment_statuses_mode', 'all_payment_statuses' );
+
+			if ( $mode_value === 'selected_payment_statuses' ) {
+				$payment_statuses = wc_get_order_statuses();
+				$selected         = 0;
+				foreach ( $payment_statuses as $key => $value ) {
+					$key = str_replace( 'wc-', '', $key );
+					if ( $this->get_setting( 'payment_status_' . $key ) === '1' ) {
+						$selected ++;
+					}
+				}
+
+				if ( $selected === 0 ) {
+					$this->set_field_error( $field, esc_html__( 'You need to selected at least one payment status.', 'gravityflowwoocommerce' ) );
+					return;
+				}
+			}
+		}
+
 		public function styles() {
 			$min    = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG || isset( $_GET['gform_debug'] ) ? '' : '.min';
 			$styles = array();
@@ -193,6 +284,7 @@ if ( class_exists( 'GFForms' ) ) {
 				'version' => $this->_version,
 				'enqueue' => array(
 					array( 'query' => 'page=gf_edit_forms&view=settings&subview=gravityflow&id=_notempty_' ),
+					array( 'query' => 'page=gf_edit_forms&view=settings&subview=gravityflowwoocommerce&id=_notempty_' ),
 					array( 'query' => 'page=gravityflow-inbox&view=entry&id=_notempty_' ),
 				),
 			);
@@ -283,6 +375,29 @@ if ( class_exists( 'GFForms' ) ) {
 			$settings = $this->get_form_settings( $form );
 
 			return rgar( $settings, 'woocommerce_orders_integration_enabled' ) === '1';
+		}
+
+		/**
+		 * Helper to check if a payment status is enabled.
+		 *
+		 * @since 1.0.1
+		 *
+		 * @param int $form_id Form ID.
+		 * @param int $order_id WooCommerce order ID.
+		 *
+		 * @return int True if integration is enabled. False otherwise.
+		 */
+		public function is_woocommerce_payment_status_enabled( $form_id, $order_id ) {
+			$form     = GFAPI::get_form( $form_id );
+			$settings = $this->get_form_settings( $form );
+
+			$mode_value = rgar( $settings, 'payment_statuses_mode', 'all_payment_statuses' );
+			if ( $mode_value === 'all_payment_statuses' ) {
+				return true;
+			} else {
+				$order = wc_get_order( $order_id );
+				return rgar( $settings, "payment_status_{$order->get_status()}" ) === '1' || ! isset( $settings[ "payment_status_{$order->get_status()}" ] );
+			}
 		}
 
 		/**
@@ -680,13 +795,14 @@ if ( class_exists( 'GFForms' ) ) {
 		 * @since 1.0.0
 		 *
 		 * @param int   $order_id WooCommerce Order ID.
+		 * @param array $forms_has_entry Form ids which already have entries created in them.
 		 */
-		public function add_entry( $order_id ) {
+		public function add_entry( $order_id, $forms_has_entry = array() ) {
 			$this->log_debug( __METHOD__ . '() starting' );
 			// get forms with WooCommerce integration.
 			$form_ids = RGFormsModel::get_form_ids();
 			foreach ( $form_ids as $key => $form_id ) {
-				if ( ! $this->is_woocommerce_orders_integration_enabled( $form_id ) ) {
+				if ( ! $this->is_woocommerce_orders_integration_enabled( $form_id ) || ! $this->is_woocommerce_payment_status_enabled( $form_id, $order_id ) || in_array( $form_id, $forms_has_entry, true ) ) {
 					unset( $form_ids[ $key ] );
 				}
 			}
@@ -726,15 +842,21 @@ if ( class_exists( 'GFForms' ) ) {
 
 			$entry_ids = get_post_meta( $order_id, '_gravityflow-entry-id' );
 			if ( ! $entry_ids ) {
+				// Call add_entry() because the order may skip in some forms for the payment status not matched.
+				$this->add_entry( $order_id );
+
 				return;
 			}
 
+			$forms_has_entry = array();
 			foreach ( $entry_ids as $entry_id ) {
 				$entry = GFAPI::get_entry( $entry_id );
 				// Don't update entry if the WooCommerce integration is disabled.
 				if ( is_wp_error( $entry ) || ! $this->is_woocommerce_orders_integration_enabled( $entry['form_id'] ) ) {
 					continue;
 				}
+
+				$forms_has_entry[] = $entry['form_id'];
 
 				$api          = new Gravity_Flow_API( $entry['form_id'] );
 				$current_step = $api->get_current_step( $entry );
@@ -783,6 +905,8 @@ if ( class_exists( 'GFForms' ) ) {
 				 */
 				do_action( 'gravityflowwoocommerce_post_update_entry', $entry, $order_id, $from_status, $to_status, $order );
 			}
+
+			$this->add_entry( $order_id, $forms_has_entry );
 		}
 
 		/**
