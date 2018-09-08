@@ -881,7 +881,7 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Replace payment status values in feed condition if WooCommerce Integration enabled.
 		 *
-		 * @since 1.1-dev
+		 * @since 1.1
 		 *
 		 * @param array $properties Entry properties.
 		 * @param int   $form_id Form ID.
@@ -901,7 +901,7 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Filter payment status to use WooCommerce order status when the integration is enabled.
 		 *
-		 * @since 1.1-dev
+		 * @since 1.1
 		 *
 		 * @param array $field_filters The form field, entry properties, and entry meta filter settings.
 		 * @param array $form          The form object the filter settings have been prepared for.
@@ -925,7 +925,7 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Get WooCommerce order statuses as an array.
 		 *
-		 * @since 1.1-dev
+		 * @since 1.1
 		 *
 		 * @return array
 		 */
