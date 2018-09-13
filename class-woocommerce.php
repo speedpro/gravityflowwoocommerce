@@ -63,8 +63,7 @@ if ( class_exists( 'GFForms' ) ) {
 			add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'add_entry' ), 11 );
 			add_filter( 'woocommerce_payment_gateways', array( $this, 'payment_gateways' ) );
 			add_action( 'woocommerce_available_payment_gateways', array( $this, 'maybe_disable_gateway' ) );
-			// Set the priority to 11, so we can be compatible with WooCommerce Gravity Forms addon.
-			add_action( 'woocommerce_order_status_changed', array( $this, 'update_entry' ), 11, 4 );
+			add_action( 'woocommerce_order_status_changed', array( $this, 'update_entry' ), 10, 4 );
 			add_filter( 'woocommerce_cancel_unpaid_order', array( $this, 'cancel_unpaid_order' ), 10, 2 );
 			add_filter( 'gravityflow_feed_condition_entry_properties', array( $this, 'maybe_update_payment_statuses' ), 10, 2 );
 			add_filter( 'gform_field_filters', array( $this, 'filter_gform_field_filters' ), 10, 2 );
@@ -852,15 +851,6 @@ if ( class_exists( 'GFForms' ) ) {
 				return;
 			}
 
-			// Get entries that created by the WooCommerce Gravity Forms addon.
-			if ( function_exists( 'wc_gfpa' ) ) {
-				$gravity_form_data = get_post_meta( $order_id, '_gravity_form_data', true );
-				if ( is_array( $gravity_form_data ) && $gravity_form_data['id'] ) {
-					$this->log_debug( __METHOD__ . '(): Entry #' . $gravity_form_data['id'] . ' was created by the WooCommerce Gravity Forms addon.' );
-					array_push( $entry_ids, $gravity_form_data['id'] );
-				}
-			}
-
 			$forms_has_entry = array();
 			foreach ( $entry_ids as $entry_id ) {
 				$entry = GFAPI::get_entry( $entry_id );
@@ -958,7 +948,7 @@ if ( class_exists( 'GFForms' ) ) {
 			}
 
 			$result = GFAPI::update_entry( $entry );
-			$this->log_debug( __METHOD__ . '(): update entry result - ' . print_r( $result, true ) );
+			$this->log_debug( __METHOD__ . '(): update entry #' . $entry['id'] . ' payment status. Result - ' . print_r( $result, true ) );
 			if ( true === $result ) {
 				$note = sprintf( esc_html__( 'WooCommerce payment status updated from %s to %s.', 'gravityflowwoocommerce' ), $from_status, $to_status );
 			} else {
