@@ -806,7 +806,7 @@ if ( class_exists( 'GFForms' ) ) {
 			// get forms with WooCommerce integration.
 			$form_ids = RGFormsModel::get_form_ids();
 			foreach ( $form_ids as $key => $form_id ) {
-				if ( ! $this->is_woocommerce_orders_integration_enabled( $form_id ) || ! $this->is_woocommerce_payment_status_enabled( $form_id, $order_id ) || in_array( $form_id, $forms_has_entry, true ) ) {
+				if ( ! $this->is_woocommerce_orders_integration_enabled( $form_id ) || ! $this->is_woocommerce_payment_status_enabled( $form_id, $order_id ) || in_array( $form_id, $forms_has_entry, true ) && $this->has_wcgf_entries( $form_id, $order_id ) ) {
 					unset( $form_ids[ $key ] );
 				}
 			}
@@ -850,6 +850,14 @@ if ( class_exists( 'GFForms' ) ) {
 				$this->add_entry( $order_id );
 
 				return;
+			}
+
+			// Get entries that created by the WooCommerce Gravity Forms addon.
+			if ( function_exists( 'wc_gfpa' ) ) {
+				$gravity_form_data = get_post_meta( $order_id, '_gravity_form_data', true );
+				if ( is_array( $gravity_form_data ) && $gravity_form_data['id'] ) {
+					array_push( $entry_ids, $gravity_form_data['id'] );
+				}
 			}
 
 			$forms_has_entry = array();
@@ -1066,6 +1074,31 @@ if ( class_exists( 'GFForms' ) ) {
 			}
 
 			return $wc_order_statuses;
+		}
+
+		/**
+		 * Helper function to check if a form already has entries from the WooCommerce Gravity Forms extension.
+		 *
+		 * @param int $form_id Form id.
+		 * @param int $order_id Order id.
+		 *
+		 * @return bool
+		 */
+		public function has_wcgf_entries( $form_id, $order_id ) {
+			if ( function_exists( 'wc_gfpa' ) ) {
+				// check if entries from WooCommerce Gravity Forms already created.
+				$search_criteria['field_filters'][] = array(
+					'key'   => 'woocommerce_order_number',
+					'value' => $order_id,
+				);
+				$count                              = GFAPI::count_entries( $form_id, $search_criteria );
+
+				if ( $count > 0 ) {
+					return true;
+				}
+			}
+
+			return false;
 		}
 	}
 }
