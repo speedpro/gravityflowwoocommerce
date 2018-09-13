@@ -59,10 +59,12 @@ if ( class_exists( 'GFForms' ) ) {
 		public function init() {
 			parent::init();
 
-			add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'add_entry' ) );
+			// Set the priority to 11, so we can be compatible with WooCommerce Gravity Forms addon.
+			add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'add_entry' ), 11 );
 			add_filter( 'woocommerce_payment_gateways', array( $this, 'payment_gateways' ) );
 			add_action( 'woocommerce_available_payment_gateways', array( $this, 'maybe_disable_gateway' ) );
-			add_action( 'woocommerce_order_status_changed', array( $this, 'update_entry' ), 10, 4 );
+			// Set the priority to 11, so we can be compatible with WooCommerce Gravity Forms addon.
+			add_action( 'woocommerce_order_status_changed', array( $this, 'update_entry' ), 11, 4 );
 			add_filter( 'woocommerce_cancel_unpaid_order', array( $this, 'cancel_unpaid_order' ), 10, 2 );
 			add_filter( 'gravityflow_feed_condition_entry_properties', array( $this, 'maybe_update_payment_statuses' ), 10, 2 );
 			add_filter( 'gform_field_filters', array( $this, 'filter_gform_field_filters' ), 10, 2 );
