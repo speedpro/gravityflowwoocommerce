@@ -654,7 +654,7 @@ if ( class_exists( 'GFForms' ) ) {
 		public function do_mapping( $form, $order_id ) {
 			$new_entry = array();
 			$settings  = $this->get_form_settings( $form );
-			$mappings  = $settings['mappings'];
+			$mappings  = rgar( $settings, 'mappings' );
 			$order     = wc_get_order( $order_id );
 
 			// Set mandatory fields.
