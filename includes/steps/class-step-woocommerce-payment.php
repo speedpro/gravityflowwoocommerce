@@ -96,7 +96,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 
 			$assignee_details = $this->get_assignees();
 
-			$step_status = 'complete';
+			$step_status = ( empty( $assignee_details ) ) ? 'pending' : 'complete';
 
 			foreach ( $assignee_details as $assignee ) {
 				$user_status = $assignee->get_status();
