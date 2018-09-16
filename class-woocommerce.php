@@ -18,7 +18,7 @@ if ( class_exists( 'GFForms' ) ) {
 
 		public $_version = GRAVITY_FLOW_WOOCOMMERCE_VERSION;
 
-		public $edd_item_name = GRAVITY_FLOW_WOOCOMMERCE_EDD_ITEM_NAME;
+		public $edd_item_id = GRAVITY_FLOW_WOOCOMMERCE_EDD_ITEM_ID;
 
 		// The Framework will display an appropriate message on the plugins page if necessary
 		protected $_min_gravityforms_version = '1.9.10';
