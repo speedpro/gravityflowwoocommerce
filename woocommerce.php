@@ -27,6 +27,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 define( 'GRAVITY_FLOW_WOOCOMMERCE_VERSION', '1.0.0' );
 define( 'GRAVITY_FLOW_WOOCOMMERCE_EDD_ITEM_ID', 36381 );
+define( 'GRAVITY_FLOW_WOOCOMMERCE_EDD_ITEM_NAME', 'WooCommerce' );
+
 
 add_action( 'gravityflow_loaded', array( 'Gravity_Flow_Woocommerce_Bootstrap', 'load' ), 1 );
 
