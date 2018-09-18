@@ -797,6 +797,7 @@ if ( class_exists( 'GFForms' ) ) {
 		 * Add new entry when a WooCommerce order created.
 		 *
 		 * @since 1.0.0
+		 * @since 1.1   Check if forms have entries created by the WooCommerce Gravity Forms extension.
 		 *
 		 * @param int   $order_id WooCommerce Order ID.
 		 * @param array $forms_has_entry Form ids which already have entries created in them.
@@ -1076,6 +1077,8 @@ if ( class_exists( 'GFForms' ) ) {
 
 		/**
 		 * Helper function to check if a form already has entries from the WooCommerce Gravity Forms extension.
+		 *
+		 * @since 1.1
 		 *
 		 * @param int $form_id Form id.
 		 * @param int $order_id Order id.
