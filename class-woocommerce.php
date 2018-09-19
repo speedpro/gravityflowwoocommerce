@@ -1053,14 +1053,18 @@ if ( class_exists( 'GFForms' ) ) {
 		 *
 		 * @since 1.1
 		 *
+		 * @param boolean $is_setting_field If used in a setting field.
+		 *
 		 * @return array
 		 */
-		public function wc_order_statuses() {
+		public function wc_order_statuses( $is_setting_field = false ) {
 			$woocommerce_order_statuses = wc_get_order_statuses();
 			$wc_order_statuses          = array();
 			foreach ( $woocommerce_order_statuses as $value => $text ) {
+				$key = $is_setting_field ? 'label' : 'text';
+
 				$wc_order_statuses[] = array(
-					'text'  => $text,
+					$key    => $text,
 					'value' => str_replace( 'wc-', '', $value ),
 				);
 			}

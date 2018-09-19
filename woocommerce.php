@@ -41,6 +41,7 @@ class Gravity_Flow_Woocommerce_Bootstrap {
 		require_once( 'includes/steps/class-step-woocommerce-payment.php' );
 		require_once( 'includes/steps/class-step-woocommerce-cancel-payment.php' );
 		require_once( 'includes/steps/class-step-woocommerce-refund-payment.php' );
+		require_once( 'includes/steps/class-step-woocommerce-update-order-status.php' );
 		require_once( 'includes/merge-tags/class-merge-tag-assignee-woocommerce-pay-url.php' );
 
 		require_once( 'class-woocommerce.php' );
