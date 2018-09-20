@@ -157,16 +157,16 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 			$result = 'failed';
 
 			// Change order status, WooCommerce should charge cards then.
-			$note      = $this->get_name() . ': ' . esc_html__( 'Updated WooCommerce order status to processing.', 'gravityflowwoocommerce' );
 			$to_status = ( ! in_array( $to_status, array( 'processing', 'completed' ), true ) ) ? 'processing' : $to_status;
+			$note      = $this->get_name() . ': ' . sprintf( esc_html__( 'Updated WooCommerce order status to %s.', 'gravityflowwoocommerce' ), $to_status );
 			$charge    = $order->update_status( $to_status, $note );
 
 			if ( $charge ) {
 				$result = 'captured';
-				$this->log_debug( __METHOD__ . '(): Updated WooCommerce order status to processing.' );
+				$this->log_debug( __METHOD__ . "(): Updated WooCommerce order status to {$to_status}." );
 				$this->log_debug( __METHOD__ . '(): Charge captured.' );
 			} else {
-				$this->log_debug( __METHOD__ . '(): Unable to update WooCommerce order status to processing.' );
+				$this->log_debug( __METHOD__ . "(): Unable to update WooCommerce order status to {$to_status}." );
 				$this->log_debug( __METHOD__ . '(): Unable to capture charge.' );
 				$note = $this->get_name() . ': ' . esc_html__( 'Failed to update WooCommerce order status.', 'gravityflowwoocommerce' );
 			}
