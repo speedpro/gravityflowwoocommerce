@@ -12,7 +12,7 @@
 
 if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 
-	class Gravity_Flow_Step_Woocommerce_Update_Order_Status_Payment extends Gravity_Flow_Step_Woocommerce_Capture_Payment {
+	class Gravity_Flow_Step_Woocommerce_Update_Order_Status_Payment extends Gravity_Flow_Step_Woocommerce_Base {
 		/**
 		 * A unique key for this step type.
 		 *
@@ -161,7 +161,33 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		 * @return string
 		 */
 		public function process_action( $order ) {
-			$result = 'failed';
+			$from_status = $order->get_status();
+			$setting     = $this->get_setting( 'order_status' );
+			$result      = 'failed';
+			$note        = $this->get_name() . ': ' . sprintf( esc_html__( 'Marked the order as %s.', 'gravityflowwoocommerce' ), $setting );
+
+			switch ( $setting ) {
+				case 'processing':
+				case 'completed':
+					$result = $this->capture_payment( $order, $setting );
+					break;
+				case 'refunded':
+					// For refund, we take an extra check to make sure the order is already paid.
+					if ( ! in_array( $from_status, array( 'processing', 'completed' ), true ) ) {
+						$result = $this->refund_payment( $order );
+					} else {
+						remove_action( 'woocommerce_order_status_refunded', 'wc_order_fully_refunded' );
+						$order->update_status( 'refunded', $note );
+					}
+					break;
+				case 'cancelled':
+					$result = $this->cancel_payment( $order );
+					break;
+				default:
+					if ( $order->update_status( $setting, $note ) ) {
+						$result = 'updated';
+					}
+			}
 
 			return $result;
 		}

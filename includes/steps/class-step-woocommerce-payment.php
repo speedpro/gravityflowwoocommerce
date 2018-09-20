@@ -12,7 +12,7 @@
 
 if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 
-	class Gravity_Flow_Step_Woocommerce_Payment extends Gravity_Flow_Step_Woocommerce_Capture_Payment {
+	class Gravity_Flow_Step_Woocommerce_Payment extends Gravity_Flow_Step_Woocommerce_Base {
 		/**
 		 * A unique key for this step type.
 		 *

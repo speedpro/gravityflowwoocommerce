@@ -12,7 +12,7 @@
 
 if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 
-	class Gravity_Flow_Step_Woocommerce_Cancel_Payment extends Gravity_Flow_Step_Woocommerce_Capture_Payment {
+	class Gravity_Flow_Step_Woocommerce_Cancel_Payment extends Gravity_Flow_Step_Woocommerce_Base {
 		/**
 		 * A unique key for this step type.
 		 *
@@ -31,6 +31,19 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		 */
 		public function get_label() {
 			return esc_html__( 'Cancel Payment', 'gravityflowwoocommerce' );
+		}
+
+		/**
+		 * Adds an alert to the step settings area.
+		 *
+		 * @since 1.1
+		 *
+		 * @return array
+		 */
+		public function get_settings() {
+			return array(
+				'description' => sprintf( '<div class="delete-alert alert_yellow"><i class="fa fa-exclamation-triangle gf_invalid"></i> %s</div>', esc_html__( 'Payment gateways automatically cancel (expire) authorized charges which are not captured within certain days. For example, Stripe cancels them after 7 days and PayPal does the same after 29 days.' ) )
+			);
 		}
 
 		/**
@@ -58,34 +71,30 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		}
 
 		/**
+		 * Determines if the entry payment status is valid for the current action.
+		 *
+		 * @since 1.1
+		 *
+		 * @param string $payment_status The WooCommerce order payment status.
+		 *
+		 * @return bool
+		 */
+		public function is_valid_payment_status( $payment_status ) {
+			return $payment_status === 'on-hold';
+		}
+
+		/**
 		 * Cancels the WooCommerce order.
 		 *
 		 * @since 1.0.0
+		 * @since 1.1   Move the action method to the base class
 		 *
 		 * @param WC_Order $order The WooCommerce order.
 		 *
 		 * @return string
 		 */
 		public function process_action( $order ) {
-			$result = 'failed';
-
-			// Cancel the order, so no charge will be made.
-			$note   = $this->get_name() . ': ' . esc_html__( 'Cancelled the order.', 'gravityflowwoocommerce' );
-			$update = $order->update_status( 'cancelled', $note );
-
-			if ( $update ) {
-				$result = 'cancelled';
-				$this->log_debug( __METHOD__ . '(): Updated WooCommerce order status to cancelled.' );
-				$this->log_debug( __METHOD__ . '(): Charge authorization cancelled.' );
-			} else {
-				$this->log_debug( __METHOD__ . '(): Unable to update WooCommerce order status to cancelled.' );
-				$this->log_debug( __METHOD__ . '(): Unable to cancel charge authorization.' );
-				$note = $this->get_name() . ': ' . esc_html__( 'Failed to update WooCommerce order status.', 'gravityflowwoocommerce' );
-			}
-
-			$this->add_note( $note );
-
-			return $result;
+			return $this->cancel_payment( $order );
 		}
 	}
 

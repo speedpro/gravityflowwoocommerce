@@ -12,7 +12,7 @@
 
 if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 
-	class Gravity_Flow_Step_Woocommerce_Refund_Payment extends Gravity_Flow_Step_Woocommerce_Capture_Payment {
+	class Gravity_Flow_Step_Woocommerce_Refund_Payment extends Gravity_Flow_Step_Woocommerce_Base {
 		/**
 		 * A unique key for this step type.
 		 *
@@ -145,52 +145,14 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		 * Refund the WooCommerce order.
 		 *
 		 * @since 1.0.0
+		 * @since 1.1   Move the action method to the base class
 		 *
 		 * @param WC_Order $order The WooCommerce order.
 		 *
 		 * @return string
 		 */
 		public function process_action( $order ) {
-			$result = 'failed';
-
-			// remove the default WooCommerce refund behavior, because we want to refund the payment and restock items.
-			remove_action( 'woocommerce_order_status_refunded', 'wc_order_fully_refunded' );
-			$note   = $this->get_name() . ': ' . esc_html__( 'Refunded the order.', 'gravityflowwoocommerce' );
-			$update = $order->update_status( 'refunded', $note );
-
-			if ( $update ) {
-				$this->log_debug( __METHOD__ . '(): Updated WooCommerce order status to refunded.' );
-
-				$max_refund = wc_format_decimal( $order->get_total() - $order->get_total_refunded() );
-				if ( $max_refund ) {
-					$refund = wc_create_refund(
-						array(
-							'amount'         => $max_refund,
-							'reason'         => $note,
-							'order_id'       => $order->get_id(),
-							'line_items'     => $order->get_items( array( 'line_item', 'fee', 'shipping' ) ),
-							'refund_payment' => true,
-							'restock_items'  => true,
-						)
-					);
-
-					if ( is_wp_error( $refund ) ) {
-						$this->log_debug( __METHOD__ . '(): Unable to refund charge; ' . $refund->get_error_message() );
-						$note = $this->get_name() . ': ' . esc_html__( 'WooCommerce order has been marked as refund but failed to refund the payment.', 'gravityflowwoocommerce' );
-					} else {
-						$result = 'refunded';
-						$this->log_debug( __METHOD__ . '(): Charge refunded.' );
-					}
-				}
-			} else {
-				$this->log_debug( __METHOD__ . '(): Unable to update WooCommerce order status to refunded.' );
-				$this->log_debug( __METHOD__ . '(): Unable to refund charge.' );
-				$note = $this->get_name() . ': ' . esc_html__( 'Failed to refund the order.', 'gravityflowwoocommerce' );
-			}
-
-			$this->add_note( $note );
-
-			return $result;
+			return $this->refund_payment( $order );
 		}
 	}
 
