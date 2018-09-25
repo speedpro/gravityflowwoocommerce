@@ -153,13 +153,10 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 			// do this only when the order is still pending.
 			$order = wc_get_order( $this->get_order_id() );
 
-			if ( false !== $order && 'pending' === $order->get_status() ) {
+			if ( ( false !== $order && 'pending' === $order->get_status() ) || false === $order ) {
 				$this->assign();
 
-				$note = $this->get_name() . ': ' . esc_html__( 'Processed.', 'gravityflowwoocommerce' );
-				$this->add_note( $note );
-			} elseif ( false === $order ) {
-				$note = $this->get_name() . ': ' . esc_html__( 'The WooCommerce Order ID hasn\'t been added to the entry yet.', 'gravityflowwoocommerce' );
+				$note = $this->get_name() . ': ' . esc_html__( 'Waiting for payment.', 'gravityflowwoocommerce' );
 				$this->add_note( $note );
 			} else {
 				$note = $this->get_name() . ': ' . esc_html__( 'Payment is not pending. Step completed without sending notification.', 'gravityflowwoocommerce' );
