@@ -154,7 +154,12 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 			$order = wc_get_order( $this->get_order_id() );
 
 			if ( ( false !== $order && 'pending' === $order->get_status() ) || false === $order ) {
-				$this->assign();
+				if ( false !== $order ) {
+					$this->assign();
+					$this->log_debug( __METHOD__ . '(): Started, waiting for payment.' );
+				} else {
+					$this->log_debug( __METHOD__ . '(): Started, waiting for the order id.' );
+				}
 
 				$note = $this->get_name() . ': ' . esc_html__( 'Waiting for payment.', 'gravityflowwoocommerce' );
 				$this->add_note( $note );
