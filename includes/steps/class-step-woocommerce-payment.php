@@ -96,7 +96,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 
 			$assignee_details = $this->get_assignees();
 
-			$step_status = 'complete';
+			$step_status = ( empty( $assignee_details ) ) ? 'pending' : 'complete';
 
 			foreach ( $assignee_details as $assignee ) {
 				$user_status = $assignee->get_status();
@@ -119,7 +119,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		public function get_assignees() {
 			$assignees = array();
 
-			$order_id = gform_get_meta( $this->get_entry_id(), 'workflow_woocommerce_order_id' );
+			$order_id = $this->get_order_id();
 			if ( $order_id ) {
 				$order        = wc_get_order( $order_id );
 				$user_id      = $order->get_user_id();
@@ -151,13 +151,17 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 			do_action( 'gravityflowwoocommerce_payment_step_started', $this->get_entry(), $this->get_form(), $this );
 
 			// do this only when the order is still pending.
-			$order_id = gform_get_meta( $this->get_entry_id(), 'workflow_woocommerce_order_id' );
-			$order    = wc_get_order( $order_id );
+			$order = wc_get_order( $this->get_order_id() );
 
-			if ( 'pending' === $order->get_status() ) {
-				$this->assign();
+			if ( ( false !== $order && 'pending' === $order->get_status() ) || false === $order ) {
+				if ( false !== $order ) {
+					$this->assign();
+					$this->log_debug( __METHOD__ . '(): Started, waiting for payment.' );
+				} else {
+					$this->log_debug( __METHOD__ . '(): Started, waiting for the order id.' );
+				}
 
-				$note = $this->get_name() . ': ' . esc_html__( 'Processed.', 'gravityflowwoocommerce' );
+				$note = $this->get_name() . ': ' . esc_html__( 'Waiting for payment.', 'gravityflowwoocommerce' );
 				$this->add_note( $note );
 			} else {
 				$note = $this->get_name() . ': ' . esc_html__( 'Payment is not pending. Step completed without sending notification.', 'gravityflowwoocommerce' );
@@ -181,9 +185,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 				<?php
 				$this->maybe_display_assignee_status_list( $args, $form );
 
-				$order_id = gform_get_meta( $this->get_entry_id(), 'workflow_woocommerce_order_id' );
-				$order    = wc_get_order( $order_id );
-				$status   = $order->get_status();
+				$order  = wc_get_order( $this->get_order_id() );
+				$status = ( false !== $order ) ? $order->get_status() : '';
 
 				$can_submit = $status === 'pending';
 

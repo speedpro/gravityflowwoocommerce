@@ -61,10 +61,12 @@ if ( class_exists( 'GFForms' ) ) {
 		public function init() {
 			parent::init();
 
-			add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'add_entry' ) );
+			// Set the priority to 11, so we can be compatible with WooCommerce Gravity Forms add-on.
+			add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'add_entry' ), 11 );
 			add_filter( 'woocommerce_payment_gateways', array( $this, 'payment_gateways' ) );
 			add_action( 'woocommerce_available_payment_gateways', array( $this, 'maybe_disable_gateway' ) );
-			add_action( 'woocommerce_order_status_changed', array( $this, 'update_entry' ), 10, 4 );
+			// Set the priority to 11, so we can be compatible with WooCommerce Gravity Forms add-on.
+			add_action( 'woocommerce_order_status_changed', array( $this, 'update_entry' ), 11, 4 );
 			add_filter( 'woocommerce_cancel_unpaid_order', array( $this, 'cancel_unpaid_order' ), 10, 2 );
 			add_filter( 'gravityflow_feed_condition_entry_properties', array( $this, 'maybe_update_payment_statuses' ), 10, 2 );
 			add_filter( 'gform_field_filters', array( $this, 'filter_gform_field_filters' ), 10, 2 );
@@ -655,7 +657,7 @@ if ( class_exists( 'GFForms' ) ) {
 		public function do_mapping( $form, $order_id ) {
 			$new_entry = array();
 			$settings  = $this->get_form_settings( $form );
-			$mappings  = $settings['mappings'];
+			$mappings  = rgar( $settings, 'mappings' );
 			$order     = wc_get_order( $order_id );
 
 			// Set mandatory fields.
@@ -797,6 +799,7 @@ if ( class_exists( 'GFForms' ) ) {
 		 * Add new entry when a WooCommerce order created.
 		 *
 		 * @since 1.0.0
+		 * @since 1.1   Check if forms have entries created by the WooCommerce Gravity Forms extension.
 		 *
 		 * @param int   $order_id WooCommerce Order ID.
 		 * @param array $forms_has_entry Form ids which already have entries created in them.
@@ -806,7 +809,7 @@ if ( class_exists( 'GFForms' ) ) {
 			// get forms with WooCommerce integration.
 			$form_ids = RGFormsModel::get_form_ids();
 			foreach ( $form_ids as $key => $form_id ) {
-				if ( ! $this->is_woocommerce_orders_integration_enabled( $form_id ) || ! $this->is_woocommerce_payment_status_enabled( $form_id, $order_id ) || in_array( $form_id, $forms_has_entry, true ) ) {
+				if ( ! $this->is_woocommerce_orders_integration_enabled( $form_id ) || ! $this->is_woocommerce_payment_status_enabled( $form_id, $order_id ) || in_array( $form_id, $forms_has_entry, true ) || $this->has_wcgf_entries( $form_id, $order_id ) ) {
 					unset( $form_ids[ $key ] );
 				}
 			}
@@ -926,6 +929,12 @@ if ( class_exists( 'GFForms' ) ) {
 		 * @return true|WP_Error
 		 */
 		public function update_entry_payment_data( $entry, $order, $from_status, $to_status ) {
+			// don't update entry payment data if the entry was created by other plugins, e.g. the WooCommerce Gravity Forms add-on.
+			if ( rgar( $entry, 'woocommerce_order_number' ) ) {
+				$this->log_debug( __METHOD__ . '(): Entry #' . $entry['id'] . ' was created by the WooCommerce Gravity Forms add-on, don\'t update the payment status.' );
+				return true;
+			}
+
 			$entry['payment_status'] = $to_status;
 			$entry['payment_method'] = $order->get_payment_method();
 
@@ -949,7 +958,7 @@ if ( class_exists( 'GFForms' ) ) {
 			}
 
 			$result = GFAPI::update_entry( $entry );
-			$this->log_debug( __METHOD__ . '(): update entry result - ' . print_r( $result, true ) );
+			$this->log_debug( __METHOD__ . '(): update entry #' . $entry['id'] . ' payment status. Result - ' . print_r( $result, true ) );
 			if ( true === $result ) {
 				$note = sprintf( esc_html__( 'WooCommerce payment status updated from %s to %s.', 'gravityflowwoocommerce' ), $from_status, $to_status );
 			} else {
@@ -1066,6 +1075,41 @@ if ( class_exists( 'GFForms' ) ) {
 			}
 
 			return $wc_order_statuses;
+		}
+
+		/**
+		 * Helper function to check if a form already has entries from the WooCommerce Gravity Forms extension.
+		 *
+		 * @since 1.1
+		 *
+		 * @param int $form_id Form id.
+		 * @param int $order_id Order id.
+		 *
+		 * @return boolean
+		 */
+		public function has_wcgf_entries( $form_id, $order_id ) {
+			if ( function_exists( 'wc_gfpa' ) ) {
+				$search_criteria['field_filters'][] = array(
+					'key'   => 'woocommerce_order_number',
+					'value' => $order_id,
+				);
+				$entries                            = GFAPI::get_entries( $form_id, $search_criteria );
+				if ( ! is_wp_error( $entries ) && count( $entries ) > 0 ) {
+					foreach ( $entries as $entry ) {
+						if ( ! rgar( $entry, 'workflow_woocommerce_order_id' ) ) {
+							// add entry meta and order meta, so we can update the entry payment status or release steps later.
+							add_post_meta( $order_id, '_gravityflow-entry-id', $entry['id'] );
+							gform_update_meta( $entry['id'], 'workflow_woocommerce_order_id', $order_id );
+
+							$this->log_debug( __METHOD__ . '(): Entry #' . $entry['id'] . ' was created by the WooCommerce Gravity Forms add-on.' );
+						}
+					}
+
+					return true;
+				}
+			}
+
+			return false;
 		}
 	}
 }

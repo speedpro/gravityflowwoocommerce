@@ -146,6 +146,15 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		 */
 		public function get_order_id() {
 			$order_id = gform_get_meta( $this->get_entry_id(), 'workflow_woocommerce_order_id' );
+			// The entry could be created by WooCommerce Gravity Forms.
+			if ( false === $order_id && function_exists( 'wc_gfpa' ) ) {
+				$order_id = gform_get_meta( $this->get_entry_id(), 'woocommerce_order_number' );
+
+				if ( false !== $order_id ) {
+					add_post_meta( $order_id, '_gravityflow-entry-id', $this->get_entry_id() );
+					gform_update_meta( $this->get_entry_id(), 'workflow_woocommerce_order_id', $order_id );
+				}
+			}
 
 			return $order_id;
 		}
