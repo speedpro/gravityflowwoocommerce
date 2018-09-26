@@ -191,10 +191,34 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 				$can_submit = $status === 'pending';
 
 				if ( $can_submit ) {
+					echo '<br /><div>';
+
 					$url  = $order->get_checkout_payment_url();
 					$text = esc_html__( 'Pay for this order', 'gravityflowwoocommerce' );
-					echo '<br /><div class="gravityflow-action-buttons">';
-					echo sprintf( '<a href="%s" target="_blank" class="button button-large button-primary">%s</a><br><br>', $url, $text );
+					echo sprintf( '<a href="%s" target="_blank" class="button">%s</a><br><br>', $url, $text );
+
+					if ( current_user_can( 'edit_shop_orders' ) ) {
+						echo '<hr style="margin-top:10px;"/>';
+						echo sprintf( '<h4>%s</h4>', esc_html__( 'Update Order Status', 'gravityflowwoocommerce' ) );
+
+						$statuses  = gravity_flow_woocommerce()->wc_order_statuses();
+						$dropdown  = '<select name="gravityflow_woocommerce_new_status_step_' . $this->get_id() . '" id="gravityflow-woocommerce-payment-statuses">';
+						$dropdown .= sprintf( '<option value="">%s</option>', esc_html__( 'Choose a status', 'gravityflowwoocommerce' ) );
+						foreach ( $statuses as $status ) {
+							if ( $status['value'] === 'pending' ) {
+								continue;
+							}
+
+							$dropdown .= '<option value="' . $status['value'] . '">';
+							$dropdown .= $status['text'];
+							$dropdown .= '</option>';
+						}
+						$dropdown .= '</select>';
+						$button    = '<button name="submit" value="updated" type="submit" class="button">' . esc_html__( 'Update', 'gravityflowwoocommerce' ) . '</button>';
+
+						echo sprintf( '%s %s<br/><br/>', $dropdown, $button );
+					}
+
 					echo '</div>';
 				}
 				?>

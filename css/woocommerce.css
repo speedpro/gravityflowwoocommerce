@@ -21,3 +21,10 @@ tr#gaddon-setting-row-step_type label > span > i.woocommerce:before,
 .gravityflow_payment_statuses_selected_container {
 	margin-top: 10px;
 }
+
+#gravityflow-woocommerce-payment-statuses {
+	padding: 2px;
+	line-height: 28px;
+	height: 28px;
+	vertical-align: middle;
+}
