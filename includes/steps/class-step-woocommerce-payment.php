@@ -191,6 +191,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 				$can_submit = $status === 'pending';
 
 				if ( $can_submit ) {
+					wp_nonce_field( 'gravityflow_woocommerce_payment_' . $this->get_id() );
+
 					echo '<br /><div>';
 
 					$url  = $order->get_checkout_payment_url();
@@ -330,6 +332,39 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 				</ul>
 			</div>
 			<?php
+		}
+
+		/**
+		 * Handles POSTed values from the workflow detail page.
+		 *
+		 * @param array $form  The current form.
+		 * @param array $entry The current entry.
+		 *
+		 * @return string|bool Return a success feedback message safe for page output.
+		 */
+		public function maybe_process_status_update( $form, $entry ) {
+			$feedback        = false;
+			$step_status_key = 'gravityflow_woocommerce_new_status_step_' . $this->get_id();
+			$order           = wc_get_order( $this->get_order_id() );
+
+			if ( isset( $_POST[ $step_status_key ] ) && isset( $_POST['_wpnonce'] ) && check_admin_referer( 'gravityflow_woocommerce_payment_' . $this->get_id() ) ) {
+				$new_status = rgpost( $step_status_key );
+				$note       = $this->get_name() . ': ' . sprintf( esc_html__( 'Updated WooCommerce order status to %s.', 'gravityflowwoocommerce' ), $new_status );
+				$result     = $order->update_status( $new_status, $note );
+
+				if ( $result ) {
+					$feedback = sprintf( esc_html__( 'Updated WooCommerce order status to %s.', 'gravityflowwoocommerce' ), $new_status );
+					$this->log_debug( __METHOD__ . "(): Updated WooCommerce order status to $new_status." );
+				} else {
+					$this->log_debug( __METHOD__ . "(): Unable to update WooCommerce order status to $new_status." );
+					$note     = $this->get_name() . ': ' . esc_html__( 'Failed to update WooCommerce order status.', 'gravityflowwoocommerce' );
+					$feedback = esc_html__( 'Failed to update WooCommerce order status.', 'gravityflowwoocommerce' );
+				}
+
+				$this->add_note( $note );
+			}
+
+			return $feedback;
 		}
 	}
 
