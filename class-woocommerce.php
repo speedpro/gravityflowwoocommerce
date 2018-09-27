@@ -960,7 +960,7 @@ if ( class_exists( 'GFForms' ) ) {
 			$result = GFAPI::update_entry( $entry );
 			$this->log_debug( __METHOD__ . '(): update entry #' . $entry['id'] . ' payment status. Result - ' . print_r( $result, true ) );
 			if ( true === $result ) {
-				$note = sprintf( esc_html__( 'WooCommerce payment status updated from %s to %s.', 'gravityflowwoocommerce' ), $from_status, $to_status );
+				$note = sprintf( esc_html__( 'Entry payment status updated from %s to %s.', 'gravityflowwoocommerce' ), $from_status, $to_status );
 			} else {
 				$note = esc_html__( 'Failed to update entry.', 'gravityflowwoocommerce' );
 			}
