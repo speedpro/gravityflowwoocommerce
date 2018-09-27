@@ -205,7 +205,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 						$dropdown  = '<select name="gravityflow_woocommerce_new_status_step_' . $this->get_id() . '" id="gravityflow-woocommerce-payment-statuses">';
 						$dropdown .= sprintf( '<option value="">%s</option>', esc_html__( 'Choose a status', 'gravityflowwoocommerce' ) );
 						foreach ( $statuses as $status ) {
-							if ( $status['value'] === 'pending' ) {
+							// Cannot switch to pending, cancelled and refunded status.
+							if ( in_array( $status['value'], array( 'pending', 'cancelled', 'refunded' ), true ) ) {
 								continue;
 							}
 
