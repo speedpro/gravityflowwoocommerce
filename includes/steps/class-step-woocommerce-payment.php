@@ -174,6 +174,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Display the workflow detail box for this step.
 		 *
+		 * @since 1.1 Adds new action - "Update Order Status"
 		 * @since 1.0.0
 		 *
 		 * @param array $form The current form.
@@ -336,6 +337,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 
 		/**
 		 * Handles POSTed values from the workflow detail page.
+		 *
+		 * @since 1.1
 		 *
 		 * @param array $form  The current form.
 		 * @param array $entry The current entry.
