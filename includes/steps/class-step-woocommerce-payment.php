@@ -121,11 +121,15 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 
 			$order_id = $this->get_order_id();
 			if ( $order_id ) {
-				$order        = wc_get_order( $order_id );
-				$user_id      = $order->get_user_id();
-				$assignee_key = ( ! empty( $user_id ) ) ? 'user_id|' . $user_id : 'email|' . $order->get_billing_email();
+				$order  = wc_get_order( $order_id );
+				$status = $order->get_status();
 
-				$assignees[] = new Gravity_Flow_Assignee( $assignee_key, $this );
+				if ( $status === 'pending' ) {
+					$user_id      = $order->get_user_id();
+					$assignee_key = ( ! empty( $user_id ) ) ? 'user_id|' . $user_id : 'email|' . $order->get_billing_email();
+
+					$assignees[] = new Gravity_Flow_Assignee( $assignee_key, $this );
+				}
 			}
 
 			return $assignees;
