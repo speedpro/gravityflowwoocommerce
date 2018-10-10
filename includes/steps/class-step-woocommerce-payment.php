@@ -94,10 +94,10 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 				return 'queued';
 			}
 
+			$order_id    = $this->get_order_id();
+			$step_status = ( ! $order_id ) ? 'pending' : 'complete';
+
 			$assignee_details = $this->get_assignees();
-
-			$step_status = ( empty( $assignee_details ) ) ? 'pending' : 'complete';
-
 			foreach ( $assignee_details as $assignee ) {
 				$user_status = $assignee->get_status();
 
