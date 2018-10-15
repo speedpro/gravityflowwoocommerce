@@ -12,7 +12,7 @@
 
 if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 
-	class Gravity_Flow_Step_Woocommerce_Cancel_Payment extends Gravity_Flow_Step_Woocommerce_Capture_Payment {
+	class Gravity_Flow_Step_Woocommerce_Cancel_Order extends Gravity_Flow_Step_Woocommerce_Capture_Payment {
 		/**
 		 * A unique key for this step type.
 		 *
@@ -20,7 +20,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		 *
 		 * @var string
 		 */
-		public $_step_type = 'woocommerce_cancel_payment';
+		public $_step_type = 'woocommerce_cancel_order';
 
 		/**
 		 * Returns the label for the step.
@@ -30,7 +30,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		 * @return string
 		 */
 		public function get_label() {
-			return esc_html__( 'Cancel Payment', 'gravityflowwoocommerce' );
+			return esc_html__( 'Cancel Order', 'gravityflowwoocommerce' );
 		}
 
 		/**
@@ -55,6 +55,19 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 					'default_destination'       => 'complete',
 				),
 			);
+		}
+
+		/**
+		 * Determines if the entry payment status is valid for the current action.
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param string $payment_status The WooCommerce order payment status.
+		 *
+		 * @return bool
+		 */
+		public function is_valid_payment_status( $payment_status ) {
+			return $payment_status === 'pending' || 'on-hold';
 		}
 
 		/**
@@ -89,5 +102,5 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		}
 	}
 
-	Gravity_Flow_Steps::register( new Gravity_Flow_Step_Woocommerce_Cancel_Payment() );
+	Gravity_Flow_Steps::register( new Gravity_Flow_Step_Woocommerce_Cancel_Order() );
 }

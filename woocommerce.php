@@ -3,7 +3,7 @@
 Plugin Name: Gravity Flow WooCommerce Extension
 Plugin URI: https://gravityflow.io
 Description: WooCommerce Extension for Gravity Flow.
-Version: 1.0.0
+Version: 1.1.0
 Author: Gravity Flow
 Author URI: https://gravityflow.io
 License: GPL-3.0+
@@ -25,7 +25,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define( 'GRAVITY_FLOW_WOOCOMMERCE_VERSION', '1.0.0' );
+define( 'GRAVITY_FLOW_WOOCOMMERCE_VERSION', '1.1.0' );
 define( 'GRAVITY_FLOW_WOOCOMMERCE_EDD_ITEM_ID', 36381 );
 define( 'GRAVITY_FLOW_WOOCOMMERCE_EDD_ITEM_NAME', 'WooCommerce' );
 
@@ -39,8 +39,8 @@ class Gravity_Flow_Woocommerce_Bootstrap {
 
 		require_once( 'includes/steps/class-step-woocommerce-capture-payment.php' );
 		require_once( 'includes/steps/class-step-woocommerce-payment.php' );
-		require_once( 'includes/steps/class-step-woocommerce-cancel-payment.php' );
-		require_once( 'includes/steps/class-step-woocommerce-refund-payment.php' );
+		require_once( 'includes/steps/class-step-woocommerce-cancel-order.php' );
+		require_once( 'includes/steps/class-step-woocommerce-refund-order.php' );
 		require_once( 'includes/merge-tags/class-merge-tag-assignee-woocommerce-pay-url.php' );
 
 		require_once( 'class-woocommerce.php' );

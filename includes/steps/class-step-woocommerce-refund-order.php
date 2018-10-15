@@ -12,7 +12,7 @@
 
 if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 
-	class Gravity_Flow_Step_Woocommerce_Refund_Payment extends Gravity_Flow_Step_Woocommerce_Capture_Payment {
+	class Gravity_Flow_Step_Woocommerce_Refund_Order extends Gravity_Flow_Step_Woocommerce_Capture_Payment {
 		/**
 		 * A unique key for this step type.
 		 *
@@ -20,7 +20,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		 *
 		 * @var string
 		 */
-		public $_step_type = 'woocommerce_refund_payment';
+		public $_step_type = 'woocommerce_refund_order';
 
 		/**
 		 * Returns the label for the step.
@@ -30,7 +30,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		 * @return string
 		 */
 		public function get_label() {
-			return esc_html__( 'Refund Payment', 'gravityflowwoocommerce' );
+			return esc_html__( 'Refund Order', 'gravityflowwoocommerce' );
 		}
 
 		/**
@@ -194,5 +194,5 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		}
 	}
 
-	Gravity_Flow_Steps::register( new Gravity_Flow_Step_Woocommerce_Refund_Payment() );
+	Gravity_Flow_Steps::register( new Gravity_Flow_Step_Woocommerce_Refund_Order() );
 }

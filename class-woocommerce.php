@@ -1111,5 +1111,39 @@ if ( class_exists( 'GFForms' ) ) {
 
 			return false;
 		}
+
+		/**
+		 * Perform scripts when this extension upgrades.
+		 *
+		 * @since 1.1
+		 *
+		 * @param string $previous_version Previous version.
+		 */
+		public function upgrade( $previous_version ) {
+			if ( ! empty( $previous_version ) && version_compare( '1.1.0', $previous_version, '>' ) ) {
+				$this->upgrade_steps_1_1();
+			}
+		}
+
+		/**
+		 * Upgrade steps.
+		 *
+		 * @since 1.1
+		 */
+		public function upgrade_steps_1_1() {
+			$forms = GFAPI::get_forms();
+			foreach ( $forms as $form ) {
+				$feeds = gravity_flow()->get_feeds( $form['id'] );
+				foreach ( $feeds as $feed ) {
+					if ( $feed['meta']['step_type'] === 'woocommerce_cancel_payment' ) {
+						$feed['meta']['step_type'] = 'woocommerce_cancel_order';
+						gravity_flow()->update_feed_meta( $feed['id'], $feed['meta'] );
+					} elseif ( $feed['meta']['step_type'] === 'woocommerce_refund_payment' ) {
+						$feed['meta']['step_type'] = 'woocommerce_refund_order';
+						gravity_flow()->update_feed_meta( $feed['id'], $feed['meta'] );
+					}
+				}
+			}
+		}
 	}
 }
