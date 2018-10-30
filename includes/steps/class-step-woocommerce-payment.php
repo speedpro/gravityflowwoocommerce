@@ -124,7 +124,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 				$order  = wc_get_order( $order_id );
 				$status = $order->get_status();
 
-				if ( $status === 'pending' ) {
+				if ( $status === 'pending' || $status === 'on-hold' ) {
 					$user_id      = $order->get_user_id();
 					$assignee_key = ( ! empty( $user_id ) ) ? 'user_id|' . $user_id : 'email|' . $order->get_billing_email();
 
@@ -190,10 +190,11 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 				<?php
 				$this->maybe_display_assignee_status_list( $args, $form );
 
-				$order  = wc_get_order( $this->get_order_id() );
-				$status = ( false !== $order ) ? $order->get_status() : '';
+				$order           = wc_get_order( $this->get_order_id() );
+				$status          = ( false !== $order ) ? $order->get_status() : '';
+				$complete_status = apply_filters( 'gravityflowwoocommerce_payment_step_complete_status', 'processing' );
 
-				$can_submit = $status === 'pending' || $status === 'on-hold';
+				$can_submit = $status !== $complete_status;
 
 				if ( $can_submit ) {
 					wp_nonce_field( 'gravityflow_woocommerce_payment_' . $this->get_id() );
@@ -210,9 +211,9 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 
 						$statuses = gravity_flow_woocommerce()->wc_order_statuses();
 						// Cannot switch to pending, cancelled and refunded status.
-						$disabled_statuses = array( 'pending', 'cancelled', 'refunded' );
-						if ( $status === 'on-hold' ) {
-							$disabled_statuses[] = 'on-hold';
+						$disabled_statuses = array( 'pending', 'cancelled', 'refunded', 'on-hold' );
+						if ( ! in_array( $status, $disabled_statuses, true ) ) {
+							$disabled_statuses[] = $status;
 						}
 						$dropdown  = '<select name="gravityflow_woocommerce_new_status_step_' . $this->get_id() . '" id="gravityflow-woocommerce-payment-statuses">';
 						$dropdown .= sprintf( '<option value="">%s</option>', esc_html__( 'Choose a status', 'gravityflowwoocommerce' ) );
@@ -370,6 +371,13 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 					$this->log_debug( __METHOD__ . "(): Unable to update WooCommerce order status to $new_status." );
 					$note     = $this->get_name() . ': ' . esc_html__( 'Failed to update WooCommerce order status.', 'gravityflowwoocommerce' );
 					$feedback = esc_html__( 'Failed to update WooCommerce order status.', 'gravityflowwoocommerce' );
+				}
+
+				// If the entry is not at the complete status,
+				// set $feedback to false so we won't release them.
+				$complete_status = apply_filters( 'gravityflowwoocommerce_payment_step_complete_status', 'processing' );
+				if ( $complete_status !== $new_status ) {
+					$feedback = false;
 				}
 
 				$this->add_note( $note );
