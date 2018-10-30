@@ -898,10 +898,14 @@ if ( class_exists( 'GFForms' ) ) {
 				// Update assignee status programmatically.
 				if ( $current_step && 'woocommerce_payment' === $current_step->get_type() && ( 'pending' === $from_status || 'on-hold' === $from_status ) && ( $complete_status && in_array( $to_status, $complete_status, true ) ) ) {
 					if ( true === $result ) {
-						$user_id      = $order->get_user_id();
-						$assignee_key = ( ! empty( $user_id ) ) ? 'user_id|' . $user_id : 'email|' . $order->get_billing_email();
-						$assignee     = $current_step->get_assignee( $assignee_key );
-						$assignee->update_status( 'complete' );
+						$assignees = $current_step->get_assignees();
+						if ( ! empty( $assignees ) ) {
+							foreach ( $assignees as $assignee ) {
+								$assignee->update_status( 'complete' );
+							}
+                        } else {
+						    $current_step->update_step_status( 'complete' );
+                        }
 
 						$api->process_workflow( $entry_id );
 
