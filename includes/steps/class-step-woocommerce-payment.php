@@ -197,7 +197,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 					$complete_status = array( $complete_status );
 				}
 
-				$can_submit = ( $complete_status && ! in_array( $status, $complete_status, true ) || ( $status === 'pending' || $status === 'completed' ) );
+				$can_submit = ( $complete_status && ! in_array( $status, $complete_status, true ) || ( $status === 'pending' || $status === 'on-hold' ) );
 
 				if ( $can_submit ) {
 					wp_nonce_field( 'gravityflow_woocommerce_payment_' . $this->get_id() );
