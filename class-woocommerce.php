@@ -883,10 +883,20 @@ if ( class_exists( 'GFForms' ) ) {
 
 				$result = $this->update_entry_payment_data( $entry, $order, $from_status, $to_status );
 
+				/**
+				 * Set complete status for the payment step.
+				 *
+				 * @since 1.1
+				 *
+				 * @param bool|array|string $complete_status Default complete status.
+				 */
+				$complete_status = apply_filters( 'gravityflowwoocommerce_payment_step_complete_status', false );
+				if ( is_string( $complete_status ) ) {
+					$complete_status = array( $complete_status );
+				}
 				// A new payment release the entry from the WooCommerce Payment step.
 				// Update assignee status programmatically.
-				$complete_status = apply_filters( 'gravityflowwoocommerce_payment_step_complete_status', 'processing' );
-				if ( $current_step && 'woocommerce_payment' === $current_step->get_type() && ( 'pending' === $from_status || 'on-hold' === $from_status ) && ( $to_status === $complete_status ) ) {
+				if ( $current_step && 'woocommerce_payment' === $current_step->get_type() && ( 'pending' === $from_status || 'on-hold' === $from_status ) && ( $complete_status && in_array( $to_status, $complete_status, true ) ) ) {
 					if ( true === $result ) {
 						$user_id      = $order->get_user_id();
 						$assignee_key = ( ! empty( $user_id ) ) ? 'user_id|' . $user_id : 'email|' . $order->get_billing_email();
