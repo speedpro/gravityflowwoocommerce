@@ -157,7 +157,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 			// do this only when the order is still pending.
 			$order = wc_get_order( $this->get_order_id() );
 
-			if ( ( false !== $order && 'pending' === $order->get_status() ) || false === $order ) {
+			if ( ( false !== $order && ( 'pending' === $order->get_status() || 'on-hold' === $order->get_status() ) ) || false === $order ) {
 				if ( false !== $order ) {
 					$this->assign();
 					$this->log_debug( __METHOD__ . '(): Started, waiting for payment.' );
@@ -168,7 +168,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 				$note = $this->get_name() . ': ' . esc_html__( 'Waiting for payment.', 'gravityflowwoocommerce' );
 				$this->add_note( $note );
 			} else {
-				$note = $this->get_name() . ': ' . esc_html__( 'Payment is not pending. Step completed without sending notification.', 'gravityflowwoocommerce' );
+				$note = $this->get_name() . ': ' . esc_html__( 'Payment is not pending or on-hold. Step completed without sending notification.', 'gravityflowwoocommerce' );
 				$this->add_note( $note );
 
 				return true;
@@ -193,7 +193,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 				$order  = wc_get_order( $this->get_order_id() );
 				$status = ( false !== $order ) ? $order->get_status() : '';
 
-				$can_submit = $status === 'pending';
+				$can_submit = $status === 'pending' || $status === 'on-hold';
 
 				if ( $can_submit ) {
 					wp_nonce_field( 'gravityflow_woocommerce_payment_' . $this->get_id() );
@@ -208,12 +208,16 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 						echo '<hr style="margin-top:10px;"/>';
 						echo sprintf( '<h4>%s</h4>', esc_html__( 'Update Order Status', 'gravityflowwoocommerce' ) );
 
-						$statuses  = gravity_flow_woocommerce()->wc_order_statuses();
+						$statuses = gravity_flow_woocommerce()->wc_order_statuses();
+						// Cannot switch to pending, cancelled and refunded status.
+						$disabled_statuses = array( 'pending', 'cancelled', 'refunded' );
+						if ( $status === 'on-hold' ) {
+							$disabled_statuses[] = 'on-hold';
+						}
 						$dropdown  = '<select name="gravityflow_woocommerce_new_status_step_' . $this->get_id() . '" id="gravityflow-woocommerce-payment-statuses">';
 						$dropdown .= sprintf( '<option value="">%s</option>', esc_html__( 'Choose a status', 'gravityflowwoocommerce' ) );
 						foreach ( $statuses as $status ) {
-							// Cannot switch to pending, cancelled and refunded status.
-							if ( in_array( $status['value'], array( 'pending', 'cancelled', 'refunded' ), true ) ) {
+							if ( in_array( $status['value'], $disabled_statuses, true ) ) {
 								continue;
 							}
 
