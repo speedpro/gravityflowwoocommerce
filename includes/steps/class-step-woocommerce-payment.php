@@ -204,9 +204,21 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 
 					echo '<br /><div>';
 
-					$url  = $order->get_checkout_payment_url();
-					$text = esc_html__( 'Pay for this order', 'gravityflowwoocommerce' );
-					echo sprintf( '<a href="%s" target="_blank" class="button">%s</a><br><br>', $url, $text );
+					$assignees = $this->get_assignees();
+					$can_pay   = false;
+
+					foreach ( $assignees as $assignee ) {
+						if ( $assignee->is_current_user() ) {
+							$can_pay = true;
+							break;
+						}
+					}
+
+					if ( $can_pay ) {
+						$url  = $order->get_checkout_payment_url();
+						$text = esc_html__( 'Pay for this order', 'gravityflowwoocommerce' );
+						echo sprintf( '<a href="%s" target="_blank" class="button">%s</a><br><br>', $url, $text );
+					}
 
 					if ( current_user_can( 'edit_shop_orders' ) ) {
 						echo '<hr style="margin-top:10px;"/>';
