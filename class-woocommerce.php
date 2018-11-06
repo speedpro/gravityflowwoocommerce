@@ -890,7 +890,7 @@ if ( class_exists( 'GFForms' ) ) {
 				 *
 				 * @param array|string $complete_status Default complete status.
 				 */
-				$complete_status = apply_filters( 'gravityflowwoocommerce_payment_step_complete_status', array( 'processing', 'completed' ) );
+				$complete_status = apply_filters( 'gravityflowwoocommerce_payment_step_complete_status', array( 'processing', 'completed', 'failed' ) );
 				if ( is_string( $complete_status ) ) {
 					$complete_status = array( $complete_status );
 				}

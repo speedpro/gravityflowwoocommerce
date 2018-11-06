@@ -192,7 +192,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 
 				$order           = wc_get_order( $this->get_order_id() );
 				$status          = ( false !== $order ) ? $order->get_status() : '';
-				$complete_status = apply_filters( 'gravityflowwoocommerce_payment_step_complete_status', array( 'processing', 'completed' ) );
+				$complete_status = apply_filters( 'gravityflowwoocommerce_payment_step_complete_status', array( 'processing', 'completed', 'failed' ) );
 				if ( is_string( $complete_status ) ) {
 					$complete_status = array( $complete_status );
 				}
@@ -390,7 +390,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 
 				// If the entry is not at the complete status,
 				// set $feedback to false so we won't release them.
-				$complete_status = apply_filters( 'gravityflowwoocommerce_payment_step_complete_status', array( 'processing', 'completed' ) );
+				$complete_status = apply_filters( 'gravityflowwoocommerce_payment_step_complete_status', array( 'processing', 'completed', 'failed' ) );
 				if ( is_string( $complete_status ) ) {
 					$complete_status = array( $complete_status );
 				}
