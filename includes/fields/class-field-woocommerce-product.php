@@ -66,7 +66,6 @@ if ( ! class_exists( 'Gravity_Flow_Field_WooCommerce_Product' ) ) {
 		 */
 		function get_form_editor_field_settings() {
 			return array(
-				'columns_setting',
 				'maxrows_setting',
 				'add_icon_url_setting',
 				'delete_icon_url_setting',
@@ -102,7 +101,7 @@ if ( ! class_exists( 'Gravity_Flow_Field_WooCommerce_Product' ) ) {
 		 * @return string
 		 */
 		public function get_form_editor_inline_script_on_page_render() {
-			$script = sprintf( "function SetDefaultValues_%s(field) {field.label = '%s';}", $this->type, $this->get_form_editor_field_title() ) . PHP_EOL;
+			$script = sprintf( "function SetDefaultValues_%s(field) {field.label = '%s';field.choices = new Array(new Choice('%s'), new Choice('%s'), new Choice('%s'), new Choice('%s'))}", $this->type, $this->get_form_editor_field_title(), esc_html__( 'Product ID', 'gravityflowwoocommerce' ), esc_html__( 'Variation ID', 'gravityflowwoocommerce' ), esc_html__( 'Quantity', 'gravityflowwoocommerce' ), esc_html__( 'Unit Price', 'gravityflowwoocommerce' ) ) . PHP_EOL;
 
 			return $script;
 		}
