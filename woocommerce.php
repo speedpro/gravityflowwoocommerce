@@ -36,6 +36,7 @@ class Gravity_Flow_Woocommerce_Bootstrap {
 
 	public static function load() {
 		require_once( 'includes/fields/class-field-woocommerce-order-id.php' );
+		require_once( 'includes/fields/class-field-woocommerce-product.php' );
 
 		require_once( 'includes/steps/class-step-woocommerce-capture-payment.php' );
 		require_once( 'includes/steps/class-step-woocommerce-payment.php' );
