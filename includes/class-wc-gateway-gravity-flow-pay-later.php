@@ -72,7 +72,7 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 	 * @return string Default order status.
 	 */
 	public function default_order_status( $default ) {
-		if ( ! is_admin() && WC()->session->get( 'chosen_payment_method' ) === $this->id ) {
+		if ( ! is_admin() && isset( WC()->session ) && WC()->session->get( 'chosen_payment_method' ) === $this->id ) {
 			$default = 'on-hold';
 		}
 
