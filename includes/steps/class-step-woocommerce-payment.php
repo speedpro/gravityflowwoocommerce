@@ -43,6 +43,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		public function get_settings() {
 			$settings_api = $this->get_common_settings_api();
 
+			$page_choices = $this->get_page_choices();
+
 			$settings = array(
 				'title'  => esc_html__( 'WooCommerce Payment', 'gravityflowwoocommerce' ),
 				'fields' => array(
@@ -58,8 +60,21 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 							) ),
 						),
 					) ),
+					array(
+						'name'    => 'order_received_redirection',
+						'tooltip' => __( 'Select the page to replace the WooCommerce "Order received (thanks)" page. This can be the Workflow Submit Page in the WordPress Admin Dashboard or you can choose a page with either a Gravity Flow inbox shortcode or a Gravity Forms shortcode.', 'gravityflowwoocommerce' ),
+						'label'   => __( 'Order Received Redirection', 'gravityflowwoocommerce' ),
+						'type'    => 'select',
+						'choices' => $page_choices,
+					),
 				),
 			);
+
+			if ( gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $this->get_form_id() ) ) {
+				unset( $settings['fields'][0] );
+				unset( $settings['fields'][1] );
+				unset( $settings['fields'][2] );
+			}
 
 			return $settings;
 		}
@@ -83,6 +98,17 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		}
 
 		/**
+		 * Is this step supported on this server? Override to hide this step in the list of step types if the requirements are not met.
+		 *
+		 * @since 1.1
+		 *
+		 * @return bool
+		 */
+		public function is_supported() {
+			return function_exists( 'WC' );
+		}
+
+		/**
 		 * Evaluates the status for the step.
 		 *
 		 * @since 1.0.0
@@ -95,9 +121,11 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 			}
 
 			$order_id    = $this->get_order_id();
-			$step_status = ( ! $order_id ) ? 'pending' : 'complete';
 
 			$assignee_details = $this->get_assignees();
+
+			$step_status = ( empty( $assignee_details ) || ! $order_id ) ? 'pending' : 'complete';
+
 			foreach ( $assignee_details as $assignee ) {
 				$user_status = $assignee->get_status();
 
@@ -130,6 +158,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 
 					$assignees[] = new Gravity_Flow_Assignee( $assignee_key, $this );
 				}
+			} elseif ( ! gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $this->get_form_id() ) ) {
+				$assignees = parent::get_assignees();
 			}
 
 			return $assignees;
@@ -161,14 +191,19 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 				if ( false !== $order ) {
 					$this->assign();
 					$this->log_debug( __METHOD__ . '(): Started, waiting for payment.' );
+					$note = $this->get_name() . ': ' . esc_html__( 'Waiting for payment.', 'gravityflowwoocommerce' );
 				} else {
+					if ( ! gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $this->get_form_id() ) ) {
+						$this->assign();
+					}
 					$this->log_debug( __METHOD__ . '(): Started, waiting for the order id.' );
+					$note = $this->get_name() . ': ' . esc_html__( 'Waiting for a WooCommerce order.', 'gravityflowwoocommerce' );
 				}
 
-				$note = $this->get_name() . ': ' . esc_html__( 'Waiting for payment.', 'gravityflowwoocommerce' );
 				$this->add_note( $note );
 			} else {
 				$note = $this->get_name() . ': ' . esc_html__( 'Payment is not pending or on-hold. Step completed without sending notification.', 'gravityflowwoocommerce' );
+
 				$this->add_note( $note );
 
 				return true;
@@ -178,7 +213,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Display the workflow detail box for this step.
 		 *
-		 * @since 1.1 Adds new action - "Update Order Status"
+		 * @since 1.1   Adds new action - "Update Order Status"
+		 * @since 1.1   Update payment URL.
 		 * @since 1.0.0
 		 *
 		 * @param array $form The current form.
@@ -215,9 +251,34 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 					}
 
 					if ( $can_pay ) {
-						$url  = $order->get_checkout_payment_url();
-						$text = esc_html__( 'Pay for this order', 'gravityflowwoocommerce' );
-						echo sprintf( '<a href="%s" target="_blank" class="button">%s</a><br><br>', $url, $text );
+						if ( false === $order ) {
+							$entry_id = $this->get_entry_id();
+							$url      = add_query_arg(
+								array(
+									'workflow_order_entry_id' => $entry_id,
+									'workflow_order_hash'     => gravity_flow_woocommerce()->get_workflow_order_hash( $entry_id, $this ),
+								),
+								wc_get_checkout_url()
+							);
+							/**
+							 * Filter the payment step hash url.
+							 *
+							 * @since 1.1
+							 *
+							 * @param string $url URL.
+							 * @param int $entry_id Entry id.
+							 * @param Gravity_Flow_Step $this Gravity Flow step.
+							 */
+							$url  = apply_filters( 'gravityflowwoocommerce_payment_step_url', $url, $entry_id, $this );
+							$text = esc_html__( 'Create a WooCommerce order', 'gravityflowwoocommerce' );
+						} elseif ( $order && $status === 'pending' ) {
+							$url  = $order->get_checkout_payment_url();
+							$text = esc_html__( 'Pay for this order', 'gravityflowwoocommerce' );
+						}
+
+						echo '<br /><div class="gravityflow-action-buttons">';
+						echo sprintf( '<a href="%s" target="_blank" class="button button-large button-primary">%s</a><br><br>', $url, $text );
+						echo '</div>';
 					}
 
 					if ( current_user_can( 'edit_shop_orders' ) ) {
@@ -402,6 +463,36 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 			}
 
 			return $feedback;
+		}
+
+		/**
+		 * Returns the choices for the Submit Page setting.
+		 *
+		 * @since 1.1
+		 *
+		 * @return array
+		 */
+		public function get_page_choices() {
+			$choices = array(
+				array(
+					'label' => esc_html__( 'No Redirection' ),
+					'value' => '',
+				),
+				array(
+					'label' => esc_html__( 'WordPress Admin Dashboard: Workflow Submit Page', 'gravityflowwoocommerce' ),
+					'value' => 'admin',
+				),
+			);
+
+			$pages = get_pages();
+			foreach ( $pages as $page ) {
+				$choices[] = array(
+					'label' => $page->post_title,
+					'value' => $page->ID,
+				);
+			}
+
+			return $choices;
 		}
 	}
 

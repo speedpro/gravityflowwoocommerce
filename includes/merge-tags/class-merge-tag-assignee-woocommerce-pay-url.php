@@ -43,6 +43,7 @@ class Gravity_Flow_Merge_Tag_Assignee_WooCommerce_Pay_Url extends Gravity_Flow_M
 	/**
 	 * Replace the {workflow_woocommerce_pay_url}, and {workflow_woocommerce_pay_link} merge tags.
 	 *
+	 * @since 1.1   Update payment URL.
 	 * @since 1.0.0
 	 *
 	 * @param string $text The text being processed.
@@ -73,7 +74,38 @@ class Gravity_Flow_Merge_Tag_Assignee_WooCommerce_Pay_Url extends Gravity_Flow_M
 
 				$order_id = gform_get_meta( $entry_id, 'workflow_woocommerce_order_id' );
 				$order    = wc_get_order( $order_id );
-				$url      = $this->format_value( $order->get_checkout_payment_url() );
+				if ( false === $order ) {
+					$query_args = array(
+						'workflow_order_entry_id' => $entry_id,
+						'workflow_order_hash'     => gravity_flow_woocommerce()->get_workflow_order_hash( $entry_id, $this->step ),
+					);
+
+					$assignee = $this->assignee;
+					if ( $assignee->get_type() === 'email' ) {
+						$token_lifetime_days              = apply_filters( 'gravityflow_entry_token_expiration_days', 30, $assignee );
+						$token_expiration_timestamp       = strtotime( '+' . (int) $token_lifetime_days . ' days' );
+						$access_token                     = gravity_flow()->generate_access_token( $assignee, null, $token_expiration_timestamp );
+						$query_args['gflow_access_token'] = $access_token;
+					}
+
+					$url = add_query_arg(
+						$query_args,
+						wc_get_checkout_url()
+					);
+					/**
+					 * Filter the payment step hash url.
+					 *
+					 * @since 1.1
+					 *
+					 * @param string $url URL.
+					 * @param int $entry_id Entry id.
+					 * @param Gravity_Flow_Step $this Gravity Flow step.
+					 */
+					$url       = apply_filters( 'gravityflowwoocommerce_payment_step_url', $url, $entry_id, $this );
+					$a['text'] = esc_html__( 'Create a WooCommerce order', 'gravityflowwoocommerce' );
+				} else {
+					$url = $this->format_value( $order->get_checkout_payment_url() );
+				}
 
 				if ( $type === 'link' ) {
 					$url = sprintf( '<a href="%s">%s</a>', $url, $a['text'] );

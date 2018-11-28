@@ -63,13 +63,19 @@ if ( class_exists( 'GFForms' ) ) {
 
 			// Set the priority to 11, so we can be compatible with WooCommerce Gravity Forms add-on.
 			add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'add_entry' ), 11 );
+			add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'save_entry_hash' ), 11 );
 			add_filter( 'woocommerce_payment_gateways', array( $this, 'payment_gateways' ) );
 			add_action( 'woocommerce_available_payment_gateways', array( $this, 'maybe_disable_gateway' ) );
 			// Set the priority to 11, so we can be compatible with WooCommerce Gravity Forms add-on.
 			add_action( 'woocommerce_order_status_changed', array( $this, 'update_entry' ), 11, 4 );
+			add_action( 'woocommerce_order_status_changed', array( $this, 'release_payment_step' ), 11, 4 );
 			add_filter( 'woocommerce_cancel_unpaid_order', array( $this, 'cancel_unpaid_order' ), 10, 2 );
 			add_filter( 'gravityflow_feed_condition_entry_properties', array( $this, 'maybe_update_payment_statuses' ), 10, 2 );
 			add_filter( 'gform_field_filters', array( $this, 'filter_gform_field_filters' ), 10, 2 );
+			// Save workflow hash to session.
+			add_action( 'wp_loaded', array( $this, 'set_workflow_order_hash_session' ), 20 );
+			add_filter( 'woocommerce_get_checkout_order_received_url', array( $this, 'woocommerce_get_checkout_order_received_url' ), 10, 2 );
+			add_filter( 'wp_redirect', array( $this, 'add_to_cart_redirect' ) );
 		}
 
 		public function init_admin() {
@@ -1156,6 +1162,246 @@ if ( class_exists( 'GFForms' ) ) {
 					}
 				}
 			}
+		}
+
+		/**
+		 * Returns a hash based on the current entry ID and the step timestamp.
+		 *
+		 * @since 1.1
+		 *
+		 * @param int               $order_entry_id Parent entry id.
+		 * @param Gravity_Flow_Step $step Step object.
+		 *
+		 * @return string
+		 */
+		public function get_workflow_order_hash( $order_entry_id, $step ) {
+			return wp_hash( 'workflow_order_entry_id:' . $order_entry_id . $step->get_step_timestamp() );
+		}
+
+		/**
+		 * Set workflow hash in WooCommerce session
+		 *
+		 * @since 1.1
+		 */
+		public function set_workflow_order_hash_session() {
+			if ( ! isset( $_GET['workflow_order_hash'] ) || ! isset( $_GET['workflow_order_entry_id'] ) ) {
+				return;
+			}
+
+			$this->log_debug( __METHOD__ . '() starting' );
+
+			$parent_entry_id = absint( rgget( 'workflow_order_entry_id' ) );
+			$hash            = rgget( 'workflow_order_hash' );
+			$parent_entry    = GFAPI::get_entry( $parent_entry_id );
+			$api             = new Gravity_Flow_API( $parent_entry['form_id'] );
+
+			$current_step = $api->get_current_step( $parent_entry );
+			if ( empty( $current_step ) || ! $current_step instanceof Gravity_Flow_Step_Woocommerce_Payment ) {
+				$this->log_debug( __METHOD__ . '(): Entry #' . $parent_entry_id . '\'s current step isn\'t a WooCommerce Payment step' );
+				return;
+			}
+
+			$verify_hash = $this->get_workflow_order_hash( $parent_entry_id, $current_step );
+			if ( ! hash_equals( $hash, $verify_hash ) ) {
+				$this->log_debug( __METHOD__ . '(): Workflow hash check failed' );
+				return;
+			}
+
+			WC()->session->set( 'workflow_order_hash', $hash );
+			WC()->session->set( 'workflow_order_entry_id', $parent_entry_id );
+			$this->log_debug( __METHOD__ . '(): Set workflow hash in WooCommerce session with Entry #' . $parent_entry_id );
+		}
+
+		/**
+		 * Save entry hash when a WooCommerce order created.
+		 *
+		 * @since 1.1
+		 *
+		 * @param int $order_id WooCommerce Order ID.
+		 */
+		public function save_entry_hash( $order_id ) {
+			// WC session only available on the frontend, need to start it manually here.
+			$session_class = apply_filters( 'woocommerce_session_handler', 'WC_Session_Handler' );
+			$wc_session    = new $session_class();
+
+			if ( version_compare( WC_VERSION, '3.3', '>=' ) ) {
+				$wc_session->init();
+			}
+
+			$hash            = $wc_session->get( 'workflow_order_hash' );
+			$parent_entry_id = $wc_session->get( 'workflow_order_entry_id' );
+			if ( empty( $hash ) || empty( $parent_entry_id ) ) {
+				return;
+			}
+
+			update_post_meta( $order_id, '_workflow_order_hash', $hash );
+			update_post_meta( $order_id, '_workflow_order_entry_id', $parent_entry_id );
+
+			$parent_entry = GFAPI::get_entry( $parent_entry_id );
+			$api          = new Gravity_Flow_API( $parent_entry['form_id'] );
+
+			$current_step = $api->get_current_step( $parent_entry );
+			if ( $current_step instanceof Gravity_Flow_Step_Woocommerce_Payment ) {
+				$this->log_debug( __METHOD__ . "(): WooCommerce order #{$order_id} has been created" );
+				$note = $current_step->get_name() . ': ' . sprintf( esc_html__( 'WooCommerce order #%s has been created.', 'gravityflowwoocommerce' ), $order_id );
+				$current_step->add_note( $note );
+			}
+		}
+
+		/**
+		 * Release the entry from a payment step when an order is created with the workflow hash.
+		 *
+		 * @since 1.1
+		 *
+		 * @param int      $order_id WooCommerce Order ID.
+		 * @param string   $from_status WooCommerce old order status.
+		 * @param string   $to_status WooCommerce new order status.
+		 * @param WC_Order $order WooCommerce Order object.
+		 */
+		public function release_payment_step( $order_id, $from_status, $to_status, $order ) {
+			$hash            = get_post_meta( $order_id, '_workflow_order_hash', true );
+			$parent_entry_id = get_post_meta( $order_id, '_workflow_order_entry_id', true );
+			if ( empty( $hash ) || empty( $parent_entry_id ) ) {
+				return;
+			}
+
+			// means it's a front end action by the user,
+			// and they have finished the payment process,
+			if ( WC()->session && $to_status !== 'pending' ) {
+				WC()->session->set( 'workflow_order_hash', null );
+				WC()->session->set( 'workflow_order_entry_id', null );
+			}
+
+			if ( $to_status !== 'processing' && $to_status !== 'completed' ) {
+				return;
+			}
+
+			$parent_entry = GFAPI::get_entry( $parent_entry_id );
+			$api          = new Gravity_Flow_API( $parent_entry['form_id'] );
+
+			$current_step = $api->get_current_step( $parent_entry );
+			if ( $current_step instanceof Gravity_Flow_Step_Woocommerce_Payment ) {
+				$this->log_debug( __METHOD__ . '() starting' );
+
+				$verify_hash = $this->get_workflow_order_hash( $parent_entry_id, $current_step );
+				if ( ! hash_equals( $hash, $verify_hash ) ) {
+					$this->log_debug( __METHOD__ . '(): Workflow hash check failed' );
+					return;
+				}
+
+				// Ideally, the order is completed by the assignee themselves.
+				$current_user_is_assignee  = false;
+				$current_user_assignee_key = $current_step->get_current_assignee_key();
+				if ( $current_user_assignee_key ) {
+					$assignee                 = $current_step->get_assignee( $current_user_assignee_key );
+					$current_user_is_assignee = $assignee->is_current_user();
+					if ( $current_user_is_assignee ) {
+						$assignee->update_status( 'complete' );
+					}
+				}
+				// But it could be possible the order is completed by the admin,
+				// for example, the payment was set to on-hold and then marked as completed by the admin.
+				if ( ! $current_user_is_assignee || ! $current_user_assignee_key ) {
+					$assignees = $current_step->get_assignees();
+					foreach ( $assignees as $assignee ) {
+						$assignee->update_status( 'complete' );
+					}
+				}
+
+				$this->log_debug( __METHOD__ . "(): WooCommerce order #{$order_id} has been paid" );
+				$note = $current_step->get_name() . ': ' . sprintf( esc_html__( 'WooCommerce order #%s has been paid.', 'gravityflowwoocommerce' ), $order_id );
+				$current_step->add_note( $note );
+
+				$page_id = $current_step->order_received_redirection;
+				if ( ! empty( $page_id ) ) {
+					$url = $this->get_order_received_redirection_url( $page_id, $parent_entry_id );
+					gform_update_meta( $parent_entry_id, '_workflow_order_received_redirection_url', $url );
+				}
+
+				$api->process_workflow( $parent_entry_id );
+				$current_step->refresh_entry();
+			}
+		}
+
+		/**
+		 * Redirect to the workflow entry detail after the payment made.
+		 *
+		 * @since 1.1
+		 *
+		 * @param string   $url URL.
+		 * @param WC_Order $order WooCommerce order object.
+		 *
+		 * @return string
+		 */
+		public function woocommerce_get_checkout_order_received_url( $url, $order ) {
+			$entry_id = get_post_meta( $order->get_id(), '_workflow_order_entry_id', true );
+
+			if ( $entry_id ) {
+				$entry        = GFAPI::get_entry( $entry_id );
+				$api          = new Gravity_Flow_API( $entry['form_id'] );
+				$current_step = $api->get_current_step( $entry );
+				$page_id      = $current_step->order_received_redirection;
+
+				if ( ! empty( $page_id ) ) {
+					$url = $this->get_order_received_redirection_url( $page_id, $entry_id );
+				} else {
+					$_url = gform_get_meta( $entry_id, '_workflow_order_received_redirection_url' );
+					if ( ! empty( $_url ) ) {
+						$url = $_url;
+					}
+				}
+			}
+
+			return $url;
+		}
+
+		/**
+		 * Prevent a product added more than once when revisiting the URL.
+		 *
+		 * @since 1.1
+		 *
+		 * @param string $location URL.
+		 *
+		 * @return string
+		 */
+		public function add_to_cart_redirect( $location ) {
+			if ( empty( $_REQUEST['add-to-cart'] ) || ! is_numeric( $_REQUEST['add-to-cart'] ) ) {
+				return $location;
+			}
+
+			$product_id      = intval( $_GET['add-to-cart'] );
+			$product_cart_id = WC()->cart->generate_cart_id( $product_id );
+			$in_cart         = WC()->cart->find_product_in_cart( $product_cart_id );
+
+			if ( $in_cart ) {
+				$location = remove_query_arg( 'add-to-cart', $location );
+			}
+
+			return $location;
+		}
+
+		/**
+		 * Get order received redirection url.
+		 *
+		 * @since 1.1
+		 *
+		 * @param string $page_id Page ID.
+		 * @param string $entry_id Entry ID.
+		 *
+		 * @return string
+		 */
+		public function get_order_received_redirection_url( $page_id, $entry_id ) {
+			$entry      = GFAPI::get_entry( $entry_id );
+			$query_args = array(
+				'page' => 'gravityflow-inbox',
+				'view' => 'entry',
+				'id'   => $entry['form_id'],
+				'lid'  => $entry_id,
+			);
+
+			$url = Gravity_Flow_Common::get_workflow_url( $query_args, $page_id, null, gravity_flow()->get_access_token() );
+
+			return $url;
 		}
 	}
 }
