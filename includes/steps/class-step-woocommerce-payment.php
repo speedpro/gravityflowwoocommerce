@@ -120,17 +120,18 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 				return 'queued';
 			}
 
-			$order_id    = $this->get_order_id();
-
 			$assignee_details = $this->get_assignees();
+			if ( empty( $assignee_details ) ) {
+				$step_status = 'pending';
+			} else {
+				$step_status = 'complete';
 
-			$step_status = ( empty( $assignee_details ) || ! $order_id ) ? 'pending' : 'complete';
+				foreach ( $assignee_details as $assignee ) {
+					$user_status = $assignee->get_status();
 
-			foreach ( $assignee_details as $assignee ) {
-				$user_status = $assignee->get_status();
-
-				if ( empty( $user_status ) || $user_status == 'pending' ) {
-					$step_status = 'pending';
+					if ( empty( $user_status ) || $user_status == 'pending' ) {
+						$step_status = 'pending';
+					}
 				}
 			}
 
