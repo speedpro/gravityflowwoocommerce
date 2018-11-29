@@ -1242,8 +1242,9 @@ if ( class_exists( 'GFForms' ) ) {
 
 			$current_step = $api->get_current_step( $parent_entry );
 			if ( $current_step instanceof Gravity_Flow_Step_Woocommerce_Payment ) {
-				$this->log_debug( __METHOD__ . "(): WooCommerce order #{$order_id} has been created" );
-				$note = $current_step->get_name() . ': ' . sprintf( esc_html__( 'WooCommerce order #%s has been created.', 'gravityflowwoocommerce' ), $order_id );
+				$order = wc_get_order( $order_id );
+				$this->log_debug( __METHOD__ . "(): WooCommerce order #{$order_id} has been created. Order status: {$order->get_status()}" );
+				$note = $current_step->get_name() . ': ' . sprintf( esc_html__( 'WooCommerce order #%s has been created. Order status: %s.', 'gravityflowwoocommerce' ), $order_id, $order->get_status() );
 				$current_step->add_note( $note );
 			}
 		}
@@ -1308,8 +1309,9 @@ if ( class_exists( 'GFForms' ) ) {
 					}
 				}
 
-				$this->log_debug( __METHOD__ . "(): WooCommerce order #{$order_id} has been paid" );
-				$note = $current_step->get_name() . ': ' . sprintf( esc_html__( 'WooCommerce order #%s has been paid.', 'gravityflowwoocommerce' ), $order_id );
+				$order = wc_get_order( $order_id );
+				$this->log_debug( __METHOD__ . "(): WooCommerce order #{$order_id} has been paid. Order status: {$order->get_status()}" );
+				$note = $current_step->get_name() . ': ' . sprintf( esc_html__( 'WooCommerce order #%s has been paid. Order status: %s.', 'gravityflowwoocommerce' ), $order_id, $order->get_status() );
 				$current_step->add_note( $note );
 
 				$page_id = $current_step->order_received_redirection;
