@@ -121,11 +121,17 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 			}
 
 			$assignee_details = $this->get_assignees();
-			if ( empty( $assignee_details ) ) {
-				$step_status = 'pending';
+			// If WooCommerce Orders integration enabled.
+			if ( gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $this->get_form_id() ) ) {
+				$order_id = $this->get_order_id();
+				// For the WC GF add-on compatibility.
+				$step_status = ( ! $order_id ) ? 'pending' : 'complete';
 			} else {
-				$step_status = 'complete';
+				// Waiting for a WC Order to be created.
+				$step_status = ( empty( $assignee_details ) ) ? 'pending' : 'complete';
+			}
 
+			if ( ! empty( $assignee_details ) ) {
 				foreach ( $assignee_details as $assignee ) {
 					$user_status = $assignee->get_status();
 
