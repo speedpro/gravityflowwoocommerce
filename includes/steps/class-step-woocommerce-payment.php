@@ -288,7 +288,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 						echo '</div>';
 					}
 
-					if ( current_user_can( 'edit_shop_orders' ) ) {
+					if ( current_user_can( 'edit_shop_orders' ) && gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $this->get_form_id() ) ) {
 						echo '<hr style="margin-top:10px;"/>';
 						echo sprintf( '<h4>%s</h4>', esc_html__( 'Update Order Status', 'gravityflowwoocommerce' ) );
 
