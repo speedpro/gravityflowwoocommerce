@@ -121,14 +121,11 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 			}
 
 			$assignee_details = $this->get_assignees();
-			// If WooCommerce Orders integration enabled.
-			if ( gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $this->get_form_id() ) ) {
-				$order_id = $this->get_order_id();
-				// For the WC GF add-on compatibility.
-				$step_status = ( ! $order_id ) ? 'pending' : 'complete';
-			} else {
-				// Waiting for a WC Order to be created.
-				$step_status = ( empty( $assignee_details ) ) ? 'pending' : 'complete';
+			$order_id         = $this->get_order_id();
+			// For the WC GF add-on compatibility.
+			$step_status = ( ! $order_id ) ? 'pending' : 'complete';
+			if ( ! empty( $assignee_details ) && $step_status === 'pending' ) {
+				$step_status = 'complete';
 			}
 
 			if ( ! empty( $assignee_details ) ) {
@@ -283,9 +280,11 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 							$text = esc_html__( 'Pay for this order', 'gravityflowwoocommerce' );
 						}
 
-						echo '<br /><div class="gravityflow-action-buttons">';
-						echo sprintf( '<a href="%s" target="_blank" class="button button-large button-primary">%s</a><br><br>', $url, $text );
-						echo '</div>';
+						if ( isset( $text ) ) {
+							echo '<br /><div class="gravityflow-action-buttons">';
+							echo sprintf( '<a href="%s" target="_blank" class="button button-large button-primary">%s</a><br><br>', $url, $text );
+							echo '</div>';
+						}
 					}
 
 					if ( current_user_can( 'edit_shop_orders' ) && gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $this->get_form_id() ) ) {

@@ -1236,6 +1236,7 @@ if ( class_exists( 'GFForms' ) ) {
 
 			update_post_meta( $order_id, '_workflow_order_hash', $hash );
 			update_post_meta( $order_id, '_workflow_order_entry_id', $parent_entry_id );
+			gform_update_meta( $parent_entry_id, 'workflow_woocommerce_order_id', $order_id );
 
 			$parent_entry = GFAPI::get_entry( $parent_entry_id );
 			$api          = new Gravity_Flow_API( $parent_entry['form_id'] );
