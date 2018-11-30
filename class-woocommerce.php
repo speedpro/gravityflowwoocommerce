@@ -889,9 +889,21 @@ if ( class_exists( 'GFForms' ) ) {
 
 				$result = $this->update_entry_payment_data( $entry, $order, $from_status, $to_status );
 
+				/**
+				 * Set complete status for the payment step.
+				 *
+				 * @since 1.1
+				 *
+				 * @param array|string $complete_status Default complete status.
+				 */
+				$complete_status = apply_filters( 'gravityflowwoocommerce_payment_step_complete_status', array( 'processing', 'completed', 'failed' ) );
+				if ( is_string( $complete_status ) ) {
+					$complete_status = array( $complete_status );
+				}
 				// A new payment release the entry from the WooCommerce Payment step.
 				// Update assignee status programmatically.
-				if ( $current_step && 'woocommerce_payment' === $current_step->get_type() && 'pending' === $from_status ) {
+				if ( $current_step && 'woocommerce_payment' === $current_step->get_type()
+					&& ( in_array( $to_status, $complete_status, true ) ) ) {
 					if ( true === $result ) {
 						$user_id      = $order->get_user_id();
 						$assignee_key = ( ! empty( $user_id ) ) ? 'user_id|' . $user_id : 'email|' . $order->get_billing_email();
@@ -966,7 +978,7 @@ if ( class_exists( 'GFForms' ) ) {
 			$result = GFAPI::update_entry( $entry );
 			$this->log_debug( __METHOD__ . '(): update entry #' . $entry['id'] . ' payment status. Result - ' . print_r( $result, true ) );
 			if ( true === $result ) {
-				$note = sprintf( esc_html__( 'WooCommerce payment status updated from %s to %s.', 'gravityflowwoocommerce' ), $from_status, $to_status );
+				$note = sprintf( esc_html__( 'Entry payment status updated from %s to %s.', 'gravityflowwoocommerce' ), $from_status, $to_status );
 			} else {
 				$note = esc_html__( 'Failed to update entry.', 'gravityflowwoocommerce' );
 			}
@@ -1224,14 +1236,16 @@ if ( class_exists( 'GFForms' ) ) {
 
 			update_post_meta( $order_id, '_workflow_order_hash', $hash );
 			update_post_meta( $order_id, '_workflow_order_entry_id', $parent_entry_id );
+			gform_update_meta( $parent_entry_id, 'workflow_woocommerce_order_id', $order_id );
 
 			$parent_entry = GFAPI::get_entry( $parent_entry_id );
 			$api          = new Gravity_Flow_API( $parent_entry['form_id'] );
 
 			$current_step = $api->get_current_step( $parent_entry );
 			if ( $current_step instanceof Gravity_Flow_Step_Woocommerce_Payment ) {
-				$this->log_debug( __METHOD__ . "(): WooCommerce order #{$order_id} has been created" );
-				$note = $current_step->get_name() . ': ' . sprintf( esc_html__( 'WooCommerce order #%s has been created.', 'gravityflowwoocommerce' ), $order_id );
+				$order = wc_get_order( $order_id );
+				$this->log_debug( __METHOD__ . "(): WooCommerce order #{$order_id} has been created. Order status: {$order->get_status()}" );
+				$note = $current_step->get_name() . ': ' . sprintf( esc_html__( 'WooCommerce order #%s has been created. Order status: %s.', 'gravityflowwoocommerce' ), $order_id, $order->get_status() );
 				$current_step->add_note( $note );
 			}
 		}
@@ -1296,8 +1310,9 @@ if ( class_exists( 'GFForms' ) ) {
 					}
 				}
 
-				$this->log_debug( __METHOD__ . "(): WooCommerce order #{$order_id} has been paid" );
-				$note = $current_step->get_name() . ': ' . sprintf( esc_html__( 'WooCommerce order #%s has been paid.', 'gravityflowwoocommerce' ), $order_id );
+				$order = wc_get_order( $order_id );
+				$this->log_debug( __METHOD__ . "(): WooCommerce order #{$order_id} has been paid. Order status: {$order->get_status()}" );
+				$note = $current_step->get_name() . ': ' . sprintf( esc_html__( 'WooCommerce order #%s has been paid. Order status: %s.', 'gravityflowwoocommerce' ), $order_id, $order->get_status() );
 				$current_step->add_note( $note );
 
 				$page_id = $current_step->order_received_redirection;

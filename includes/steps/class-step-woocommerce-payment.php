@@ -48,9 +48,6 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 			$settings = array(
 				'title'  => esc_html__( 'WooCommerce Payment', 'gravityflowwoocommerce' ),
 				'fields' => array(
-					$settings_api->get_setting_assignee_type(),
-					$settings_api->get_setting_assignees(),
-					$settings_api->get_setting_assignee_routing(),
 					$settings_api->get_setting_instructions(),
 					$settings_api->get_setting_display_fields(),
 					$settings_api->get_setting_notification_tabs( array(
@@ -124,14 +121,20 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 			}
 
 			$assignee_details = $this->get_assignees();
+			$order_id         = $this->get_order_id();
+			// For the WC GF add-on compatibility.
+			$step_status = ( ! $order_id ) ? 'pending' : 'complete';
+			if ( ! empty( $assignee_details ) && $step_status === 'pending' ) {
+				$step_status = 'complete';
+			}
 
-			$step_status = ( empty( $assignee_details ) ) ? 'pending' : 'complete';
+			if ( ! empty( $assignee_details ) ) {
+				foreach ( $assignee_details as $assignee ) {
+					$user_status = $assignee->get_status();
 
-			foreach ( $assignee_details as $assignee ) {
-				$user_status = $assignee->get_status();
-
-				if ( empty( $user_status ) || $user_status == 'pending' ) {
-					$step_status = 'pending';
+					if ( empty( $user_status ) || $user_status == 'pending' ) {
+						$step_status = 'pending';
+					}
 				}
 			}
 
@@ -150,11 +153,15 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 
 			$order_id = $this->get_order_id();
 			if ( $order_id ) {
-				$order        = wc_get_order( $order_id );
-				$user_id      = $order->get_user_id();
-				$assignee_key = ( ! empty( $user_id ) ) ? 'user_id|' . $user_id : 'email|' . $order->get_billing_email();
+				$order  = wc_get_order( $order_id );
+				$status = $order->get_status();
 
-				$assignees[] = new Gravity_Flow_Assignee( $assignee_key, $this );
+				if ( $status === 'pending' || $status === 'on-hold' ) {
+					$user_id      = $order->get_user_id();
+					$assignee_key = ( ! empty( $user_id ) ) ? 'user_id|' . $user_id : 'email|' . $order->get_billing_email();
+
+					$assignees[] = new Gravity_Flow_Assignee( $assignee_key, $this );
+				}
 			} elseif ( ! gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $this->get_form_id() ) ) {
 				$assignees = parent::get_assignees();
 			}
@@ -184,7 +191,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 			// do this only when the order is still pending.
 			$order = wc_get_order( $this->get_order_id() );
 
-			if ( ( false !== $order && 'pending' === $order->get_status() ) || false === $order ) {
+			if ( ( false !== $order && ( 'pending' === $order->get_status() || 'on-hold' === $order->get_status() ) ) || false === $order ) {
 				if ( false !== $order ) {
 					$this->assign();
 					$this->log_debug( __METHOD__ . '(): Started, waiting for payment.' );
@@ -199,7 +206,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 
 				$this->add_note( $note );
 			} else {
-				$note = $this->get_name() . ': ' . esc_html__( 'Payment is not pending. Step completed without sending notification.', 'gravityflowwoocommerce' );
+				$note = $this->get_name() . ': ' . esc_html__( 'Payment is not pending or on-hold. Step completed without sending notification.', 'gravityflowwoocommerce' );
+
 				$this->add_note( $note );
 
 				return true;
@@ -209,6 +217,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		/**
 		 * Display the workflow detail box for this step.
 		 *
+		 * @since 1.1   Adds new action - "Update Order Status"
 		 * @since 1.1   Update payment URL.
 		 * @since 1.0.0
 		 *
@@ -221,47 +230,90 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 				<?php
 				$this->maybe_display_assignee_status_list( $args, $form );
 
-				$order  = wc_get_order( $this->get_order_id() );
-				$status = ( false !== $order ) ? $order->get_status() : '';
-
-				$assignees = $this->get_assignees();
-
-				$can_submit = false;
-				foreach ( $assignees as $assignee ) {
-					if ( $assignee->is_current_user() ) {
-						$can_submit = true;
-						break;
-					}
+				$order           = wc_get_order( $this->get_order_id() );
+				$status          = ( false !== $order ) ? $order->get_status() : '';
+				$complete_status = apply_filters( 'gravityflowwoocommerce_payment_step_complete_status', array( 'processing', 'completed', 'failed' ) );
+				if ( is_string( $complete_status ) ) {
+					$complete_status = array( $complete_status );
 				}
 
+				$can_submit = ! in_array( $status, $complete_status, true );
+
 				if ( $can_submit ) {
-					if ( false === $order ) {
-						$entry_id = $this->get_entry_id();
-						$url      = add_query_arg(
-							array(
-								'workflow_order_entry_id' => $entry_id,
-								'workflow_order_hash'     => gravity_flow_woocommerce()->get_workflow_order_hash( $entry_id, $this ),
-							),
-							wc_get_checkout_url()
-						);
-						/**
-						 * Filter the payment step hash url.
-						 *
-						 * @since 1.1
-						 *
-						 * @param string $url URL.
-						 * @param int $entry_id Entry id.
-						 * @param Gravity_Flow_Step $this Gravity Flow step.
-						 */
-						$url  = apply_filters( 'gravityflowwoocommerce_payment_step_url', $url, $entry_id, $this );
-						$text = esc_html__( 'Create a WooCommerce order', 'gravityflowwoocommerce' );
-					} elseif ( $order && $status === 'pending' ) {
-						$url  = $order->get_checkout_payment_url();
-						$text = esc_html__( 'Pay for this order', 'gravityflowwoocommerce' );
+					wp_nonce_field( 'gravityflow_woocommerce_payment_' . $this->get_id() );
+
+					echo '<br /><div>';
+
+					$assignees = $this->get_assignees();
+					$can_pay   = false;
+
+					foreach ( $assignees as $assignee ) {
+						if ( $assignee->is_current_user() ) {
+							$can_pay = true;
+							break;
+						}
 					}
 
-					echo '<br /><div class="gravityflow-action-buttons">';
-					echo sprintf( '<a href="%s" target="_blank" class="button button-large button-primary">%s</a><br><br>', $url, $text );
+					if ( $can_pay ) {
+						if ( false === $order ) {
+							$entry_id = $this->get_entry_id();
+							$url      = add_query_arg(
+								array(
+									'workflow_order_entry_id' => $entry_id,
+									'workflow_order_hash'     => gravity_flow_woocommerce()->get_workflow_order_hash( $entry_id, $this ),
+								),
+								wc_get_checkout_url()
+							);
+							/**
+							 * Filter the payment step hash url.
+							 *
+							 * @since 1.1
+							 *
+							 * @param string $url URL.
+							 * @param int $entry_id Entry id.
+							 * @param Gravity_Flow_Step $this Gravity Flow step.
+							 */
+							$url  = apply_filters( 'gravityflowwoocommerce_payment_step_url', $url, $entry_id, $this );
+							$text = esc_html__( 'Create a WooCommerce order', 'gravityflowwoocommerce' );
+						} elseif ( $order && $status === 'pending' ) {
+							$url  = $order->get_checkout_payment_url();
+							$text = esc_html__( 'Pay for this order', 'gravityflowwoocommerce' );
+						}
+
+						if ( isset( $text ) ) {
+							echo '<br /><div class="gravityflow-action-buttons">';
+							echo sprintf( '<a href="%s" target="_blank" class="button button-large button-primary">%s</a><br><br>', $url, $text );
+							echo '</div>';
+						}
+					}
+
+					if ( current_user_can( 'edit_shop_orders' ) && gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $this->get_form_id() ) ) {
+						echo '<hr style="margin-top:10px;"/>';
+						echo sprintf( '<h4>%s</h4>', esc_html__( 'Update Order Status', 'gravityflowwoocommerce' ) );
+
+						$statuses = gravity_flow_woocommerce()->wc_order_statuses();
+						// Cannot switch to pending, cancelled and refunded status.
+						$disabled_statuses = array( 'pending', 'cancelled', 'refunded', 'on-hold' );
+						if ( ! in_array( $status, $disabled_statuses, true ) ) {
+							$disabled_statuses[] = $status;
+						}
+						$dropdown  = '<select name="gravityflow_woocommerce_new_status_step_' . $this->get_id() . '" id="gravityflow-woocommerce-payment-statuses">';
+						$dropdown .= sprintf( '<option value="">%s</option>', esc_html__( 'Choose a status', 'gravityflowwoocommerce' ) );
+						foreach ( $statuses as $status ) {
+							if ( in_array( $status['value'], $disabled_statuses, true ) ) {
+								continue;
+							}
+
+							$dropdown .= '<option value="' . $status['value'] . '">';
+							$dropdown .= $status['text'];
+							$dropdown .= '</option>';
+						}
+						$dropdown .= '</select>';
+						$button    = '<button name="submit" value="updated" type="submit" class="button">' . esc_html__( 'Update', 'gravityflowwoocommerce' ) . '</button>';
+
+						echo sprintf( '%s %s<br/><br/>', $dropdown, $button );
+					}
+
 					echo '</div>';
 				}
 				?>
@@ -375,7 +427,54 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		}
 
 		/**
+		 * Handles POSTed values from the workflow detail page.
+		 *
+		 * @since 1.1
+		 *
+		 * @param array $form  The current form.
+		 * @param array $entry The current entry.
+		 *
+		 * @return string|bool Return a success feedback message safe for page output.
+		 */
+		public function maybe_process_status_update( $form, $entry ) {
+			$feedback        = false;
+			$step_status_key = 'gravityflow_woocommerce_new_status_step_' . $this->get_id();
+			$order           = wc_get_order( $this->get_order_id() );
+
+			if ( isset( $_POST[ $step_status_key ] ) && isset( $_POST['_wpnonce'] ) && check_admin_referer( 'gravityflow_woocommerce_payment_' . $this->get_id() ) ) {
+				$new_status = rgpost( $step_status_key );
+				$note       = $this->get_name() . ': ' . sprintf( esc_html__( 'Updated WooCommerce order status to %s.', 'gravityflowwoocommerce' ), $new_status );
+				$result     = $order->update_status( $new_status, $note );
+
+				if ( $result ) {
+					$feedback = sprintf( esc_html__( 'Updated WooCommerce order status to %s.', 'gravityflowwoocommerce' ), $new_status );
+					$this->log_debug( __METHOD__ . "(): Updated WooCommerce order status to $new_status." );
+				} else {
+					$this->log_debug( __METHOD__ . "(): Unable to update WooCommerce order status to $new_status." );
+					$note     = $this->get_name() . ': ' . esc_html__( 'Failed to update WooCommerce order status.', 'gravityflowwoocommerce' );
+					$feedback = esc_html__( 'Failed to update WooCommerce order status.', 'gravityflowwoocommerce' );
+				}
+
+				// If the entry is not at the complete status,
+				// set $feedback to false so we won't release them.
+				$complete_status = apply_filters( 'gravityflowwoocommerce_payment_step_complete_status', array( 'processing', 'completed', 'failed' ) );
+				if ( is_string( $complete_status ) ) {
+					$complete_status = array( $complete_status );
+				}
+				if ( ! in_array( $new_status, $complete_status, true ) ) {
+					$feedback = false;
+				}
+
+				$this->add_note( $note );
+			}
+
+			return $feedback;
+		}
+
+		/**
 		 * Returns the choices for the Submit Page setting.
+		 *
+		 * @since 1.1
 		 *
 		 * @return array
 		 */
