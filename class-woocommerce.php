@@ -170,8 +170,8 @@ if ( class_exists( 'GFForms' ) ) {
 
 			$fields[] = array(
 				'name'                => 'payment_statuses_mode',
-				'label'               => esc_html__( 'Create Entries on Specific Statutes', 'gravityflowwoocommerce' ),
-				'tooltip'             => '<h6>' . esc_html__( 'Create Entries on Specific Statutes', 'gravityflowwoocommerce' ) . '</h6>' . esc_html__( 'New entries will only be created when a WooCommerce order is in one of the selected statuses. Each WooCommerce order can be added to this form once.', 'gravityflowwoocommerce' ),
+				'label'               => esc_html__( 'Create Entries on Specific Statuses', 'gravityflowwoocommerce' ),
+				'tooltip'             => '<h6>' . esc_html__( 'Create Entries on Specific Statuses', 'gravityflowwoocommerce' ) . '</h6>' . esc_html__( 'New entries will only be created when a WooCommerce order is in one of the selected statuses. Each WooCommerce order can be added to this form once.', 'gravityflowwoocommerce' ),
 				'type'                => 'payment_statuses',
 				'dependency'          => array(
 					'field'  => 'woocommerce_orders_integration_enabled',
@@ -246,10 +246,10 @@ if ( class_exists( 'GFForms' ) ) {
 			}
 			$payment_statuses_field = array(
 				'name'    => 'payment_statuses_selected',
-				'label'   => esc_html__( 'Create Entries on Specific Statutes', 'gravityflowwoocommerce' ),
+				'label'   => esc_html__( 'Create Entries on Specific Statuses', 'gravityflowwoocommerce' ),
 				'type'    => 'checkbox',
 				'choices' => $payment_status_choices,
-				'tooltip' => '<h6>' . esc_html__( 'Create Entries on Specific Statutes', 'gravityflowwoocommerce' ) . '</h6>' . esc_html__( 'New entries will only be created when a WooCommerce order is in one of the selected statuses. Each WooCommerce order can be added to this form once.', 'gravityflowwoocommerce' ),
+				'tooltip' => '<h6>' . esc_html__( 'Create Entries on Specific Statuses', 'gravityflowwoocommerce' ) . '</h6>' . esc_html__( 'New entries will only be created when a WooCommerce order is in one of the selected statuses. Each WooCommerce order can be added to this form once.', 'gravityflowwoocommerce' ),
 			);
 
 			$this->settings_select( $mode_field );

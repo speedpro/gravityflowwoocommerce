@@ -1,1 +1,7 @@
-- Added a new form setting "Create Entries on Specific Statutes".
+- Added a new form setting "Create Entries on Specific Statuses".
+- Added WooCommerce payment statuses.
+- Added support for the WooCommerce Gravity Forms add-on.
+- Added new action "Update Order Status" to the payment step.
+- Updated the cancel and refund payment step.
+- Updated the payment step so it can wait for a WooCommerce order to be created.
+- Fixed the PHP fatal error when WC()->session isn't set.
