@@ -1,0 +1,17 @@
+vendor/
+composer.json
+composer.lock
+apigen.neon
+config.json
+config-sample.json
+js/*.min.js
+css/*.min.css
+node_modules
+Gruntfile.js
+package.json
+package-lock.json
+tests/wp-tests-config.php
+.svn/
+tests/phpunit/build/
+Gruntfile.js
+
