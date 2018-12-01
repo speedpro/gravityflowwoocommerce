@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gravityflowwoocommerce\n"
 "Report-Msgid-Bugs-To: https://www.gravityflow.io\n"
-"POT-Creation-Date: 2018-08-25 13:36:11+00:00\n"
+"POT-Creation-Date: 2018-12-01 12:45:03+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -23,27 +23,27 @@ msgstr ""
 "X-Textdomain-Support: yes\n"
 "X-Generator: grunt-wp-i18n1.0.2\n"
 
-#: class-woocommerce.php:105
+#: class-woocommerce.php:117
 msgid "Manage Settings"
 msgstr ""
 
-#: class-woocommerce.php:106
+#: class-woocommerce.php:118
 msgid "Uninstall"
 msgstr ""
 
-#: class-woocommerce.php:107
+#: class-woocommerce.php:119
 msgid "Manage Form Settings"
 msgstr ""
 
-#: class-woocommerce.php:125 class-woocommerce.php:136
+#: class-woocommerce.php:137 class-woocommerce.php:148
 msgid "WooCommerce Integration"
 msgstr ""
 
-#: class-woocommerce.php:131
+#: class-woocommerce.php:143
 msgid "Enable"
 msgstr ""
 
-#: class-woocommerce.php:136
+#: class-woocommerce.php:148
 msgid ""
 "When enabled, a new entry will be created in this form when a WooCommerce "
 "Order is created. The entry payment and transaction details will also be "
@@ -51,250 +51,281 @@ msgid ""
 "will be updated."
 msgstr ""
 
-#: class-woocommerce.php:143
+#: class-woocommerce.php:155
 msgid "Field Mapping"
 msgstr ""
 
-#: class-woocommerce.php:147
+#: class-woocommerce.php:159
 msgid "Field"
 msgstr ""
 
-#: class-woocommerce.php:148
+#: class-woocommerce.php:160
 msgid "WooCommerce Order Property"
 msgstr ""
 
-#: class-woocommerce.php:151
+#: class-woocommerce.php:163
 msgid "Mapping"
 msgstr ""
 
-#: class-woocommerce.php:151
+#: class-woocommerce.php:163
 msgid ""
 "Map the fields of this form to the WooCommerce Order properties. Values "
 "from an WooCommerce Order will be saved in the entry in this form."
 msgstr ""
 
-#: class-woocommerce.php:161
+#: class-woocommerce.php:173 class-woocommerce.php:174
+#: class-woocommerce.php:249 class-woocommerce.php:252
+msgid "Create Entries on Specific Statuses"
+msgstr ""
+
+#: class-woocommerce.php:174 class-woocommerce.php:252
+msgid ""
+"New entries will only be created when a WooCommerce order is in one of the "
+"selected statuses. Each WooCommerce order can be added to this form once."
+msgstr ""
+
+#: class-woocommerce.php:185
 msgid "WooCommerce"
 msgstr ""
 
-#: class-woocommerce.php:177
+#: class-woocommerce.php:201
 msgid "When enable WooCommerce integration, it will:"
 msgstr ""
 
-#: class-woocommerce.php:179
+#: class-woocommerce.php:203
 msgid "Create a new entry when a WooCommerce Order is created."
 msgstr ""
 
-#: class-woocommerce.php:180
+#: class-woocommerce.php:204
 msgid ""
 "Update the entry payment and transaction details based on the WooCommerce "
 "Order."
 msgstr ""
 
-#: class-woocommerce.php:260
+#: class-woocommerce.php:225
+msgid "All payment statuses"
+msgstr ""
+
+#: class-woocommerce.php:229
+msgid "Selected payment statuses"
+msgstr ""
+
+#: class-woocommerce.php:283
+msgid "You need to selected at least one payment status."
+msgstr ""
+
+#: class-woocommerce.php:364
 msgid "WooCommerce Order ID"
 msgstr ""
 
-#: class-woocommerce.php:333
+#: class-woocommerce.php:460
 msgid "Select a Field"
 msgstr ""
 
-#: class-woocommerce.php:337
+#: class-woocommerce.php:464
 #: includes/fields/class-field-woocommerce-order-id.php:94
 #: includes/fields/class-field-woocommerce-order-id.php:205
 msgid "Order ID"
 msgstr ""
 
-#: class-woocommerce.php:341
+#: class-woocommerce.php:468
 msgid "Order Number"
 msgstr ""
 
-#: class-woocommerce.php:345
+#: class-woocommerce.php:472
 msgid "Order Status"
 msgstr ""
 
-#: class-woocommerce.php:349
+#: class-woocommerce.php:476
 msgid "Order Date"
 msgstr ""
 
-#: class-woocommerce.php:353
+#: class-woocommerce.php:480
 msgid "Cart Total"
 msgstr ""
 
-#: class-woocommerce.php:357
+#: class-woocommerce.php:484
 msgid "Cart Subtotal"
 msgstr ""
 
-#: class-woocommerce.php:361
+#: class-woocommerce.php:488
 msgid "Payment Method"
 msgstr ""
 
-#: class-woocommerce.php:365
+#: class-woocommerce.php:492
 msgid "Transaction ID"
 msgstr ""
 
-#: class-woocommerce.php:369
+#: class-woocommerce.php:496
 msgid "Currency Currency"
 msgstr ""
 
-#: class-woocommerce.php:373
+#: class-woocommerce.php:500
 msgid "Currency Symbol"
 msgstr ""
 
-#: class-woocommerce.php:377
+#: class-woocommerce.php:504
 msgid "View Order URL"
 msgstr ""
 
-#: class-woocommerce.php:381
+#: class-woocommerce.php:508
 msgid "User ID"
 msgstr ""
 
-#: class-woocommerce.php:385
+#: class-woocommerce.php:512
 msgid "Billing First Name"
 msgstr ""
 
-#: class-woocommerce.php:389
+#: class-woocommerce.php:516
 msgid "Billing Last Name"
 msgstr ""
 
-#: class-woocommerce.php:393
+#: class-woocommerce.php:520
 msgid "Billing Company"
 msgstr ""
 
-#: class-woocommerce.php:397
+#: class-woocommerce.php:524
 msgid "Billing Address"
 msgstr ""
 
-#: class-woocommerce.php:401
+#: class-woocommerce.php:528
 msgid "Billing Email"
 msgstr ""
 
-#: class-woocommerce.php:405
+#: class-woocommerce.php:532
 msgid "Billing Phone"
 msgstr ""
 
-#: class-woocommerce.php:409
+#: class-woocommerce.php:536
 msgid "Billing Address Line 1"
 msgstr ""
 
-#: class-woocommerce.php:413
+#: class-woocommerce.php:540
 msgid "Billing Address Line 2"
 msgstr ""
 
-#: class-woocommerce.php:417
+#: class-woocommerce.php:544
 msgid "Billing City"
 msgstr ""
 
-#: class-woocommerce.php:421
+#: class-woocommerce.php:548
 msgid "Billing Postcode"
 msgstr ""
 
-#: class-woocommerce.php:425
+#: class-woocommerce.php:552
 msgid "Billing Country Code"
 msgstr ""
 
-#: class-woocommerce.php:429
+#: class-woocommerce.php:556
 msgid "Billing Country"
 msgstr ""
 
-#: class-woocommerce.php:433
+#: class-woocommerce.php:560
 msgid "Billing State Code"
 msgstr ""
 
-#: class-woocommerce.php:437
+#: class-woocommerce.php:564
 msgid "Billing State"
 msgstr ""
 
-#: class-woocommerce.php:441
+#: class-woocommerce.php:568
 msgid "Shipping First Name"
 msgstr ""
 
-#: class-woocommerce.php:445
+#: class-woocommerce.php:572
 msgid "Shipping Last Name"
 msgstr ""
 
-#: class-woocommerce.php:449
+#: class-woocommerce.php:576
 msgid "Shipping Company"
 msgstr ""
 
-#: class-woocommerce.php:453
+#: class-woocommerce.php:580
 msgid "Shipping Address"
 msgstr ""
 
-#: class-woocommerce.php:457
+#: class-woocommerce.php:584
 msgid "Shipping Address Line 1"
 msgstr ""
 
-#: class-woocommerce.php:461
+#: class-woocommerce.php:588
 msgid "Shipping Address Line 2"
 msgstr ""
 
-#: class-woocommerce.php:465
+#: class-woocommerce.php:592
 msgid "Shipping City"
 msgstr ""
 
-#: class-woocommerce.php:469
+#: class-woocommerce.php:596
 msgid "Shipping Postcode"
 msgstr ""
 
-#: class-woocommerce.php:473
+#: class-woocommerce.php:600
 msgid "Shipping Country Code"
 msgstr ""
 
-#: class-woocommerce.php:477
+#: class-woocommerce.php:604
 msgid "Shipping Country"
 msgstr ""
 
-#: class-woocommerce.php:481
+#: class-woocommerce.php:608
 msgid "Shipping State Code"
 msgstr ""
 
-#: class-woocommerce.php:485
+#: class-woocommerce.php:612
 msgid "Shipping State"
 msgstr ""
 
-#: class-woocommerce.php:489
+#: class-woocommerce.php:616
 msgid "Shipping Method"
 msgstr ""
 
-#: class-woocommerce.php:493
+#: class-woocommerce.php:620
 msgid "Cart Discount"
 msgstr ""
 
-#: class-woocommerce.php:497
+#: class-woocommerce.php:624
 msgid "Tax"
 msgstr ""
 
-#: class-woocommerce.php:501
+#: class-woocommerce.php:628
 msgid "Shipping Total"
 msgstr ""
 
-#: class-woocommerce.php:505
+#: class-woocommerce.php:632
 msgid "Shipping Tax"
 msgstr ""
 
-#: class-woocommerce.php:509
+#: class-woocommerce.php:636
 msgid "Are prices inclusive of tax?"
 msgstr ""
 
-#: class-woocommerce.php:513
+#: class-woocommerce.php:640
 msgid "Customer Note"
 msgstr ""
 
-#: class-woocommerce.php:517
+#: class-woocommerce.php:644
 msgid "Coupon Codes Used"
 msgstr ""
 
-#: class-woocommerce.php:521
+#: class-woocommerce.php:648
 msgid "Total Number of Items"
 msgstr ""
 
-#: class-woocommerce.php:826
-msgid "WooCommerce payment status updated from %s to %s."
+#: class-woocommerce.php:981
+msgid "Entry payment status updated from %s to %s."
 msgstr ""
 
-#: class-woocommerce.php:828
+#: class-woocommerce.php:983
 msgid "Failed to update entry."
+msgstr ""
+
+#: class-woocommerce.php:1248
+msgid "WooCommerce order #%s has been created. Order status: %s."
+msgstr ""
+
+#: class-woocommerce.php:1315
+msgid "WooCommerce order #%s has been paid. Order status: %s."
 msgstr ""
 
 #. Author of the plugin/theme
@@ -385,41 +416,48 @@ msgstr ""
 msgid "Payment Amount"
 msgstr ""
 
-#: includes/merge-tags/class-merge-tag-assignee-woocommerce-pay-url.php:58
-#: includes/steps/class-step-woocommerce-payment.php:192
+#: includes/merge-tags/class-merge-tag-assignee-woocommerce-pay-url.php:63
+#: includes/steps/class-step-woocommerce-payment.php:283
 msgid "Pay for this order"
 msgstr ""
 
-#: includes/steps/class-step-woocommerce-cancel-payment.php:33
-msgid "Cancel Payment"
+#: includes/merge-tags/class-merge-tag-assignee-woocommerce-pay-url.php:105
+#: includes/steps/class-step-woocommerce-payment.php:280
+msgid "Create a WooCommerce order"
 msgstr ""
 
-#: includes/steps/class-step-woocommerce-cancel-payment.php:47
+#: includes/steps/class-step-woocommerce-cancel-order.php:33
+msgid "Cancel Order"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-cancel-order.php:47
 msgid "Cancelled"
 msgstr ""
 
-#: includes/steps/class-step-woocommerce-cancel-payment.php:48
+#: includes/steps/class-step-woocommerce-cancel-order.php:48
 msgid "Next Step if Cancelled"
 msgstr ""
 
-#: includes/steps/class-step-woocommerce-cancel-payment.php:53
+#: includes/steps/class-step-woocommerce-cancel-order.php:53
 #: includes/steps/class-step-woocommerce-capture-payment.php:106
-#: includes/steps/class-step-woocommerce-refund-payment.php:104
+#: includes/steps/class-step-woocommerce-refund-order.php:104
 msgid "Failed"
 msgstr ""
 
-#: includes/steps/class-step-woocommerce-cancel-payment.php:54
+#: includes/steps/class-step-woocommerce-cancel-order.php:54
 #: includes/steps/class-step-woocommerce-capture-payment.php:107
-#: includes/steps/class-step-woocommerce-refund-payment.php:105
+#: includes/steps/class-step-woocommerce-refund-order.php:105
 msgid "Next step if Failed"
 msgstr ""
 
-#: includes/steps/class-step-woocommerce-cancel-payment.php:73
+#: includes/steps/class-step-woocommerce-cancel-order.php:86
 msgid "Cancelled the order."
 msgstr ""
 
-#: includes/steps/class-step-woocommerce-cancel-payment.php:83
-#: includes/steps/class-step-woocommerce-capture-payment.php:224
+#: includes/steps/class-step-woocommerce-cancel-order.php:96
+#: includes/steps/class-step-woocommerce-capture-payment.php:233
+#: includes/steps/class-step-woocommerce-payment.php:457
+#: includes/steps/class-step-woocommerce-payment.php:458
 msgid "Failed to update WooCommerce order status."
 msgstr ""
 
@@ -442,7 +480,7 @@ msgstr ""
 msgid "Next Step if Captured"
 msgstr ""
 
-#: includes/steps/class-step-woocommerce-capture-payment.php:214
+#: includes/steps/class-step-woocommerce-capture-payment.php:223
 msgid "Updated WooCommerce order status to processing."
 msgstr ""
 
@@ -450,88 +488,131 @@ msgstr ""
 msgid "Payment"
 msgstr ""
 
-#: includes/steps/class-step-woocommerce-payment.php:47
+#: includes/steps/class-step-woocommerce-payment.php:49
 msgid "WooCommerce Payment"
 msgstr ""
 
-#: includes/steps/class-step-woocommerce-payment.php:53
+#: includes/steps/class-step-woocommerce-payment.php:58
 msgid "Assignee email"
 msgstr ""
 
-#: includes/steps/class-step-woocommerce-payment.php:57
+#: includes/steps/class-step-woocommerce-payment.php:62
 msgid "Please make a payment here: {workflow_woocommerce_pay_link}"
 msgstr ""
 
-#: includes/steps/class-step-woocommerce-payment.php:78
-#: includes/steps/class-step-woocommerce-payment.php:268
+#: includes/steps/class-step-woocommerce-payment.php:68
+msgid ""
+"Select the page to replace the WooCommerce \"Order received (thanks)\" "
+"page. This can be the Workflow Submit Page in the WordPress Admin Dashboard "
+"or you can choose a page with either a Gravity Flow inbox shortcode or a "
+"Gravity Forms shortcode."
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-payment.php:69
+msgid "Order Received Redirection"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-payment.php:96
+#: includes/steps/class-step-woocommerce-payment.php:393
 msgid "Complete"
 msgstr ""
 
-#: includes/steps/class-step-woocommerce-payment.php:79
+#: includes/steps/class-step-woocommerce-payment.php:97
 msgid "Next Step"
 msgstr ""
 
-#: includes/steps/class-step-woocommerce-payment.php:160
-msgid "Processed."
+#: includes/steps/class-step-woocommerce-payment.php:201
+msgid "Waiting for payment."
 msgstr ""
 
-#: includes/steps/class-step-woocommerce-payment.php:163
-msgid "Payment is not pending. Step completed without sending notification."
+#: includes/steps/class-step-woocommerce-payment.php:207
+msgid "Waiting for a WooCommerce order."
 msgstr ""
 
-#: includes/steps/class-step-woocommerce-payment.php:245
+#: includes/steps/class-step-woocommerce-payment.php:212
+msgid ""
+"Payment is not pending or on-hold. Step completed without sending "
+"notification."
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-payment.php:295
+msgid "Update Order Status"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-payment.php:304
+msgid "Choose a status"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-payment.php:315
+msgid "Update"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-payment.php:370
 msgid "Email"
 msgstr ""
 
-#: includes/steps/class-step-woocommerce-payment.php:245
+#: includes/steps/class-step-woocommerce-payment.php:370
 msgid "User"
 msgstr ""
 
-#: includes/steps/class-step-woocommerce-payment.php:264
+#: includes/steps/class-step-woocommerce-payment.php:389
 msgid "Pending"
 msgstr ""
 
-#: includes/steps/class-step-woocommerce-payment.php:270
+#: includes/steps/class-step-woocommerce-payment.php:395
 msgid "Queued"
 msgstr ""
 
-#: includes/steps/class-step-woocommerce-refund-payment.php:33
-msgid "Refund Payment"
+#: includes/steps/class-step-woocommerce-payment.php:449
+#: includes/steps/class-step-woocommerce-payment.php:453
+msgid "Updated WooCommerce order status to %s."
 msgstr ""
 
-#: includes/steps/class-step-woocommerce-refund-payment.php:66
+#: includes/steps/class-step-woocommerce-payment.php:487
+msgid "No Redirection"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-payment.php:491
+msgid "WordPress Admin Dashboard: Workflow Submit Page"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-refund-order.php:33
+msgid "Refund Order"
+msgstr ""
+
+#: includes/steps/class-step-woocommerce-refund-order.php:66
 msgid "Current Entry: WooCommerce Order ID"
 msgstr ""
 
-#: includes/steps/class-step-woocommerce-refund-payment.php:76
+#: includes/steps/class-step-woocommerce-refund-order.php:76
 msgid "Order ID Field"
 msgstr ""
 
-#: includes/steps/class-step-woocommerce-refund-payment.php:78
+#: includes/steps/class-step-woocommerce-refund-order.php:78
 msgid ""
 "Select the field which will contain the ID of the WooCommerce ID to be "
 "refunded."
 msgstr ""
 
-#: includes/steps/class-step-woocommerce-refund-payment.php:98
+#: includes/steps/class-step-woocommerce-refund-order.php:98
 msgid "Refunded"
 msgstr ""
 
-#: includes/steps/class-step-woocommerce-refund-payment.php:99
+#: includes/steps/class-step-woocommerce-refund-order.php:99
 msgid "Next Step if Refunded"
 msgstr ""
 
-#: includes/steps/class-step-woocommerce-refund-payment.php:158
+#: includes/steps/class-step-woocommerce-refund-order.php:158
 msgid "Refunded the order."
 msgstr ""
 
-#: includes/steps/class-step-woocommerce-refund-payment.php:179
+#: includes/steps/class-step-woocommerce-refund-order.php:179
 msgid ""
 "WooCommerce order has been marked as refund but failed to refund the "
 "payment."
 msgstr ""
 
-#: includes/steps/class-step-woocommerce-refund-payment.php:188
+#: includes/steps/class-step-woocommerce-refund-order.php:188
 msgid "Failed to refund the order."
 msgstr ""
 
