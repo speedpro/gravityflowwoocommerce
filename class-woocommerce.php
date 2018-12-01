@@ -189,25 +189,6 @@ if ( class_exists( 'GFForms' ) ) {
 		}
 
 		/**
-		 * Define the markup to be displayed for the WooCommerce setting description.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @return string HTML formatted WooCommerce setting description.
-		 */
-		public function get_woocommerce_setting_description() {
-			ob_start();
-			?>
-			<p><?php esc_html_e( 'When enable WooCommerce integration, it will:', 'gravityflowwoocommerce' ); ?></p>
-			<ul>
-				<li><?php esc_html_e( 'Create a new entry when a WooCommerce Order is created.', 'gravityflowwoocommerce' ); ?></li>
-				<li><?php esc_html_e( 'Update the entry payment and transaction details based on the WooCommerce Order.', 'gravityflowwoocommerce' ); ?></li>
-			</ul>
-			<?php
-			return ob_get_clean();
-		}
-
-		/**
 		 * Renders the payment statuses setting.
 		 *
 		 * @since 1.0.1
