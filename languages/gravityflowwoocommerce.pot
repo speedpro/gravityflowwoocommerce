@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gravityflowwoocommerce\n"
 "Report-Msgid-Bugs-To: https://www.gravityflow.io\n"
-"POT-Creation-Date: 2018-12-01 12:45:03+00:00\n"
+"POT-Creation-Date: 2018-12-01 14:31:47+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -74,11 +74,11 @@ msgid ""
 msgstr ""
 
 #: class-woocommerce.php:173 class-woocommerce.php:174
-#: class-woocommerce.php:249 class-woocommerce.php:252
+#: class-woocommerce.php:230 class-woocommerce.php:233
 msgid "Create Entries on Specific Statuses"
 msgstr ""
 
-#: class-woocommerce.php:174 class-woocommerce.php:252
+#: class-woocommerce.php:174 class-woocommerce.php:233
 msgid ""
 "New entries will only be created when a WooCommerce order is in one of the "
 "selected statuses. Each WooCommerce order can be added to this form once."
@@ -88,243 +88,229 @@ msgstr ""
 msgid "WooCommerce"
 msgstr ""
 
-#: class-woocommerce.php:201
-msgid "When enable WooCommerce integration, it will:"
-msgstr ""
-
-#: class-woocommerce.php:203
-msgid "Create a new entry when a WooCommerce Order is created."
-msgstr ""
-
-#: class-woocommerce.php:204
-msgid ""
-"Update the entry payment and transaction details based on the WooCommerce "
-"Order."
-msgstr ""
-
-#: class-woocommerce.php:225
+#: class-woocommerce.php:206
 msgid "All payment statuses"
 msgstr ""
 
-#: class-woocommerce.php:229
+#: class-woocommerce.php:210
 msgid "Selected payment statuses"
 msgstr ""
 
-#: class-woocommerce.php:283
+#: class-woocommerce.php:264
 msgid "You need to selected at least one payment status."
 msgstr ""
 
-#: class-woocommerce.php:364
+#: class-woocommerce.php:345
 msgid "WooCommerce Order ID"
 msgstr ""
 
-#: class-woocommerce.php:460
+#: class-woocommerce.php:441
 msgid "Select a Field"
 msgstr ""
 
-#: class-woocommerce.php:464
+#: class-woocommerce.php:445
 #: includes/fields/class-field-woocommerce-order-id.php:94
 #: includes/fields/class-field-woocommerce-order-id.php:205
 msgid "Order ID"
 msgstr ""
 
-#: class-woocommerce.php:468
+#: class-woocommerce.php:449
 msgid "Order Number"
 msgstr ""
 
-#: class-woocommerce.php:472
+#: class-woocommerce.php:453
 msgid "Order Status"
 msgstr ""
 
-#: class-woocommerce.php:476
+#: class-woocommerce.php:457
 msgid "Order Date"
 msgstr ""
 
-#: class-woocommerce.php:480
+#: class-woocommerce.php:461
 msgid "Cart Total"
 msgstr ""
 
-#: class-woocommerce.php:484
+#: class-woocommerce.php:465
 msgid "Cart Subtotal"
 msgstr ""
 
-#: class-woocommerce.php:488
+#: class-woocommerce.php:469
 msgid "Payment Method"
 msgstr ""
 
-#: class-woocommerce.php:492
+#: class-woocommerce.php:473
 msgid "Transaction ID"
 msgstr ""
 
-#: class-woocommerce.php:496
+#: class-woocommerce.php:477
 msgid "Currency Currency"
 msgstr ""
 
-#: class-woocommerce.php:500
+#: class-woocommerce.php:481
 msgid "Currency Symbol"
 msgstr ""
 
-#: class-woocommerce.php:504
+#: class-woocommerce.php:485
 msgid "View Order URL"
 msgstr ""
 
-#: class-woocommerce.php:508
+#: class-woocommerce.php:489
 msgid "User ID"
 msgstr ""
 
-#: class-woocommerce.php:512
+#: class-woocommerce.php:493
 msgid "Billing First Name"
 msgstr ""
 
-#: class-woocommerce.php:516
+#: class-woocommerce.php:497
 msgid "Billing Last Name"
 msgstr ""
 
-#: class-woocommerce.php:520
+#: class-woocommerce.php:501
 msgid "Billing Company"
 msgstr ""
 
-#: class-woocommerce.php:524
+#: class-woocommerce.php:505
 msgid "Billing Address"
 msgstr ""
 
-#: class-woocommerce.php:528
+#: class-woocommerce.php:509
 msgid "Billing Email"
 msgstr ""
 
-#: class-woocommerce.php:532
+#: class-woocommerce.php:513
 msgid "Billing Phone"
 msgstr ""
 
-#: class-woocommerce.php:536
+#: class-woocommerce.php:517
 msgid "Billing Address Line 1"
 msgstr ""
 
-#: class-woocommerce.php:540
+#: class-woocommerce.php:521
 msgid "Billing Address Line 2"
 msgstr ""
 
-#: class-woocommerce.php:544
+#: class-woocommerce.php:525
 msgid "Billing City"
 msgstr ""
 
-#: class-woocommerce.php:548
+#: class-woocommerce.php:529
 msgid "Billing Postcode"
 msgstr ""
 
-#: class-woocommerce.php:552
+#: class-woocommerce.php:533
 msgid "Billing Country Code"
 msgstr ""
 
-#: class-woocommerce.php:556
+#: class-woocommerce.php:537
 msgid "Billing Country"
 msgstr ""
 
-#: class-woocommerce.php:560
+#: class-woocommerce.php:541
 msgid "Billing State Code"
 msgstr ""
 
-#: class-woocommerce.php:564
+#: class-woocommerce.php:545
 msgid "Billing State"
 msgstr ""
 
-#: class-woocommerce.php:568
+#: class-woocommerce.php:549
 msgid "Shipping First Name"
 msgstr ""
 
-#: class-woocommerce.php:572
+#: class-woocommerce.php:553
 msgid "Shipping Last Name"
 msgstr ""
 
-#: class-woocommerce.php:576
+#: class-woocommerce.php:557
 msgid "Shipping Company"
 msgstr ""
 
-#: class-woocommerce.php:580
+#: class-woocommerce.php:561
 msgid "Shipping Address"
 msgstr ""
 
-#: class-woocommerce.php:584
+#: class-woocommerce.php:565
 msgid "Shipping Address Line 1"
 msgstr ""
 
-#: class-woocommerce.php:588
+#: class-woocommerce.php:569
 msgid "Shipping Address Line 2"
 msgstr ""
 
-#: class-woocommerce.php:592
+#: class-woocommerce.php:573
 msgid "Shipping City"
 msgstr ""
 
-#: class-woocommerce.php:596
+#: class-woocommerce.php:577
 msgid "Shipping Postcode"
 msgstr ""
 
-#: class-woocommerce.php:600
+#: class-woocommerce.php:581
 msgid "Shipping Country Code"
 msgstr ""
 
-#: class-woocommerce.php:604
+#: class-woocommerce.php:585
 msgid "Shipping Country"
 msgstr ""
 
-#: class-woocommerce.php:608
+#: class-woocommerce.php:589
 msgid "Shipping State Code"
 msgstr ""
 
-#: class-woocommerce.php:612
+#: class-woocommerce.php:593
 msgid "Shipping State"
 msgstr ""
 
-#: class-woocommerce.php:616
+#: class-woocommerce.php:597
 msgid "Shipping Method"
 msgstr ""
 
-#: class-woocommerce.php:620
+#: class-woocommerce.php:601
 msgid "Cart Discount"
 msgstr ""
 
-#: class-woocommerce.php:624
+#: class-woocommerce.php:605
 msgid "Tax"
 msgstr ""
 
-#: class-woocommerce.php:628
+#: class-woocommerce.php:609
 msgid "Shipping Total"
 msgstr ""
 
-#: class-woocommerce.php:632
+#: class-woocommerce.php:613
 msgid "Shipping Tax"
 msgstr ""
 
-#: class-woocommerce.php:636
+#: class-woocommerce.php:617
 msgid "Are prices inclusive of tax?"
 msgstr ""
 
-#: class-woocommerce.php:640
+#: class-woocommerce.php:621
 msgid "Customer Note"
 msgstr ""
 
-#: class-woocommerce.php:644
+#: class-woocommerce.php:625
 msgid "Coupon Codes Used"
 msgstr ""
 
-#: class-woocommerce.php:648
+#: class-woocommerce.php:629
 msgid "Total Number of Items"
 msgstr ""
 
-#: class-woocommerce.php:981
+#: class-woocommerce.php:962
 msgid "Entry payment status updated from %s to %s."
 msgstr ""
 
-#: class-woocommerce.php:983
+#: class-woocommerce.php:964
 msgid "Failed to update entry."
 msgstr ""
 
-#: class-woocommerce.php:1248
+#: class-woocommerce.php:1229
 msgid "WooCommerce order #%s has been created. Order status: %s."
 msgstr ""
 
-#: class-woocommerce.php:1315
+#: class-woocommerce.php:1296
 msgid "WooCommerce order #%s has been paid. Order status: %s."
 msgstr ""
 
