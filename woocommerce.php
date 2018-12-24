@@ -39,9 +39,11 @@ class Gravity_Flow_Woocommerce_Bootstrap {
 
 		require_once( 'includes/steps/class-step-woocommerce-capture-payment.php' );
 		require_once( 'includes/steps/class-step-woocommerce-payment.php' );
+		require_once( 'includes/steps/class-step-woocommerce-checkout.php' );
 		require_once( 'includes/steps/class-step-woocommerce-cancel-order.php' );
 		require_once( 'includes/steps/class-step-woocommerce-refund-order.php' );
 		require_once( 'includes/merge-tags/class-merge-tag-assignee-woocommerce-pay-url.php' );
+		require_once( 'includes/merge-tags/class-merge-tag-assignee-woocommerce-checkout-url.php' );
 
 		require_once( 'class-woocommerce.php' );
 		require_once( 'includes/class-wc-gateway-gravity-flow-pay-later.php' );

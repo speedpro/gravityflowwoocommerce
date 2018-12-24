@@ -68,7 +68,7 @@ if ( class_exists( 'GFForms' ) ) {
 			add_action( 'woocommerce_available_payment_gateways', array( $this, 'maybe_disable_gateway' ) );
 			// Set the priority to 11, so we can be compatible with WooCommerce Gravity Forms add-on.
 			add_action( 'woocommerce_order_status_changed', array( $this, 'update_entry' ), 11, 4 );
-			add_action( 'woocommerce_order_status_changed', array( $this, 'release_payment_step' ), 11, 4 );
+			add_action( 'woocommerce_order_status_changed', array( $this, 'release_checkout_step' ), 11, 4 );
 			add_filter( 'woocommerce_cancel_unpaid_order', array( $this, 'cancel_unpaid_order' ), 10, 2 );
 			add_filter( 'gravityflow_feed_condition_entry_properties', array( $this, 'maybe_update_payment_statuses' ), 10, 2 );
 			add_filter( 'gform_field_filters', array( $this, 'filter_gform_field_filters' ), 10, 2 );
@@ -134,7 +134,7 @@ if ( class_exists( 'GFForms' ) ) {
 			$fields = array(
 				array(
 					'name'       => 'woocommerce_orders_integration_enabled',
-					'label'      => esc_html__( 'WooCommerce Integration', 'gravityflowwoocommerce' ),
+					'label'      => esc_html__( 'Create Entry', 'gravityflowwoocommerce' ),
 					'type'       => 'checkbox',
 					'horizontal' => true,
 					'onchange'   => "jQuery(this).closest('form').submit();",
@@ -145,7 +145,8 @@ if ( class_exists( 'GFForms' ) ) {
 							'name'  => 'woocommerce_orders_integration_enabled',
 						),
 					),
-					'tooltip'    => '<h6>' . esc_html__( 'WooCommerce Integration', 'gravityflowwoocommerce' ) . '</h6>' . esc_html__( 'When enabled, a new entry will be created in this form when a WooCommerce Order is created. The entry payment and transaction details will also be updated based on the WooCommerce Order. If the order changes, the entry will be updated.', 'gravityflowwoocommerce' ),
+					'tooltip'    => '<h6>' . esc_html__( 'Create Entry', 'gravityflowwoocommerce' ) . '</h6>' .
+					                esc_html__(	'When enabled, a new entry will be created in this form when a WooCommerce Order is created. The entry payment and transaction details will also be updated based on the WooCommerce Order. If the order changes, the entry will be updated.', 'gravityflowwoocommerce' ),
 				),
 			);
 
@@ -1250,7 +1251,7 @@ if ( class_exists( 'GFForms' ) ) {
 		 * @param string   $to_status WooCommerce new order status.
 		 * @param WC_Order $order WooCommerce Order object.
 		 */
-		public function release_payment_step( $order_id, $from_status, $to_status, $order ) {
+		public function release_checkout_step( $order_id, $from_status, $to_status, $order ) {
 			$hash            = get_post_meta( $order_id, '_workflow_order_hash', true );
 			$parent_entry_id = get_post_meta( $order_id, '_workflow_order_entry_id', true );
 			if ( empty( $hash ) || empty( $parent_entry_id ) ) {
@@ -1264,15 +1265,11 @@ if ( class_exists( 'GFForms' ) ) {
 				WC()->session->set( 'workflow_order_entry_id', null );
 			}
 
-			if ( $to_status !== 'processing' && $to_status !== 'completed' ) {
-				return;
-			}
-
 			$parent_entry = GFAPI::get_entry( $parent_entry_id );
 			$api          = new Gravity_Flow_API( $parent_entry['form_id'] );
 
 			$current_step = $api->get_current_step( $parent_entry );
-			if ( $current_step instanceof Gravity_Flow_Step_Woocommerce_Payment ) {
+			if ( $current_step instanceof Gravity_Flow_Step_Woocommerce_Checkout ) {
 				$this->log_debug( __METHOD__ . '() starting' );
 
 				$verify_hash = $this->get_workflow_order_hash( $parent_entry_id, $current_step );
@@ -1300,9 +1297,8 @@ if ( class_exists( 'GFForms' ) ) {
 					}
 				}
 
-				$order = wc_get_order( $order_id );
-				$this->log_debug( __METHOD__ . "(): WooCommerce order #{$order_id} has been paid. Order status: {$order->get_status()}" );
-				$note = $current_step->get_name() . ': ' . sprintf( esc_html__( 'WooCommerce order #%s has been paid. Order status: %s.', 'gravityflowwoocommerce' ), $order_id, $order->get_status() );
+				$this->log_debug( __METHOD__ . "(): WooCommerce order step has been completed." );
+				$note = $current_step->get_name() . ': ' . esc_html__( 'WooCommerce order step has been completed.', 'gravityflowwoocommerce' );
 				$current_step->add_note( $note );
 
 				$page_id = $current_step->order_received_redirection;
