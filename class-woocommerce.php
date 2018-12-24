@@ -392,6 +392,13 @@ if ( class_exists( 'GFForms' ) ) {
 				$result = rgar( $settings, "payment_status_{$order->get_status()}" ) === '1' || ! isset( $settings[ "payment_status_{$order->get_status()}" ] );
 			}
 
+			/**
+			 * Filter custom payment statuses or add additional conditions.
+			 *
+			 * @param boolean $result True or false.
+			 * @param int     $form_id Form ID.
+			 * @param int     $order_id Order ID.
+			 */
 			return apply_filters( 'gravityflowwoocommerce_is_payment_status_enabled', $result, $form_id, $order_id );
 		}
 
