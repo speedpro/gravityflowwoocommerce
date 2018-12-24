@@ -386,11 +386,13 @@ if ( class_exists( 'GFForms' ) ) {
 
 			$mode_value = rgar( $settings, 'payment_statuses_mode', 'all_payment_statuses' );
 			if ( $mode_value === 'all_payment_statuses' ) {
-				return true;
+				$result = true;
 			} else {
-				$order = wc_get_order( $order_id );
-				return rgar( $settings, "payment_status_{$order->get_status()}" ) === '1' || ! isset( $settings[ "payment_status_{$order->get_status()}" ] );
+				$order  = wc_get_order( $order_id );
+				$result = rgar( $settings, "payment_status_{$order->get_status()}" ) === '1' || ! isset( $settings[ "payment_status_{$order->get_status()}" ] );
 			}
+
+			return apply_filters( 'gravityflowwoocommerce_is_payment_status_enabled', $result, $form_id, $order_id );
 		}
 
 		/**
