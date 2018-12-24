@@ -43,14 +43,9 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		public function get_settings() {
 			$settings_api = $this->get_common_settings_api();
 
-			$page_choices = $this->get_page_choices();
-
 			$settings = array(
 				'title'  => esc_html__( 'WooCommerce Payment', 'gravityflowwoocommerce' ),
 				'fields' => array(
-					$settings_api->get_setting_assignee_type(),
-					$settings_api->get_setting_assignees(),
-					$settings_api->get_setting_assignee_routing(),
 					$settings_api->get_setting_instructions(),
 					$settings_api->get_setting_display_fields(),
 					$settings_api->get_setting_notification_tabs( array(
@@ -63,21 +58,8 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 							) ),
 						),
 					) ),
-					array(
-						'name'    => 'order_received_redirection',
-						'tooltip' => __( 'Select the page to replace the WooCommerce "Order received (thanks)" page. This can be the Workflow Submit Page in the WordPress Admin Dashboard or you can choose a page with either a Gravity Flow inbox shortcode or a Gravity Forms shortcode.', 'gravityflowwoocommerce' ),
-						'label'   => __( 'Order Received Redirection', 'gravityflowwoocommerce' ),
-						'type'    => 'select',
-						'choices' => $page_choices,
-					),
 				),
 			);
-
-			if ( gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $this->get_form_id() ) ) {
-				unset( $settings['fields'][0] );
-				unset( $settings['fields'][1] );
-				unset( $settings['fields'][2] );
-			}
 
 			return $settings;
 		}
@@ -194,11 +176,16 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 			// do this only when the order is still pending.
 			$order = wc_get_order( $this->get_order_id() );
 
-			if ( ( false !== $order && ( 'pending' === $order->get_status() || 'on-hold' === $order->get_status() ) ) || false === $order ) {
+			if ( ( false !== $order && ( $order->get_status() === 'pending' || $order->get_status() === 'on-hold' ) ) || false === $order ) {
 				if ( false !== $order ) {
-					$this->assign();
-					$this->log_debug( __METHOD__ . '(): Started, waiting for payment.' );
-					$note = $this->get_name() . ': ' . esc_html__( 'Waiting for payment.', 'gravityflowwoocommerce' );
+					if ( $order->get_status() === 'pending' ) {
+						$this->assign();
+						$this->log_debug( __METHOD__ . '(): Started, waiting for payment.' );
+						$note = $this->get_name() . ': ' . esc_html__( 'Waiting for payment.', 'gravityflowwoocommerce' );
+                    } else {
+						$this->log_debug( __METHOD__ . '(): Started, waiting for payment status to be updated.' );
+						$note = $this->get_name() . ': ' . esc_html__( 'Waiting for payment status to be updated.', 'gravityflowwoocommerce' );
+                    }
 				} else {
 					if ( ! gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $this->get_form_id() ) ) {
 						$this->assign();
@@ -258,27 +245,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 					}
 
 					if ( $can_pay ) {
-						if ( false === $order ) {
-							$entry_id = $this->get_entry_id();
-							$url      = add_query_arg(
-								array(
-									'workflow_order_entry_id' => $entry_id,
-									'workflow_order_hash'     => gravity_flow_woocommerce()->get_workflow_order_hash( $entry_id, $this ),
-								),
-								wc_get_checkout_url()
-							);
-							/**
-							 * Filter the payment step hash url.
-							 *
-							 * @since 1.1
-							 *
-							 * @param string $url URL.
-							 * @param int $entry_id Entry id.
-							 * @param Gravity_Flow_Step $this Gravity Flow step.
-							 */
-							$url  = apply_filters( 'gravityflowwoocommerce_payment_step_url', $url, $entry_id, $this );
-							$text = esc_html__( 'Create a WooCommerce order', 'gravityflowwoocommerce' );
-						} elseif ( $order && $status === 'pending' ) {
+						if ( $order && $status === 'pending' ) {
 							$url  = $order->get_checkout_payment_url();
 							$text = esc_html__( 'Pay for this order', 'gravityflowwoocommerce' );
 						}
@@ -290,7 +257,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 						}
 					}
 
-					if ( current_user_can( 'edit_shop_orders' ) && gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $this->get_form_id() ) ) {
+					if ( current_user_can( 'edit_shop_orders' ) ) {
 						echo '<hr style="margin-top:10px;"/>';
 						echo sprintf( '<h4>%s</h4>', esc_html__( 'Update Order Status', 'gravityflowwoocommerce' ) );
 
@@ -472,36 +439,6 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 			}
 
 			return $feedback;
-		}
-
-		/**
-		 * Returns the choices for the Submit Page setting.
-		 *
-		 * @since 1.1
-		 *
-		 * @return array
-		 */
-		public function get_page_choices() {
-			$choices = array(
-				array(
-					'label' => esc_html__( 'No Redirection' ),
-					'value' => '',
-				),
-				array(
-					'label' => esc_html__( 'WordPress Admin Dashboard: Workflow Submit Page', 'gravityflowwoocommerce' ),
-					'value' => 'admin',
-				),
-			);
-
-			$pages = get_pages();
-			foreach ( $pages as $page ) {
-				$choices[] = array(
-					'label' => $page->post_title,
-					'value' => $page->ID,
-				);
-			}
-
-			return $choices;
 		}
 	}
 
