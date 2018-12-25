@@ -373,8 +373,9 @@ if ( class_exists( 'GFForms' ) ) {
 			if ( $can_create ) {
 				$mode_value = rgar( $settings, 'payment_statuses_mode', 'all_payment_statuses' );
 				if ( ! is_null( $order_id ) ) {
+					$order = wc_get_order( $order_id );
+
 					if ( ! $mode_value === 'all_payment_statuses' ) {
-						$order      = wc_get_order( $order_id );
 						$can_create = rgar( $settings, "payment_status_{$order->get_status()}" ) === '1' || ! isset( $settings[ "payment_status_{$order->get_status()}" ] );
 					}
 
@@ -383,13 +384,13 @@ if ( class_exists( 'GFForms' ) ) {
 					 *
 					 * @since 1.1
 					 *
-					 * @param boolean $can_create If can create entry or not.
-					 * @param int     $form_id Form ID.
-					 * @param int     $order_id Order ID.
+					 * @param boolean  $can_create If can create entry or not.
+					 * @param int      $form_id Form ID.
+					 * @param WC_Order $order_id WC Order object.
 					 *
 					 * @return boolean True if can create entry, false otherwise.
 					 */
-					$can_create = apply_filters( 'gravityflowwoocommerce_can_create_entry', $can_create, $form_id, $order_id );
+					$can_create = apply_filters( 'gravityflowwoocommerce_can_create_entry', $can_create, $form_id, $order );
 				}
 			}
 
