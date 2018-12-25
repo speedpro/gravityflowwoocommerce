@@ -173,10 +173,11 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 		}
 
 		if ( $order->get_payment_method() === $this->id ) {
-			$entry_ids = get_post_meta( $order->get_id(), '_gravityflow-entry-id' );
+			$order_id  = $order->get_id();
+			$entry_ids = get_post_meta( $order_id, '_gravityflow-entry-id' );
 			foreach ( $entry_ids as $entry_id ) {
 				$entry = GFAPI::get_entry( $entry_id );
-				if ( is_wp_error( $entry ) || ! gravity_flow_woocommerce()->can_create_entry_for_order( $entry['form_id'] ) ) {
+				if ( is_wp_error( $entry ) || ! gravity_flow_woocommerce()->can_create_entry_for_order( $entry['form_id'], $order_id ) ) {
 					continue;
 				}
 
@@ -211,10 +212,11 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 			if ( $order->get_payment_method() === $this->id ) {
 				$result = false;
 
-				$entry_ids = get_post_meta( $order->get_id(), '_gravityflow-entry-id' );
+				$order_id  = $order->get_id();
+				$entry_ids = get_post_meta( $order_id, '_gravityflow-entry-id' );
 				foreach ( $entry_ids as $entry_id ) {
 					$entry = GFAPI::get_entry( $entry_id );
-					if ( is_wp_error( $entry ) || ! gravity_flow_woocommerce()->can_create_entry_for_order( $entry['form_id'] ) ) {
+					if ( is_wp_error( $entry ) || ! gravity_flow_woocommerce()->can_create_entry_for_order( $entry['form_id'], $order_id ) ) {
 						continue;
 					}
 

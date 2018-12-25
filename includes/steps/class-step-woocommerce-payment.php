@@ -147,7 +147,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 
 					$assignees[] = new Gravity_Flow_Assignee( $assignee_key, $this );
 				}
-			} elseif ( ! gravity_flow_woocommerce()->can_create_entry_for_order( $this->get_form_id() ) ) {
+			} elseif ( ! gravity_flow_woocommerce()->can_create_entry_for_order( $this->get_form_id(), $order_id ) ) {
 				$assignees = parent::get_assignees();
 			}
 
@@ -182,12 +182,12 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 						$this->assign();
 						$this->log_debug( __METHOD__ . '(): Started, waiting for payment.' );
 						$note = $this->get_name() . ': ' . esc_html__( 'Waiting for payment.', 'gravityflowwoocommerce' );
-                    } else {
+					} else {
 						$this->log_debug( __METHOD__ . '(): Started, waiting for payment status to be updated.' );
 						$note = $this->get_name() . ': ' . esc_html__( 'Waiting for payment status to be updated.', 'gravityflowwoocommerce' );
-                    }
+					}
 				} else {
-					if ( ! gravity_flow_woocommerce()->can_create_entry_for_order( $this->get_form_id() ) ) {
+					if ( ! gravity_flow_woocommerce()->can_create_entry_for_order( $this->get_form_id(), $order->get_id() ) ) {
 						$this->assign();
 					}
 					$this->log_debug( __METHOD__ . '(): Started, waiting for the order id.' );

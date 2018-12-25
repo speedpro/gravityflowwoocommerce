@@ -178,7 +178,7 @@ if ( class_exists( 'GFForms' ) ) {
 					'field'  => 'woocommerce_orders_integration_enabled',
 					'values' => array( '1' ),
 				),
-				'validation_callback' => array( $this, 'validate_selected_payment_statuses' )
+				'validation_callback' => array( $this, 'validate_selected_payment_statuses' ),
 			);
 
 			return array(
@@ -193,7 +193,6 @@ if ( class_exists( 'GFForms' ) ) {
 		 * Renders the payment statuses setting.
 		 *
 		 * @since 1.0.1
-		 *
 		 */
 		public function settings_payment_statuses() {
 			$mode_field = array(
@@ -358,49 +357,43 @@ if ( class_exists( 'GFForms' ) ) {
 		/**
 		 * Helper to check if WooCommerce Orders integration is enabled.
 		 *
+		 * @since 1.1   Added the 2nd parameter $order_id.
 		 * @since 1.0.0
 		 *
-		 * @param int $form_id Form ID.
+		 * @param int      $form_id Form ID.
+		 * @param int|null $order_id Order ID.
 		 *
-		 * @return int True if integration is enabled. False otherwise.
+		 * @return boolean True if integration is enabled. False otherwise.
 		 */
-		public function can_create_entry_for_order( $form_id ) {
+		public function can_create_entry_for_order( $form_id, $order_id = null ) {
 			$form     = GFAPI::get_form( $form_id );
 			$settings = $this->get_form_settings( $form );
 
-			return rgar( $settings, 'woocommerce_orders_integration_enabled' ) === '1';
-		}
+			$can_create = rgar( $settings, 'woocommerce_orders_integration_enabled' ) === '1';
+			if ( $can_create ) {
+				$mode_value = rgar( $settings, 'payment_statuses_mode', 'all_payment_statuses' );
+				if ( ! is_null( $order_id ) ) {
+					if ( ! $mode_value === 'all_payment_statuses' ) {
+						$order      = wc_get_order( $order_id );
+						$can_create = rgar( $settings, "payment_status_{$order->get_status()}" ) === '1' || ! isset( $settings[ "payment_status_{$order->get_status()}" ] );
+					}
 
-		/**
-		 * Helper to check if a payment status is enabled.
-		 *
-		 * @since 1.0.1
-		 *
-		 * @param int $form_id Form ID.
-		 * @param int $order_id WooCommerce order ID.
-		 *
-		 * @return int True if integration is enabled. False otherwise.
-		 */
-		public function is_woocommerce_payment_status_enabled( $form_id, $order_id ) {
-			$form     = GFAPI::get_form( $form_id );
-			$settings = $this->get_form_settings( $form );
-
-			$mode_value = rgar( $settings, 'payment_statuses_mode', 'all_payment_statuses' );
-			if ( $mode_value === 'all_payment_statuses' ) {
-				$result = true;
-			} else {
-				$order  = wc_get_order( $order_id );
-				$result = rgar( $settings, "payment_status_{$order->get_status()}" ) === '1' || ! isset( $settings[ "payment_status_{$order->get_status()}" ] );
+					/**
+					 * Filter if new entries should be created in a form.
+					 *
+					 * @since 1.1
+					 *
+					 * @param boolean $can_create If can create entry or not.
+					 * @param int     $form_id Form ID.
+					 * @param int     $order_id Order ID.
+					 *
+					 * @return boolean True if can create entry, false otherwise.
+					 */
+					$can_create = apply_filters( 'gravityflowwoocommerce_can_create_entry', $can_create, $form_id, $order_id );
+				}
 			}
 
-			/**
-			 * Filter custom payment statuses or add additional conditions.
-			 *
-			 * @param boolean $result True or false.
-			 * @param int     $form_id Form ID.
-			 * @param int     $order_id Order ID.
-			 */
-			return apply_filters( 'gravityflowwoocommerce_is_payment_status_enabled', $result, $form_id, $order_id );
+			return $can_create;
 		}
 
 		/**
@@ -806,7 +799,7 @@ if ( class_exists( 'GFForms' ) ) {
 			// get forms with WooCommerce integration.
 			$form_ids = RGFormsModel::get_form_ids();
 			foreach ( $form_ids as $key => $form_id ) {
-				if ( ! $this->can_create_entry_for_order( $form_id ) || ! $this->is_woocommerce_payment_status_enabled( $form_id, $order_id ) || in_array( $form_id, $forms_has_entry, true ) || $this->has_wcgf_entries( $form_id, $order_id ) ) {
+				if ( ! $this->can_create_entry_for_order( $form_id, $order_id ) || in_array( $form_id, $forms_has_entry, true ) || $this->has_wcgf_entries( $form_id, $order_id ) ) {
 					unset( $form_ids[ $key ] );
 				}
 			}
@@ -856,7 +849,7 @@ if ( class_exists( 'GFForms' ) ) {
 			foreach ( $entry_ids as $entry_id ) {
 				$entry = GFAPI::get_entry( $entry_id );
 				// Don't update entry if the WooCommerce integration is disabled.
-				if ( is_wp_error( $entry ) || ! $this->can_create_entry_for_order( $entry['form_id'] ) ) {
+				if ( is_wp_error( $entry ) || ! $this->can_create_entry_for_order( $entry['form_id'], $order_id ) ) {
 					continue;
 				}
 
@@ -1033,7 +1026,7 @@ if ( class_exists( 'GFForms' ) ) {
 		 * @return array Entry properties.
 		 */
 		public function maybe_update_payment_statuses( $properties, $form_id ) {
-			if ( gravity_flow_woocommerce()->can_create_entry_for_order( $form_id ) ) {
+			if ( $this->can_create_entry_for_order( $form_id ) ) {
 				$wc_order_statuses = $this->wc_order_statuses();
 
 				$properties['payment_status']['filter']['choices'] = $wc_order_statuses;
@@ -1053,7 +1046,7 @@ if ( class_exists( 'GFForms' ) ) {
 		 * @return array $field_filters
 		 */
 		public function filter_gform_field_filters( $field_filters, $form ) {
-			if ( gravity_flow_woocommerce()->can_create_entry_for_order( $form['id'] ) ) {
+			if ( $this->can_create_entry_for_order( $form['id'] ) ) {
 				$wc_order_statuses = $this->wc_order_statuses();
 
 				foreach ( $field_filters as $k => $field_filter ) {
