@@ -176,7 +176,7 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 			$entry_ids = get_post_meta( $order->get_id(), '_gravityflow-entry-id' );
 			foreach ( $entry_ids as $entry_id ) {
 				$entry = GFAPI::get_entry( $entry_id );
-				if ( is_wp_error( $entry ) || ! gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $entry['form_id'] ) ) {
+				if ( is_wp_error( $entry ) || ! gravity_flow_woocommerce()->can_create_entry_for_order( $entry['form_id'] ) ) {
 					continue;
 				}
 
@@ -214,7 +214,7 @@ class WC_Gateway_Gravity_Flow_Pay_Later extends WC_Payment_Gateway {
 				$entry_ids = get_post_meta( $order->get_id(), '_gravityflow-entry-id' );
 				foreach ( $entry_ids as $entry_id ) {
 					$entry = GFAPI::get_entry( $entry_id );
-					if ( is_wp_error( $entry ) || ! gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $entry['form_id'] ) ) {
+					if ( is_wp_error( $entry ) || ! gravity_flow_woocommerce()->can_create_entry_for_order( $entry['form_id'] ) ) {
 						continue;
 					}
 

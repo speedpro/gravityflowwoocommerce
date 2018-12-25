@@ -84,7 +84,7 @@ if ( class_exists( 'Gravity_Flow_Step' ) && function_exists( 'WC' ) ) {
 		 * @return bool
 		 */
 		public function is_supported() {
-			return function_exists( 'WC' ) && ! gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $this->get_form_id() );
+			return function_exists( 'WC' ) && ! gravity_flow_woocommerce()->can_create_entry_for_order( $this->get_form_id() );
 		}
 
 		/**

@@ -341,7 +341,7 @@ if ( class_exists( 'GFForms' ) ) {
 		 * @return array
 		 */
 		public function get_entry_meta( $entry_meta, $form_id ) {
-			if ( $this->is_woocommerce_orders_integration_enabled( $form_id ) || rgpost( 'woocommerce_orders_integration_enabled' ) ) {
+			if ( $this->can_create_entry_for_order( $form_id ) || rgpost( 'woocommerce_orders_integration_enabled' ) ) {
 				$entry_meta['workflow_woocommerce_order_id'] = array(
 					'label'             => esc_html__( 'WooCommerce Order ID', 'gravityflowwoocommerce' ),
 					'is_numeric'        => true,
@@ -364,7 +364,7 @@ if ( class_exists( 'GFForms' ) ) {
 		 *
 		 * @return int True if integration is enabled. False otherwise.
 		 */
-		public function is_woocommerce_orders_integration_enabled( $form_id ) {
+		public function can_create_entry_for_order( $form_id ) {
 			$form     = GFAPI::get_form( $form_id );
 			$settings = $this->get_form_settings( $form );
 
@@ -806,7 +806,7 @@ if ( class_exists( 'GFForms' ) ) {
 			// get forms with WooCommerce integration.
 			$form_ids = RGFormsModel::get_form_ids();
 			foreach ( $form_ids as $key => $form_id ) {
-				if ( ! $this->is_woocommerce_orders_integration_enabled( $form_id ) || ! $this->is_woocommerce_payment_status_enabled( $form_id, $order_id ) || in_array( $form_id, $forms_has_entry, true ) || $this->has_wcgf_entries( $form_id, $order_id ) ) {
+				if ( ! $this->can_create_entry_for_order( $form_id ) || ! $this->is_woocommerce_payment_status_enabled( $form_id, $order_id ) || in_array( $form_id, $forms_has_entry, true ) || $this->has_wcgf_entries( $form_id, $order_id ) ) {
 					unset( $form_ids[ $key ] );
 				}
 			}
@@ -856,7 +856,7 @@ if ( class_exists( 'GFForms' ) ) {
 			foreach ( $entry_ids as $entry_id ) {
 				$entry = GFAPI::get_entry( $entry_id );
 				// Don't update entry if the WooCommerce integration is disabled.
-				if ( is_wp_error( $entry ) || ! $this->is_woocommerce_orders_integration_enabled( $entry['form_id'] ) ) {
+				if ( is_wp_error( $entry ) || ! $this->can_create_entry_for_order( $entry['form_id'] ) ) {
 					continue;
 				}
 
@@ -1033,7 +1033,7 @@ if ( class_exists( 'GFForms' ) ) {
 		 * @return array Entry properties.
 		 */
 		public function maybe_update_payment_statuses( $properties, $form_id ) {
-			if ( gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $form_id ) ) {
+			if ( gravity_flow_woocommerce()->can_create_entry_for_order( $form_id ) ) {
 				$wc_order_statuses = $this->wc_order_statuses();
 
 				$properties['payment_status']['filter']['choices'] = $wc_order_statuses;
@@ -1053,7 +1053,7 @@ if ( class_exists( 'GFForms' ) ) {
 		 * @return array $field_filters
 		 */
 		public function filter_gform_field_filters( $field_filters, $form ) {
-			if ( gravity_flow_woocommerce()->is_woocommerce_orders_integration_enabled( $form['id'] ) ) {
+			if ( gravity_flow_woocommerce()->can_create_entry_for_order( $form['id'] ) ) {
 				$wc_order_statuses = $this->wc_order_statuses();
 
 				foreach ( $field_filters as $k => $field_filter ) {
